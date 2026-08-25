@@ -87,7 +87,7 @@ export const About = ({ content }: AboutProps) => (
               key={action.href}
               href={action.href}
               variant={index === 0 ? "primary" : "secondary"}
-              className={index === 0 ? "w-[15rem]" : "w-[11.25rem]"}
+              className={index === 0 ? "min-w-[15rem]" : "min-w-[11.25rem]"}
             >
               {action.label}
             </Button>

@@ -13,16 +13,18 @@
  */
 
 import * as THREE from "three";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+
+import {
+  type DeviceTier,
+  getDeviceTier,
+  maxPixelRatioFor,
+  pointScaleFor,
+} from "@/lib/scene/device";
 
 import { DNA_INK_CONFIG, type DnaInkConfig, type HexColor } from "./config";
 import {
   ATMO_FRAGMENT_SHADER,
   ATMO_VERTEX_SHADER,
-  FINAL_FRAGMENT_SHADER,
-  FINAL_VERTEX_SHADER,
   HELIX_FRAGMENT_SHADER,
   HELIX_VERTEX_SHADER,
   INK_FRAGMENT_SHADER,
@@ -81,9 +83,10 @@ const clamp = (v: number, lo: number, hi: number): number =>
  * Write a `#rrggbb` into a `THREE.Color` **without** colour management.
  *
  * `Color.setHex()` would treat the value as sRGB and convert it into the linear
- * working space, but nothing in this pipeline ever encodes back: the composer's
- * copy pass is a custom shader with no `<colorspace_fragment>`, so whatever
- * lands in the framebuffer is what you see. Raw components keep the clear
+ * working space, but nothing in this pipeline ever encodes back: the point
+ * materials are raw `ShaderMaterial`s with no `<colorspace_fragment>`, and the
+ * scene renders straight to the default framebuffer, so whatever the shaders
+ * write is what you see. Raw components keep the clear
  * colour matching `hexToVec3`, which is how every palette colour reaches the
  * shaders. `setRGB` defaults to the working space, so it is a no-op conversion.
  */
@@ -166,8 +169,9 @@ export class DnaInkScene {
   private readonly renderer: THREE.WebGLRenderer;
   private readonly scene: THREE.Scene;
   private readonly camera: THREE.PerspectiveCamera;
-  private readonly composer: EffectComposer;
-  private readonly finalPass: ShaderPass;
+  /** Read once at construction — a device does not change tier mid-session. */
+  private readonly tier: DeviceTier;
+  private readonly pointScale: number;
   /** Shared by the clear colour and the scene background — mutated in place. */
   private readonly bgColor = new THREE.Color();
   private readonly fog: THREE.Fog;
@@ -224,7 +228,49 @@ export class DnaInkScene {
   constructor(canvas: HTMLCanvasElement, config: DnaInkConfig = DNA_INK_CONFIG) {
     this.config = config;
 
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    this.tier = getDeviceTier();
+    this.pointScale = pointScaleFor(this.tier);
+
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      // MSAA on a cloud of soft, additively blended sprites resolves edges that
+      // do not exist — there is no hard geometry anywhere in this frame. On a
+      // phone it is one of the most expensive flags available, so it is off
+      // everywhere below desktop and kept on desktop only because it costs
+      // little there and marginally cleans the atmosphere motes.
+      antialias: this.tier === "desktop",
+      // Opaque canvas. This used to be transparent, with a full-screen
+      // post-processing pass whose entire job was to force alpha back to 1 —
+      // see the composer note below. `false` gets the same picture without the
+      // render target, and lets the compositor skip blending the canvas against
+      // the page.
+      alpha: false,
+      stencil: false,
+      // Nothing in this scene depth-tests: both clouds are additive points with
+      // `depthWrite: false`, drawn in a fixed order. The depth buffer was pure
+      // allocation.
+      depth: false,
+      powerPreference: this.tier === "desktop" ? "high-performance" : "default",
+    });
+
+    // NO OUTPUT ENCODING. This one line is load-bearing.
+    //
+    // Every colour in this scene is written into the framebuffer raw: the point
+    // materials are hand-written `ShaderMaterial`s with no
+    // `<colorspace_fragment>`, and `writeHexToColor` deliberately skips
+    // `setHex`'s sRGB→linear conversion. The pipeline never encodes, so it must
+    // never decode either.
+    //
+    // The removed composite pass used to guarantee that by accident — it was a
+    // custom shader, so three's output encode did not run. Rendering straight
+    // to the default framebuffer puts that encode back, and the whole scene
+    // came out washed out: the mint clear colour measured (248, 250, 249)
+    // against the page's (239, 244, 242), a seam visible as a bright rectangle
+    // inside the hero panel, and the ink correspondingly paler.
+    //
+    // `LinearSRGBColorSpace` means "write what the shader produced", which
+    // reproduces the old pipeline bit-for-bit.
+    this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 
     this.scene = new THREE.Scene();
     // One Color instance backs the clear colour, the scene background and the
@@ -242,25 +288,26 @@ export class DnaInkScene {
     this.camera.position.set(0, 0, config.camDist);
     this.scene.add(this.camera);
 
-    // The reference sketch also built two bloom composers whose render targets
-    // were assigned to uniforms the final shader never samples — three full
-    // scene renders per frame for an image that was thrown away. Only the
-    // composite path is kept; the output is identical, at a third of the cost.
-    this.finalPass = new ShaderPass({
-      uniforms: {
-        iTime: { value: 0 },
-        tDiffuse: { value: null },
-        uBg: { value: new THREE.Vector3() },
-        uFlameA: { value: new THREE.Vector3() },
-        uFlameB: { value: new THREE.Vector3() },
-        uFlameAmt: { value: 0 },
-      },
-      vertexShader: FINAL_VERTEX_SHADER,
-      fragmentShader: FINAL_FRAGMENT_SHADER,
-    });
-    this.composer = new EffectComposer(this.renderer);
-    this.composer.addPass(new RenderPass(this.scene, this.camera));
-    this.composer.addPass(this.finalPass);
+    // NO COMPOSER.
+    //
+    // The port had already deleted the reference sketch's two bloom composers,
+    // whose render targets fed uniforms the final shader never sampled. What
+    // survived was a chain with the same defect, one step smaller: a RenderPass
+    // into a full-screen render target, then a ShaderPass whose entire fragment
+    // shader is
+    //
+    //     gl_FragColor = vec4(texture2D(tDiffuse, vUv).xyz, 1.0);
+    //
+    // — a copy that discards alpha. Its `uFlameA/B/Amt` uniforms were written
+    // every frame and read by nothing; the flame composite they belong to was
+    // never ported. So the chain cost a full-screen RGBA target sized to the
+    // drawing buffer, plus a screen-sized quad and texture fetch every frame,
+    // to reproduce exactly what an opaque canvas gives for free.
+    //
+    // Rendering straight to the default framebuffer with `alpha: false` is
+    // pixel-identical and drops the target, the quad and two shader programs.
+    // If the flame composite is ever wanted, it comes back as a composer here —
+    // and then it will actually be doing something.
 
     this.uniforms = {
       uTime: { value: 0 },
@@ -319,6 +366,12 @@ export class DnaInkScene {
     this.spinner.add(this.helix, this.ink);
 
     this.atmo = this.createAtmosphere();
+    // `atmoSize` ships at 0, so the sediment motes are invisible — but an
+    // invisible Points object is still a draw call and still a buffer. Three
+    // skips `visible = false` objects when building the render list, so this
+    // costs one boolean and removes a whole cloud from every frame. Raise
+    // `atmoSize` above 0 and it comes back on its own.
+    this.atmo.visible = this.config.atmoSize > 0;
     this.scene.add(this.atmo);
 
     const now = performance.now();
@@ -374,10 +427,11 @@ export class DnaInkScene {
     this.atmoUniforms.uColor.value.copy(hexToVec3(c.atmoColor));
 
     // Inert on white paper — kept wired so the flame composite can be revived.
-    this.finalPass.uniforms.uBg.value.copy(hexToVec3(c.bgColor));
-    this.finalPass.uniforms.uFlameA.value.copy(hexToVec3(c.flameColor));
-    this.finalPass.uniforms.uFlameB.value.copy(hexToVec3(c.flameColor2));
-    this.finalPass.uniforms.uFlameAmt.value = c.flameAmt;
+    // `flameColor`, `flameColor2` and `flameAmt` are written by nothing now:
+    // the composite pass that would have read them never existed in this port,
+    // and the pass itself is gone (see the constructor). They stay in the config
+    // so the dev panel's stored snapshots still validate, and so reviving the
+    // flame look is a matter of adding a pass rather than re-deriving a palette.
   }
 
   /**
@@ -431,7 +485,29 @@ export class DnaInkScene {
     this.scene.remove(this.atmo);
     disposeCloud(this.atmo);
     this.atmo = this.createAtmosphere();
+    // `atmoSize` ships at 0, so the sediment motes are invisible — but an
+    // invisible Points object is still a draw call and still a buffer. Three
+    // skips `visible = false` objects when building the render list, so this
+    // costs one boolean and removes a whole cloud from every frame. Raise
+    // `atmoSize` above 0 and it comes back on its own.
+    this.atmo.visible = this.config.atmoSize > 0;
     this.scene.add(this.atmo);
+  }
+
+  /**
+   * Scale a configured point count down to the device tier.
+   *
+   * The phone dies on fill rate, not on vertex count: 200k additively blended
+   * sprites, each covering several pixels, is an enormous amount of overdraw.
+   * Cutting the count is the single largest lever available there, and because
+   * both clouds are generated by hashing a random seed rather than sampling an
+   * ordered buffer, drawing a third of the points removes a third of the
+   * *sample* — the shape is unchanged, just thinner. That is exactly the case
+   * where truncation is safe; a pre-baked, spatially sorted point file would
+   * lose a region instead, and would have needed re-sampling offline.
+   */
+  private scaledCount(count: number): number {
+    return Math.max(1, Math.round(count * this.pointScale));
   }
 
   private createCloud(
@@ -440,7 +516,7 @@ export class DnaInkScene {
     fragmentShader: string,
   ): PointCloud {
     const points = new THREE.Points(
-      createSeedGeometry(Math.round(count)),
+      createSeedGeometry(this.scaledCount(count)),
       new THREE.ShaderMaterial({
         uniforms: this.uniforms as unknown as Record<string, THREE.IUniform>,
         vertexShader,
@@ -459,7 +535,7 @@ export class DnaInkScene {
   }
 
   private createAtmosphere(): PointCloud {
-    const count = Math.round(this.config.atmoCount);
+    const count = this.scaledCount(this.config.atmoCount);
     const positions = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
     const seeds = new Float32Array(count);
@@ -510,9 +586,13 @@ export class DnaInkScene {
     this.width = width;
     this.height = height;
 
+    // The tier ceiling wins over the config's own value. `maxPixelRatio` stays
+    // in the config as a tuning knob for the dev panel, but a value set there
+    // must never re-inflate a phone's drawing buffer.
     const pixelRatio = Math.min(
       window.devicePixelRatio,
       this.config.maxPixelRatio,
+      maxPixelRatioFor(this.tier),
     );
 
     this.renderer.setPixelRatio(pixelRatio);
@@ -520,9 +600,6 @@ export class DnaInkScene {
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-
-    this.composer.setPixelRatio(pixelRatio);
-    this.composer.setSize(width, height);
 
     this.atmoUniforms.uRes.value.set(width * pixelRatio, height * pixelRatio);
     // Both clouds scale with the drawing buffer, exactly as the atmosphere
@@ -663,17 +740,14 @@ export class DnaInkScene {
     // Motes ride along with the camera so the field never thins out.
     this.atmoUniforms.uTime.value = this.elapsed * this.config.atmoSpeed * 8;
     this.atmo.position.copy(this.camera.position);
-    this.finalPass.uniforms.iTime.value = this.elapsed;
 
-    this.composer.render();
+    this.renderer.render(this.scene, this.camera);
   }
 
   /** Release every GPU resource. Call from the mounting component's cleanup. */
   dispose(): void {
     if (this.rebuildTimer !== null) clearTimeout(this.rebuildTimer);
     for (const cloud of [this.helix, this.ink, this.atmo]) disposeCloud(cloud);
-    this.finalPass.dispose();
-    this.composer.dispose();
     this.renderer.dispose();
   }
 }

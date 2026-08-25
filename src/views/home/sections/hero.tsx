@@ -103,7 +103,7 @@ export const Hero = ({ content }: HeroProps) => (
             key={action.href}
             href={action.href}
             variant={index === 0 ? "primary" : "secondary"}
-            className="w-[11.25rem]"
+            className="min-w-[11.25rem]"
           >
             {action.label}
           </Button>

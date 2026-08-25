@@ -21,6 +21,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useLoop } from "@/hooks/animation/use-render-loop";
+import { frameBudgetFor, getDeviceTier } from "@/lib/scene/device";
 import { DNA_INK_CONFIG, DnaInkScene, type DnaInkConfig } from "@/lib/scene/dna-ink";
 
 import { DnaInkControls } from "./dna-ink-controls";
@@ -31,7 +32,17 @@ import {
 } from "./dna-ink-controls.config";
 
 /** `0` = run on every ticker frame; the scene does its own delta-time easing. */
-const EVERY_FRAME = 0;
+/**
+ * Frame budget, chosen once from the device tier.
+ *
+ * Desktop draws on every tick; mobile is capped at ~30 fps and tablet at ~45.
+ * The ink plume rides a slow noise field, so at 30 fps it still reads as
+ * drifting rather than stepping, and halving the frame count is the largest
+ * single saving available on a phone. Read at module scope so the value cannot
+ * change between renders and re-subscribe the ticker.
+ */
+const FRAME_BUDGET =
+  typeof window === "undefined" ? 0 : frameBudgetFor(getDeviceTier());
 
 export interface DnaInkProps {
   /** Starting scene settings. Defaults to `DNA_INK_CONFIG`. */
@@ -203,6 +214,12 @@ export const DnaInk = ({
       const scene = sceneRef.current;
       if (!canvas || !scene) return;
 
+      // A background tab paints nothing, so drawing into it is pure waste —
+      // and on mobile Safari a backgrounded WebGL context is a common reason
+      // for the OS to reclaim it. Checked before the rect so a hidden tab does
+      // not even pay for a layout read.
+      if (document.hidden) return;
+
       const rect = canvas.getBoundingClientRect();
       const onScreen =
         rect.width > 0 &&
@@ -229,7 +246,7 @@ export const DnaInk = ({
         onReadyRef.current?.();
       }
     },
-    { framerate: EVERY_FRAME },
+    { framerate: FRAME_BUDGET },
   );
 
   const handleChange = (next: DnaInkConfig) => {

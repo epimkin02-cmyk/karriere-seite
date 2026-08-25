@@ -32,7 +32,7 @@ export default function Icon() {
           borderRadius: 96,
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+        { }
         <img
           src={brandMarkDataUri(siteConfig.brand.lime)}
           alt=""

@@ -29,7 +29,7 @@ export default function AppleIcon() {
           background: siteConfig.brand.green,
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+        { }
         <img
           src={brandMarkDataUri(siteConfig.brand.lime)}
           alt=""

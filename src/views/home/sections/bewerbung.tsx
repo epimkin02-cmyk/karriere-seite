@@ -45,7 +45,7 @@ export const Bewerbung = ({ content, privacyHref }: BewerbungProps) => (
     {/* Hidden below `lg` — a second WebGL context on a phone is a real cost,
         and on that screen the form is the only thing that matters. */}
     <div className="pointer-events-none hidden lg:absolute lg:inset-y-0 lg:left-[7.0625rem] lg:block lg:w-[71.125rem]">
-      <LazyDnaInk className="block size-full" controls={false} />
+      <LazyDnaInk className="block size-full" controls={false} desktopOnly />
     </div>
 
     <div className="flex flex-col gap-6 lg:absolute lg:top-[35.25%] lg:left-[2.5625rem] lg:w-[42.75rem] lg:gap-12">

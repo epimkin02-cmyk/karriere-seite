@@ -243,7 +243,20 @@ export const BewerbungFormular = ({
                 {/* `lang`/`hyphens-auto`: "Steuerfachangestellte/r (m/w/d)" is
                     wider than a pill on a 390px screen, and a hyphenated break
                     beats a pill that runs past the panel edge. */}
-                <div lang="de" className="flex flex-wrap gap-2 hyphens-auto">
+                {/* The invalid state and the error description belong to the
+                    GROUP, not to each radio: `aria-invalid` is not supported on
+                    role="radio", and repeating `aria-describedby` on every
+                    option would make a screen reader read the same error once
+                    per pill. The fieldset already names the group via its
+                    legend, so `role="radiogroup"` here just gives that name
+                    something to attach the state to. */}
+                <div
+                  lang="de"
+                  role="radiogroup"
+                  aria-invalid={error ? true : undefined}
+                  aria-describedby={error ? errorId : undefined}
+                  className="flex flex-wrap gap-2 hyphens-auto"
+                >
                   {field.options?.map((option, optionIndex) => {
                     // Indexed, not slugged from the label: the options carry
                     // slashes and parentheses ("Steuerfachangestellte/r
@@ -259,8 +272,6 @@ export const BewerbungFormular = ({
                           checked={values[field.name] === option}
                           onChange={() => write(field.name, option)}
                           required
-                          aria-invalid={error ? true : undefined}
-                          aria-describedby={error ? errorId : undefined}
                           className="peer sr-only"
                         />
                         <label htmlFor={optionId} className={OPTION_CLASSES}>

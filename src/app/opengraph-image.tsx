@@ -44,7 +44,7 @@ export default function OpengraphImage() {
               background: siteConfig.brand.green,
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img
               src={brandMarkDataUri(siteConfig.brand.lime)}
               alt=""
