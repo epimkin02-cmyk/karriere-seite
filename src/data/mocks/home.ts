@@ -93,6 +93,8 @@ export interface JobsContent extends SectionIntro {
 export interface ReasonItem {
   index: string;
   label: string;
+  /** 3D icon under `public/assets/gruende/`, without the extension. */
+  icon: string;
 }
 
 export interface ReasonsContent {
@@ -123,13 +125,22 @@ export interface LocationContent {
   address: readonly string[];
   highlights: readonly string[];
   /**
-   * Loaded only after an explicit click. Embedding this directly would hand
-   * every visitor's IP address to Google before they ever consented.
+   * Office coordinates, decimal degrees. The map's bounding box and its marker
+   * are both derived from this one pair, so the pin and the framing can never
+   * disagree.
+   *
+   * ⚠️ VERIFY BEFORE LAUNCH. These are Pößneck's town centre, not the building:
+   * the geocoder was unreachable from the build environment. To correct them,
+   * right-click the office in Google Maps and copy the two numbers it shows.
+   * The "plan a route" link below does NOT depend on them — it is built from
+   * the postal address, so it stays correct either way.
    */
-  mapEmbedSrc: string;
+  coords: { lat: number; lon: number };
   mapConsentTitle: string;
   mapConsentBody: string;
   mapConsentAction: string;
+  /** Opens the visitor's own map app in a new tab — no embed, no consent. */
+  routeLabel: string;
 }
 
 export interface RoleBlock {
@@ -394,32 +405,44 @@ export const JOBS_CONTENT: JobsContent = {
 /* 6 — 17 gute Gründe                                                          */
 /* -------------------------------------------------------------------------- */
 
-const REASON_LABELS = [
-  "Weihnachtsgeld",
-  "Urlaubsgeld",
-  "Kindergartenzuschuss",
-  "600 € Gesundheitsbudget",
-  "4-Tage-Woche möglich",
-  "Übernahme der Kosten bei Fortbildung",
-  "Fahrtkostenzuschuss",
-  "Jobrad / E-Mountainbike",
-  "Sonderurlaub bei Berufsfortbildung",
-  "Vermittlungsboni bei Mitarbeiterrekrutierung",
-  "EdenRed-Karte",
-  "Betriebliche Altersvorsorge",
-  "Zentrale Lage",
-  "2 Bildschirme",
-  "Kostenlose Parkplätze",
-  "Erholungsbeihilfen",
-  "Sehr gute Verkehrsanbindung",
+/**
+ * The seventeen reasons, in the original page's order, each paired with a 3D
+ * icon from Microsoft's Fluent Emoji set (MIT licence, rendered artwork rather
+ * than flat pictograms).
+ *
+ * The icon is chosen for what the benefit *is*, not for a literal reading of
+ * its label — "Vermittlungsboni bei Mitarbeiterrekrutierung" is a handshake,
+ * not a money bag, because the referral is the thing being rewarded. Two
+ * candidates were rejected outright for carrying a dollar sign, which has no
+ * business on a German tax firm's page.
+ */
+const REASONS = [
+  ["Weihnachtsgeld", "01-weihnachtsgeld"],
+  ["Urlaubsgeld", "02-urlaubsgeld"],
+  ["Kindergartenzuschuss", "03-kindergartenzuschuss"],
+  ["600 € Gesundheitsbudget", "04-gesundheitsbudget"],
+  ["4-Tage-Woche möglich", "05-viertagewoche"],
+  ["Übernahme der Kosten bei Fortbildung", "06-fortbildung"],
+  ["Fahrtkostenzuschuss", "07-fahrtkosten"],
+  ["Jobrad / E-Mountainbike", "08-jobrad"],
+  ["Sonderurlaub bei Berufsfortbildung", "09-sonderurlaub"],
+  ["Vermittlungsboni bei Mitarbeiterrekrutierung", "10-vermittlungsboni"],
+  ["EdenRed-Karte", "11-edenred"],
+  ["Betriebliche Altersvorsorge", "12-altersvorsorge"],
+  ["Zentrale Lage", "13-zentrale-lage"],
+  ["2 Bildschirme", "14-zwei-bildschirme"],
+  ["Kostenlose Parkplätze", "15-parkplaetze"],
+  ["Erholungsbeihilfen", "16-erholungsbeihilfe"],
+  ["Sehr gute Verkehrsanbindung", "17-verkehrsanbindung"],
 ] as const;
 
 export const REASONS_CONTENT: ReasonsContent = {
   eyebrow: "Gute Gründe", // NEU
   title: "17 gute Gründe Teil unseres Teams zu werden",
-  reasons: REASON_LABELS.map((label, i) => ({
+  reasons: REASONS.map(([label, icon], i) => ({
     index: String(i + 1).padStart(2, "0"),
     label,
+    icon,
   })),
   more: {
     title: "Dir fehlt etwas?",
@@ -460,12 +483,12 @@ export const LOCATION_CONTENT: LocationContent = {
   address: ["Naßäckerstr. 12", "07381 Pößneck"],
   /** The three location-related entries from the seventeen reasons. */
   highlights: ["Zentrale Lage", "Kostenlose Parkplätze", "Sehr gute Verkehrsanbindung"],
-  mapEmbedSrc:
-    "https://maps.google.de/maps?hl=de&q=Na%C3%9F%C3%A4ckerstr.%2012%2C%2007381%20P%C3%B6%C3%9Fneck&t=p&z=14&ie=utf8&iwloc=b&output=embed",
-  mapConsentTitle: "Karte von Google Maps laden", // NEU
+  coords: { lat: 50.6939, lon: 11.5936 },
+  mapConsentTitle: "Karte laden", // NEU
   mapConsentBody:
-    "Beim Laden wird eine Verbindung zu Google hergestellt und deine IP-Adresse übertragen.", // NEU
-  mapConsentAction: "Karte laden", // NEU
+    "Die Karte kommt von OpenStreetMap. Beim Laden wird eine Verbindung dorthin aufgebaut und deine IP-Adresse übertragen.", // NEU
+  mapConsentAction: "Karte anzeigen", // NEU
+  routeLabel: "Route planen", // NEU
 };
 
 /* -------------------------------------------------------------------------- */

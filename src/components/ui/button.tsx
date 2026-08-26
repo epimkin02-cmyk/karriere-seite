@@ -25,6 +25,8 @@ export interface ButtonProps {
   withArrow?: boolean;
   /** Only meaningful without `href`. */
   type?: "button" | "submit";
+  /** Only meaningful without `href` — a link does not take a click handler. */
+  onClick?: () => void;
   className?: string;
 }
 
@@ -65,6 +67,7 @@ export const Button = ({
   href,
   withArrow = false,
   type = "button",
+  onClick,
   className = "",
 }: ButtonProps) => {
   const classes = [
@@ -94,7 +97,7 @@ export const Button = ({
   }
 
   return (
-    <button type={type} className={classes}>
+    <button type={type} onClick={onClick} className={classes}>
       {content}
     </button>
   );

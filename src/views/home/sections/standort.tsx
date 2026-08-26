@@ -117,10 +117,14 @@ export const Standort = ({ content }: StandortProps) => (
         <Inview {...ELEMENT_MOTION} delayIn={ENTRY_DELAY.map} tag="div">
           <StandortKarte
             title={content.title}
-            embedSrc={content.mapEmbedSrc}
+            coords={content.coords}
+            // Die Adresszeilen sind fürs Auge umbrochen; der Routen-Link
+            // braucht sie als eine Zeile.
+            address={content.address.join(", ")}
             consentTitle={content.mapConsentTitle}
             consentBody={content.mapConsentBody}
             consentAction={content.mapConsentAction}
+            routeLabel={content.routeLabel}
           />
         </Inview>
       </div>

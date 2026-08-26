@@ -24,6 +24,7 @@
  * Bandbreite und hält nur links die Seitengasse.
  */
 
+import Image from "next/image";
 import TextEngine from "spring-text-engine";
 
 import { Inview } from "@/components/animation/springs/in-view";
@@ -45,7 +46,7 @@ const RAIL_DELAY = 140;
  * saubere Ober- und Unterkante hat; das Maß kommt von der Abschlusskarte, der
  * einzigen mit Fließtext und Button.
  */
-const CARD_HEIGHT = "h-[14rem] lg:h-[15rem]";
+const CARD_HEIGHT = "h-[12.5rem] lg:h-[13.5rem]";
 
 export interface GruendeProps {
   content: ReasonsContent;
@@ -94,9 +95,32 @@ export const Gruende = ({ content }: GruendeProps) => (
             lang="de"
             className={`flex w-[15rem] shrink-0 flex-col justify-between rounded-card border border-border-subtle bg-background p-5 hyphens-auto lg:w-[17rem] lg:p-6 ${CARD_HEIGHT}`}
           >
-            <span className="text-sm leading-body font-medium text-accent">
-              {reason.index}
-            </span>
+            <div className="flex items-start justify-between gap-3">
+              {/* Das Icon trägt die Karte, die Ziffer ist nur noch Zählwerk —
+                  deshalb steht sie klein und zurückgenommen daneben statt wie
+                  vorher allein oben.
+
+                  `alt=""`: Das Icon illustriert die Zeile darunter, es sagt
+                  nichts Zusätzliches. Ein Alt-Text wäre für eine Screenreader-
+                  Nutzerin siebzehnmal dieselbe Information doppelt.
+
+                  Feste `width`/`height` statt `fill`: die Datei ist 192×192, so
+                  reserviert der Browser den Platz vor dem Laden und die Spur
+                  ruckelt beim Scrollen nicht nach. `unoptimized`, weil eine
+                  bereits komprimierte 22-KB-PNG durch den Optimizer nur einen
+                  Serveraufruf kostet, ohne kleiner zu werden. */}
+              <Image
+                src={`/assets/gruende/${reason.icon}.png`}
+                alt=""
+                width={192}
+                height={192}
+                unoptimized
+                className="size-20 shrink-0 lg:size-24"
+              />
+              <span className="text-sm leading-body font-medium text-foreground-muted">
+                {reason.index}
+              </span>
+            </div>
             {/* Statisch, ohne TextEngine: Kartentitel sind keine
                 Sektions-Headings — siebzehn eigene Reveals auf einer Spur
                 wären Lärm. Eine Stufe kleiner als die Karten der anderen
