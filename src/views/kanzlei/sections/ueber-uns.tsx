@@ -47,6 +47,8 @@ import {
   HEADING_MOTION,
 } from "@/lib/motion/text-presets";
 
+import { Bild } from "./bild";
+import { FOTOS } from "./fotos";
 import {
   ANCHOR_OFFSET,
   BODY,
@@ -87,6 +89,13 @@ export const UeberUns = () => (
           <p className={BODY}>{HERO_CONTENT.lead}</p>
         </Inview>
       </div>
+
+      {/* Stimmungsbild statt Porträts: die Kanzlei führt keine, und ein
+          Stockfoto unter einem echten Namen wäre eine Aussage über einen
+          Menschen. Eine Gesprächssituation sagt dasselbe über die Arbeitsweise,
+          ohne jemanden zu behaupten. `alt=""`, weil es genau das ist — Stimmung,
+          kein Informationsträger. */}
+      <Bild src={FOTOS.team} alt="" />
 
       <section
         id="team"

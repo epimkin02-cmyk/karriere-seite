@@ -23,6 +23,8 @@ import { Inview } from "@/components/animation/springs/in-view";
 import { HERO_CONTENT } from "@/data/kanzlei/startseite";
 import { ELEMENT_MOTION, HEADING_MOTION } from "@/lib/motion/text-presets";
 
+import { Bild } from "./bild";
+import { FOTOS } from "./fotos";
 import { ANCHOR_OFFSET, BODY, HEADING } from "./typografie";
 
 export const Willkommen = () => (
@@ -31,7 +33,8 @@ export const Willkommen = () => (
     aria-labelledby="willkommen-heading"
     className={`bg-background px-5 py-16 md:px-10 lg:py-24 ${ANCHOR_OFFSET}`}
   >
-    <div className="mx-auto flex w-full max-w-[85rem] flex-col gap-6 lg:flex-row lg:gap-16">
+    <div className="mx-auto flex w-full max-w-[85rem] flex-col gap-10 lg:gap-14">
+    <div className="flex flex-col gap-6 lg:flex-row lg:gap-16">
       <TextEngine
         id="willkommen-heading"
         tag="h2"
@@ -46,6 +49,13 @@ export const Willkommen = () => (
       <Inview {...ELEMENT_MOTION} mode="once" tag="div" className="max-w-[38rem]">
         <p className={BODY}>{HERO_CONTENT.intro}</p>
       </Inview>
+    </div>
+
+      {/* Das erste Foto der Seite, direkt unter der Begrüssung: bis hierher war
+          alles über der Falz Typografie und eine abstrakte Grafik. Ein Blick in
+          einen hellen Arbeitsraum beantwortet die Frage „wo lande ich da
+          eigentlich?" schneller als der Absatz darüber. */}
+      <Bild src={FOTOS.kanzlei} alt="" />
     </div>
   </section>
 );

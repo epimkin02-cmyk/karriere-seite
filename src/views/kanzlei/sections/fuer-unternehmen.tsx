@@ -62,7 +62,9 @@ import {
   HEADING_MOTION,
 } from "@/lib/motion/text-presets";
 
+import { Bild } from "./bild";
 import { CheckIcon } from "./check-icon";
+import { FOTOS } from "./fotos";
 import {
   ANCHOR_OFFSET,
   BODY,
@@ -111,6 +113,11 @@ export const FuerUnternehmen = () => (
             <p className={BODY}>{HERO_CONTENT.lead}</p>
           </Inview>
         </div>
+
+        {/* Der Katalog darunter ist der längste zusammenhängende Textblock der
+            Seite — 47 Leistungen in zehn Klappblöcken. Ein Bild davor gibt dem
+            Auge einen Halt, bevor es dort hineingeht. */}
+        <Bild src={FOTOS.arbeitsplatz} alt="" />
 
         {/* Auf `lg` steht die Überschrift links neben dem Fliesstext statt
             darüber: das hält die Textspalte bei ~38rem, also im lesbaren Mass,

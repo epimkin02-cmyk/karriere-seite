@@ -1,26 +1,22 @@
 // 📖 Docs: obsidian/frontend/components/ui.md
 
 /**
- * Kutscher monogram — a geometric K.
+ * Die Bildmarke der Kanzlei — die vier Quadrate aus dem Logo.
  *
- * INTERIM. The template shipped a DNA helix here, which belonged to the medical
- * clinic it was designed for and reads as plainly wrong on a tax firm. This
- * replaces it with a mark that at least says the right thing, drawn to the same
- * rules as the rest of the system: flat fill, no stroke, no shadow, and painted
- * with `currentColor` so the lime-on-green pairing stays a token decision
- * rather than part of the artwork (hard rule #7).
+ * Bis zur Lieferung des echten Logos stand hier ein selbstgezeichnetes K. Das
+ * ist Geschichte: Geometrie und Farben stammen jetzt pixelgenau aus der
+ * Logodatei (siehe `src/lib/brand-mark.ts`).
  *
- * When the firm's real logo arrives, replace the geometry in ONE place — the
- * `MARK_PATH` constant in `src/lib/brand-mark.ts` — and re-export it here. The
- * favicon, the Apple touch icon and the Open Graph card all read that same
- * constant, so they cannot drift apart from the header.
+ * **Ohne `currentColor`**, anders als jedes andere Icon im System. Bei den
+ * übrigen Symbolen ist die Farbe eine Token-Entscheidung (Hausregel #7); hier
+ * ist sie Teil der Marke. Vier Kacheln in vier abgestuften Grüntönen sind das
+ * Zeichen — eingefärbt wäre es ein anderes.
  *
- * The arms meet the stem rather than floating clear of it: a detached-arm K
- * looks deliberate at 40px in the header and looks broken at 16px in a browser
- * tab, and the tab is the size that has to survive.
+ * Verwendet wird es dort, wo es **quadratisch** sein muss: Favicon, Apple-Icon,
+ * Open-Graph-Bild. In der Kopfzeile steht das vollständige Logo als Bild.
  */
 
-import { MARK_PATH } from "@/lib/brand-mark";
+import { MARK_SIZE, MARK_TILES } from "@/lib/brand-mark";
 
 export interface IconProps {
   className?: string;
@@ -28,13 +24,21 @@ export interface IconProps {
 
 export const KutscherMark = ({ className }: IconProps) => (
   <svg
-    viewBox="0 0 24 24"
-    fill="none"
+    viewBox={`0 0 ${MARK_SIZE} ${MARK_SIZE}`}
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
     focusable="false"
     className={className}
   >
-    <path fillRule="evenodd" clipRule="evenodd" d={MARK_PATH} fill="currentColor" />
+    {MARK_TILES.map((tile) => (
+      <rect
+        key={`${tile.x}-${tile.y}`}
+        x={tile.x}
+        y={tile.y}
+        width={9}
+        height={9}
+        fill={tile.fill}
+      />
+    ))}
   </svg>
 );

@@ -19,14 +19,11 @@
  * Client-Blatt.
  */
 
+import Image from "next/image";
 import Link from "next/link";
 
-import { KutscherMark } from "@/components/ui/icons";
-import {
-  BRAND_NAME,
-  PRIMARY_PHONE,
-  SITE_NAV,
-} from "@/data/kanzlei/firma";
+import { PRIMARY_PHONE, SITE_NAV } from "@/data/kanzlei/firma";
+import { LOGO } from "@/lib/brand-mark";
 
 import { KanzleiMobileMenu } from "./mobile-menu";
 
@@ -46,22 +43,30 @@ export const KanzleiHeader = () => (
     </a>
 
     <div className="mx-auto flex h-20 w-full max-w-[85rem] items-center justify-between gap-4 px-5 md:px-10">
+      {/* Das Logo trägt den Firmennamen selbst, deshalb steht daneben kein Text
+          mehr. `alt` übernimmt seine Rolle: es ist zugleich der zugängliche
+          Name dieses Links, und ein Screenreader liest damit „Frank Kutscher
+          Steuerberatungsgesellschaft mbH, Link" statt „Bild, Link".
+
+          `priority`, weil das Logo in der Kopfzeile beim ersten Bildschirm
+          steht — ohne das lädt Next es faul nach und die Leiste ist für einen
+          Moment leer. `width`/`height` sind die echten Masse der Datei, damit
+          nichts springt.
+
+          Unter `lg` kleiner: bei 390 px teilen sich Logo, Telefonknopf und
+          Burger die Zeile, und mit voller Breite wird es rechnerisch zu eng. */}
       <Link
         href="/"
-        className="flex items-center gap-3 rounded-mark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className="flex shrink-0 items-center rounded-mark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        <span className="grid size-11 shrink-0 place-items-center rounded-panel bg-accent text-action-secondary">
-          <KutscherMark className="size-6" />
-        </span>
-        <span className="flex flex-col leading-tight">
-          <span className="text-[1.125rem] leading-display font-medium">
-            {BRAND_NAME}
-          </span>
-          {/* Klein, aber tragend: „Kutscher" allein sagt nicht, worum es geht. */}
-          <span className="text-xs leading-body font-light text-foreground-muted">
-            Steuerberatung Pößneck
-          </span>
-        </span>
+        <Image
+          src={LOGO.src}
+          width={LOGO.width}
+          height={LOGO.height}
+          alt={LOGO.alt}
+          priority
+          className="h-7 w-auto lg:h-9"
+        />
       </Link>
 
       {/* Seit der Zusammenlegung sind alle fünf Einträge Anker auf derselben

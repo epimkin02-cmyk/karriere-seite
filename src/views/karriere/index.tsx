@@ -56,7 +56,7 @@ import { WhyDantora } from "./sections/why-dantora";
 export const KarriereView = () => {
   return (
     <>
-      <SiteHeader brandName={BRAND_NAME} navLinks={SITE_NAV} cta={HEADER_CTA} />
+      <SiteHeader navLinks={SITE_NAV} cta={HEADER_CTA} />
       <main id="main">
         <Hero content={HERO_CONTENT} />
         <WhyDantora content={WHY_CONTENT} />

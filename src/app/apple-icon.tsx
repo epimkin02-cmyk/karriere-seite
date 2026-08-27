@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 
 import { brandMarkDataUri } from "@/lib/brand-mark";
-import { siteConfig } from "@/lib/site";
 
 /**
  * iOS home-screen icon, generated from the logo.
@@ -26,15 +25,15 @@ export default function AppleIcon() {
           justifyContent: "center",
           width: "100%",
           height: "100%",
-          background: siteConfig.brand.green,
+          background: "#ffffff",
         }}
       >
         { }
         <img
-          src={brandMarkDataUri(siteConfig.brand.lime)}
+          src={brandMarkDataUri()}
           alt=""
-          width={104}
-          height={104}
+          width={100}
+          height={100}
         />
       </div>
     ),

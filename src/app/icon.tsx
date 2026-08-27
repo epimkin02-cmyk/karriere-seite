@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 
 import { brandMarkDataUri } from "@/lib/brand-mark";
-import { siteConfig } from "@/lib/site";
 
 /**
  * Favicon, generated from the logo.
@@ -27,17 +26,23 @@ export default function Icon() {
           justifyContent: "center",
           width: "100%",
           height: "100%",
-          background: siteConfig.brand.green,
-          // ~19% — the mark sits on a squircle, matching the header's logo tile.
+          // Weisser Grund, nicht der Markengruen.
+          //
+          // Das Zeichen besteht aus vier abgestuften Gruentoenen, und drei davon
+          // sind hell. Auf gruenem Grund verschwindet die dunkle vierte Kachel
+          // und das Zeichen liest sich als L. Auf Weiss steht es vollstaendig da
+          // — so, wie es im Logo aussieht.
+          background: "#ffffff",
+          // ~19% — dieselbe Rundung wie die uebrigen Flaechen des Systems.
           borderRadius: 96,
         }}
       >
         { }
         <img
-          src={brandMarkDataUri(siteConfig.brand.lime)}
+          src={brandMarkDataUri()}
           alt=""
-          width={320}
-          height={320}
+          width={300}
+          height={300}
         />
       </div>
     ),

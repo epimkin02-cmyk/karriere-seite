@@ -856,3 +856,46 @@ damit erhalten, hat aber einen neuen Abnehmer.
 
 Messung auf 390 px: erstes Wort **694 → 287 ms**, LCP **432 ms**, kein
 gesperrtes Scrollen, keine Konsolenfehler. Barrierefreiheit: 0 Befunde von 10.
+
+## 2026-08-27 — Echtes Logo, erste Fotos auf der Landingpage
+
+**Logo.** `public/assets/marke/logo.png` ersetzt das selbstgezeichnete K in
+Kopfzeile, Favicon, Apple-Icon und OG-Bild. Der Schriftzug kommt als Bild; die
+**vier Kacheln** links davon stehen zusätzlich als Vektor in
+`src/lib/brand-mark.ts` — Geometrie (2 × 2 Kacheln à 9 Einheiten, 1 Einheit
+Fuge) und Farben pixelgenau aus der Datei gemessen. Favicon und OG-Bild brauchen
+ein quadratisches Zeichen; ein 200 × 36 breites Logo auf 32 × 32 gequetscht ist
+unlesbar.
+
+Der Icon-Grund ist jetzt **weiss** statt markengrün: drei der vier Kacheln sind
+helle Grüntöne, auf grünem Grund verschwindet die dunkle vierte und das Zeichen
+liest sich als L.
+
+⚠️ Die gelieferte Datei ist 200 × 36 px. Bei einfacher Pixeldichte reicht das;
+bei zwei- oder dreifacher — rund 90 % der Besuche — ist der Schriftzug sichtbar
+weich. Eine Vektorfassung oder eine PNG ab 1000 px Breite steht aus. Ein Versuch,
+die Datei zu vektorisieren, wurde verworfen: die Zeile
+„Steuerberatungsgesellschaft mbH" ist bei 200 px rund 5 px hoch und kam aus der
+Nachzeichnung verstümmelt heraus.
+
+**Zwei Sätze der Vorlage im OG-Bild entfernt** — „Medicine that starts with
+understanding you" und „Trusted by 40,000+ patients since 2011". Sichtbar wurden
+sie nur beim Teilen eines Links, also genau dort, wo sie am meisten geschadet
+hätten.
+
+**Fotos.** Drei Bänder der Landingpage tragen jetzt ein Bild: Willkommen, Über
+uns und Für Unternehmen, über die neue Komponente
+`views/kanzlei/sections/bild.tsx` (festes Seitenverhältnis gegen Layoutsprünge,
+4:3 → 16:9 → 21:9 mit der Breite, eigene `sizes`).
+
+Es sind Platzhalter von Unsplash, die schon seit dem Bau der Karriereseite im
+Repo liegen. Neue liessen sich nicht beschaffen: `images.unsplash.com`,
+Pexels, Pixabay und Picsum sind sowohl aus diesem Container als auch vom
+Entwicklungsrechner aus gesperrt.
+
+Das vierte vorhandene Bild — ein Porträt — bleibt ungenutzt. Ein Stockfoto unter
+den Namen einer real benannten Person zu setzen, ist keine
+Platzhalterentscheidung mehr. Die Personenkarten in `UeberUns` bleiben
+typografisch, bis echte Porträts vorliegen.
+
+Barrierefreiheit danach: 0 Befunde von 10.

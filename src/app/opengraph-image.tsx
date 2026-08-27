@@ -10,6 +10,12 @@ import { siteConfig } from "@/lib/site";
  * fall out of sync with `siteConfig` — change the tagline and the image
  * follows.
  *
+ * Bis hierher standen hier zwei Saetze der Vorlage: „Medicine that starts with
+ * understanding you" und „Trusted by 40,000+ patients since 2011". Sichtbar
+ * wurden sie nur beim Teilen eines Links — in WhatsApp, LinkedIn oder einer
+ * Suchvorschau — und genau dort haetten sie am meisten geschadet. Jetzt tragen
+ * sie die Schlagzeile der Seite und die Kontaktzeile aus `siteConfig`.
+ *
  * 📖 Docs: obsidian/frontend/seo-metadata.md
  */
 
@@ -41,12 +47,12 @@ export default function OpengraphImage() {
               width: 88,
               height: 88,
               borderRadius: 16,
-              background: siteConfig.brand.green,
+              background: "#ffffff",
             }}
           >
             { }
             <img
-              src={brandMarkDataUri(siteConfig.brand.lime)}
+              src={brandMarkDataUri()}
               alt=""
               width={52}
               height={52}
@@ -59,7 +65,7 @@ export default function OpengraphImage() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
           <span style={{ fontSize: 68, lineHeight: 1.1, maxWidth: 900 }}>
-            Medicine that starts with understanding you
+            Ihr Steuerberater in Pößneck
           </span>
           <span
             style={{
@@ -70,7 +76,7 @@ export default function OpengraphImage() {
               color: siteConfig.brand.green,
             }}
           >
-            Trusted by 40,000+ patients since 2011
+            {`${siteConfig.legal.city} · ${siteConfig.legal.phone}`}
           </span>
         </div>
       </div>

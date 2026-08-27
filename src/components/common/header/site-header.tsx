@@ -13,16 +13,16 @@
  * switches them back on.
  */
 
+import Image from "next/image";
 import Link from "next/link";
 
-import { KutscherMark } from "@/components/ui/icons";
 import type { CtaLink, NavLink } from "@/data/mocks/karriere";
+import { LOGO } from "@/lib/brand-mark";
 
 import { HeaderCta } from "./header-cta";
 import { MobileMenu } from "./mobile-menu";
 
 export interface SiteHeaderProps {
-  brandName: string;
   navLinks: readonly NavLink[];
   cta: CtaLink;
 }
@@ -41,20 +41,28 @@ export interface SiteHeaderProps {
 const GLASS_PANEL =
   "pointer-events-auto rounded-panel bg-surface-glass-strong backdrop-blur-glass lg:bg-surface-glass";
 
-export const SiteHeader = ({ brandName, navLinks, cta }: SiteHeaderProps) => (
+export const SiteHeader = ({ navLinks, cta }: SiteHeaderProps) => (
   <header className="pointer-events-none fixed inset-x-0 top-4 z-50 px-5 md:px-10">
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-[0.5rem]">
         <Link
           href="#hero"
-          className={`${GLASS_PANEL} flex h-[3.375rem] w-[9.3125rem] items-center gap-3 pr-4 pl-1.5`}
+          className={`${GLASS_PANEL} flex h-[3.375rem] items-center px-4`}
         >
-          <span className="grid size-[2.625rem] place-items-center rounded-mark bg-accent text-action-secondary">
-            <KutscherMark className="size-6" />
-          </span>
-          <span className="text-xl leading-display font-light">
-            {brandName}
-          </span>
+          {/* Seit das echte Logo da ist, trägt die Kachel das Bild statt
+              Zeichen plus Schriftzug — und die feste Breite von 9.3125rem aus
+              dem Entwurf fällt weg, weil das Logo sein eigenes Seitenverhältnis
+              mitbringt. Der Abstand zur Navigation daneben wächst dadurch um
+              rund 30 px; das ist der Preis dafür, dass die Marke nicht
+              gequetscht wird. */}
+          <Image
+            src={LOGO.src}
+            width={LOGO.width}
+            height={LOGO.height}
+            alt={LOGO.alt}
+            priority
+            className="h-6 w-auto lg:h-7"
+          />
         </Link>
 
         {/* 422×54 at the mockup's 157px offset from the logo (node 1572:525).
