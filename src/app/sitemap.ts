@@ -1,15 +1,22 @@
 import type { MetadataRoute } from "next";
 
-import { LEGAL_NAV, SITE_NAV } from "@/data/kanzlei/firma";
+import { LEGAL_NAV } from "@/data/kanzlei/firma";
 import { siteConfig } from "@/lib/site";
 
 /**
  * Erzeugt `/sitemap.xml`.
  *
- * Die Einträge werden aus derselben Navigation abgeleitet, die auch die
- * Kopf- und Fusszeile rendern. Eine handgepflegte zweite Liste wäre die
- * klassische Stelle, an der eine neue Seite ein halbes Jahr lang unentdeckt
- * bleibt, weil jemand vergessen hat, sie hier nachzutragen.
+ * Seit der Zusammenlegung hat die Website vier indexierbare Adressen: die
+ * Landingpage und die drei Rechtstexte. Mehr steht hier nicht — und
+ * insbesondere **nicht** die Anker der Landingpage. Ein Fragment ist kein
+ * Dokument: Suchmaschinen rufen `/#kontakt` als `/` ab, und fünf Zeilen, die
+ * alle dieselbe Seite meinen, sind für einen Crawler kein Hinweis auf Struktur,
+ * sondern ein Duplikat.
+ *
+ * `SITE_NAV` taugt seither nicht mehr als Quelle — es enthält genau diese
+ * Anker. Die Startseite steht deshalb wieder von Hand hier; sie ist die eine
+ * Adresse, die dabei vergessen werden könnte, und die eine, die niemand
+ * vergisst.
  *
  * `/karriere` fehlt bewusst: die Seite ist `noindex` (siehe
  * `src/app/karriere/layout.tsx`), und eine Adresse in die Sitemap zu schreiben,
@@ -22,14 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     href === "/" ? siteConfig.url : `${siteConfig.url}${href}`;
 
   return [
-    // Die Startseite steht in SITE_NAV als "/" — sie bekommt hier die höchste
-    // Priorität und wird deshalb getrennt behandelt.
-    ...SITE_NAV.map((link) => ({
-      url: abs(link.href),
+    {
+      url: abs("/"),
       lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: link.href === "/" ? 1 : 0.8,
-    })),
+      changeFrequency: "monthly",
+      priority: 1,
+    },
     // Pflichtangaben gehören in den Index, ranken aber nicht und sollen es
     // auch nicht — daher die niedrige Priorität.
     ...LEGAL_NAV.map((link) => ({

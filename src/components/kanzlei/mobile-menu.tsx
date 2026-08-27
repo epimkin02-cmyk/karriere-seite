@@ -17,7 +17,6 @@
  * Dokuments.
  */
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -100,12 +99,18 @@ export const KanzleiMobileMenu = ({ navLinks }: KanzleiMobileMenuProps) => {
           <ul className="flex flex-col">
             {navLinks.map((link) => (
               <li key={link.href} className="border-b border-border-subtle last:border-0">
-                <Link
+                {/* `<a>` statt `<Link>`: die Einträge sind Anker auf derselben
+                    Seite, der Router hat nichts aufzulösen. Das Schliessen
+                    hängt deshalb am Klick und nicht mehr allein am
+                    Routenwechsel — ein Hash ändert `usePathname` nicht, das
+                    Panel bliebe sonst über dem Sprungziel stehen. */}
+                <a
                   href={link.href}
+                  onClick={() => setOpen(false)}
                   className="flex min-h-14 items-center text-[1.125rem] leading-body font-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   {link.label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>

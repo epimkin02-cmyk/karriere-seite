@@ -14,10 +14,16 @@
   --raw-color-neutral-900: #171717;
   --raw-color-neutral-950: #0a0a0a;
 
-  /* Dantora brand ramp — Figma "Concept 4" (node 1518:1970). The file carries
-     no Figma variables, so these are lifted from the layer fills. */
-  --raw-color-brand-500: #246f65;
-  --raw-color-brand-900: #054038;
+  /* Markenrampe der Kanzlei.
+     #016d32 ist die vom Kunden vorgegebene Akzentfarbe — ein satteres, echtes
+     Grün statt des Teal-Grüns, mit dem das Template kam. Sie ist dunkler und
+     verbessert dadurch jede Paarung: Akzenttext auf Weiss 5,94 -> 6,49:1, auf
+     Mint 5,34 -> 5,84:1, weisse Schrift auf dem Button ebenso.
+     Die 900er ist 62 % Helligkeit davon und traegt Rand und Hover der primaeren
+     Aktion; sie ist bewusst kein eigener Farbton, damit Grundfarbe und
+     Hover-Zustand nicht auseinanderdriften. */
+  --raw-color-brand-500: #016d32;
+  --raw-color-brand-900: #00431f;
   --raw-color-lime-200: #f8ffb4;
   --raw-color-lime-400: #e5ed9b;
   --raw-color-mint-50: #eff4f2;

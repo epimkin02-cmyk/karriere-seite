@@ -779,3 +779,48 @@ JS-Fehler. 0 Befunde von 14 Durchläufen.
 **Mängel der Live-Seite, die NICHT übernommen wurden:** der unbearbeitete
 Baukasten-Platzhalter in der Fusszeile jeder Unterseite, „Powered by Sellwerk",
 und die englische Formular-Legende „Contact Us".
+
+## 2026-08-27 — Zusammenlegung zu einer Landingpage
+
+Der Kunde will keine Unterseiten. Aus fünf Seiten wurde eine Seite mit neun
+Ankern; nur die drei Rechtstexte bleiben eigene Routen.
+
+**Struktur.** `src/views/kanzlei/sections/` hält jetzt elf Sektionskomponenten,
+`startseite.tsx` ist auf 82 Zeilen reine Komposition geschrumpft. Die vier
+Seitenköpfe entfielen, ihre `h1` wurden zur `h2` ihres Abschnitts, alles darunter
+rutschte eine Ebene tiefer. Von vier Abschlussblöcken blieb einer.
+
+**Bandfolge** streng alternierend über zwölf Bänder, damit nie zwei gleichfarbige
+Flächen aneinanderstossen — die alte Abfolge stimmte je Seite, aneinandergereiht
+nicht mehr.
+
+**Die vier alten Pfade sind bei Google indexiert** und leiten deshalb mit 308 auf
+das jeweilige Ankerfragment, gesetzt über `url.hash`. Die Sitemap führt nur noch
+vier Adressen; Anker gehören nicht hinein, weil ein Fragment kein Dokument ist.
+
+**Ankersprünge geprüft**, mobil und Desktop: jede Sektion landet 15px unter der
+klebenden Kopfzeile statt darunter zu verschwinden.
+
+**Überschriftenebenen der Rechtstexte normalisiert.** Die Datenschutzerklärung
+sprang zweimal von Ebene 2 auf 4 — eine hörbare Lücke in der Gliederung. Das Tag
+bekommt jetzt die normalisierte Ebene, die Klasse behält die aus den Daten: die
+Gliederung stimmt, die optische Staffelung des Originals bleibt.
+
+Barrierefreiheits-Durchlauf danach: 0 Befunde von 10.
+
+## 2026-08-27 — Akzentfarbe auf #016d32
+
+Vom Kunden vorgegeben. Ein satteres, echtes Grün statt des Teal-Grüns des
+Templates — Farbton von 172° auf 147°.
+
+Nachgezogen an allen vier Stellen, an denen die Marke lebt: Tier-1-Token
+(`--raw-color-brand-500`), die dunkle Variante für Rand und Hover
+(`--raw-color-brand-900`, 62 % Helligkeit davon statt eines eigenen Farbtons),
+`siteConfig.themeColor` und `brand.green` für Favicon, Apple-Icon und
+OG-Bild — und die WebGL-Szene, deren Strang- und Tintenfarben um dieselben 25°
+verschoben wurden, bei **exakt gehaltener Helligkeit**. Der Farbton wandert, die
+Dichte der MULTIPLY-Mischung bleibt, wo sie war.
+
+Kontrast verbessert sich dabei überall: Akzenttext auf Weiss 5,94 → 6,49:1, auf
+Mint 5,34 → 5,84:1, Limette auf dem Akzent (Logo) 5,64 → 6,17:1. Barrierefreiheit
+danach erneut geprüft: 0 Befunde von 10.

@@ -64,13 +64,19 @@ export const KanzleiHeader = () => (
         </span>
       </Link>
 
+      {/* Seit der Zusammenlegung sind alle fünf Einträge Anker auf derselben
+          Seite. Deshalb `<a>` und nicht `<Link>`: der Router hätte hier nichts
+          aufzulösen, und ein `<Link>` auf einen reinen Hash lädt im
+          ungünstigen Fall die Route neu, statt bloss zu springen. Der Sprung
+          landet dank `scroll-mt-24` an den Sektionen nicht unter dieser
+          klebenden Leiste. */}
       <nav aria-label="Hauptnavigation" className="hidden lg:block">
         <ul className="flex items-center gap-1">
           {SITE_NAV.map((link) => (
             <li key={link.href}>
-              <Link href={link.href} className={NAV_LINK}>
+              <a href={link.href} className={NAV_LINK}>
                 {link.label}
-              </Link>
+              </a>
             </li>
           ))}
         </ul>

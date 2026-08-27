@@ -108,20 +108,22 @@ export interface DnaInkConfig {
 }
 
 export const DNA_INK_CONFIG: DnaInkConfig = {
+  // Muss exakt --raw-color-mint-50 entsprechen: der Canvas ist opak und stiesse
+  // sonst als sichtbare Kante gegen die Sektionsflaeche.
   bgColor: "#eff4f2",
-  flameColor: "#246f65",
-  flameColor2: "#57a298",
+  flameColor: "#016d32",
+  flameColor2: "#4fa367",
   flameAmt: 0.12,
   atmoColor: "#247063",
   atmoCount: 1500,
   atmoSize: 0,
   atmoSpeed: 0.6,
 
-  helixColorA: "#247061",
-  helixColorB: "#4ca98a",
-  inkCore: "#81a297",
+  helixColorA: "#1e7640",
+  helixColorB: "#45b060",
+  inkCore: "#7fa488",
   inkMid: "#f7fec3",
-  inkEdge: "#246f65",
+  inkEdge: "#1e7546",
 
   helixCount: 40000,
   inkCount: 160000,

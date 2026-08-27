@@ -18,6 +18,19 @@
  * der gewünschten Schriftgrösse. Rechtstexte sind verschachtelt gegliedert, und
  * eine Gliederung, die für das Auge stimmt und für den Screenreader nicht, ist
  * genau der Fehler, den eine Barrierefreiheitserklärung ausschliessen soll.
+ *
+ * Die Quelle hält sich daran allerdings nicht: die Datenschutzerklärung springt
+ * an zwei Stellen von Ebene 2 direkt auf Ebene 4. Eine übersprungene Ebene ist
+ * für eine Screenreader-Nutzerin eine Lücke in der Gliederung — sie hört, dass
+ * etwas fehlt, und weiss nicht, was. Deshalb werden die Ebenen beim Rendern
+ * normalisiert: eine Überschrift darf höchstens **eine** Stufe tiefer sein als
+ * ihre Vorgängerin.
+ *
+ * Getrennt wird dabei zwischen Tag und Aussehen: das **Tag** bekommt die
+ * normalisierte Ebene, damit die Gliederung stimmt, die **Klasse** behält die
+ * Ebene aus den Daten, damit die optische Staffelung des Originals erhalten
+ * bleibt. Genau so herum, wie die Hausregel es verlangt — das Tag trägt die
+ * Bedeutung, die Klasse das Aussehen.
  */
 
 import type { LegalBlock, LegalDocument } from "@/data/kanzlei/firma";
@@ -151,6 +164,21 @@ const Block = ({ block }: { block: LegalBlock }) => {
   }
 };
 
+/**
+ * Erlaubt je Abschnitt höchstens eine Stufe Sprung nach unten.
+ *
+ * Nach oben ist jeder Sprung zulässig — von einer Unterüberschrift zurück auf
+ * Ebene 2 zu gehen schliesst einen Abschnitt ab und reisst keine Lücke.
+ */
+const normaliseLevels = (sections: LegalDocument["sections"]) => {
+  let previous = 1;
+  return sections.map((section) => {
+    const tagLevel = Math.min(section.level, previous + 1) as 2 | 3 | 4;
+    previous = tagLevel;
+    return { section, tagLevel };
+  });
+};
+
 export const Rechtstext = ({ document }: RechtstextProps) => (
   <>
     <section className="rounded-b-section bg-surface-section px-5 pt-14 pb-12 md:px-10 lg:pt-20 lg:pb-16">
@@ -170,8 +198,8 @@ export const Rechtstext = ({ document }: RechtstextProps) => (
         </div>
       )}
 
-      {document.sections.map((section) => {
-        const Heading = `h${section.level}` as "h2" | "h3" | "h4";
+      {normaliseLevels(document.sections).map(({ section, tagLevel }) => {
+        const Heading = `h${tagLevel}` as "h2" | "h3" | "h4";
         return (
           <section key={section.id} className="mt-10 flex flex-col gap-4 lg:mt-12">
             <Heading className={HEADING_CLASSES[section.level]}>

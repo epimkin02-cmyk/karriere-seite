@@ -175,12 +175,18 @@ export const OPENING_HOURS: readonly OpeningHour[] = [
 /* Navigation                                                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The main navigation. Since the five pages became one landing page, every
+ * entry is an in-page anchor rather than a route — the labels are unchanged.
+ * The old paths still exist for search engines and are redirected to their
+ * anchor by `src/middleware.ts`.
+ */
 export const SITE_NAV: readonly NavLink[] = [
-  { label: "Willkommen", href: "/" },
-  { label: "Über uns", href: "/ueber-uns" },
-  { label: "Für Unternehmen", href: "/fuer-unternehmen" },
-  { label: "Für Private", href: "/fuer-private" },
-  { label: "Kontakt", href: "/kontakt" },
+  { label: "Willkommen", href: "#start" },
+  { label: "Über uns", href: "#ueber-uns" },
+  { label: "Für Unternehmen", href: "#unternehmen" },
+  { label: "Für Private", href: "#private" },
+  { label: "Kontakt", href: "#kontakt" },
 ];
 
 export const LEGAL_NAV: readonly NavLink[] = [

@@ -35,10 +35,10 @@ export const siteConfig = {
    */
   noindex: false,
   /** Browser theme-color (address bar / PWA) — the brand green. */
-  themeColor: "#246f65",
+  themeColor: "#016d32",
   /** Brand palette, shared with the generated icon and OG routes. */
   brand: {
-    green: "#246f65",
+    green: "#016d32",
     lime: "#f8ffb4",
     mint: "#eff4f2",
   },
