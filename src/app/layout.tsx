@@ -8,7 +8,6 @@ import {
 import { getSiteStructuredData } from "@/utils/seo/structured-data";
 
 import { AdaptiveGrid } from "@/components/common/grid";
-import { PreloadProvider, Preloader } from "@/components/common/preloader";
 import { ReducedMotion } from "@/components/common/reduced-motion";
 import { ScrollLayout } from "@/layouts/scroll-layout";
 
@@ -71,27 +70,34 @@ export default function RootLayout({
             __html: JSON.stringify(getSiteStructuredData()),
           }}
         />
-        {/* The provider wraps everything so any subtree can wait for the
-            curtain; the page itself still renders underneath it from the first
-            byte, which is what keeps the document crawlable. */}
-        <PreloadProvider>
-          <Preloader />
-          <ScrollLayout>
-            <AdaptiveGrid />
-            <ReducedMotion />
-            {/* No cookie banner, and that is a deliberate result rather than an
-                omission. The page sets no cookies, loads no analytics, and — since
-                the typeface is self-hosted — makes no third-party request at all.
-                The one external embed, the Google map, is behind an explicit
-                click that carries its own consent. Under TDDDG §25 a banner is
-                required for storage that is not strictly necessary; there is
-                none here, so a banner would be asking permission for nothing
-                while covering the call to action on a phone. If tracking is ever
-                added, the template's `LazyCookie` is still in
-                `components/common/Cookie/` and this is where it mounts. */}
-            {children}
-          </ScrollLayout>
-        </PreloadProvider>
+        {/* Kein Ladevorhang. Das Template kam mit einem: ein deckendes Panel
+            mit Fortschrittsring, das erst wich, wenn Dokument, Schriften und
+            die WebGL-Szene fertig waren. Bei einer Steuerkanzlei arbeitet das
+            gegen die Seite. Wer hier landet, sucht meist eine Telefonnummer,
+            und ein Vorhang schiebt sich zwischen ihn und den Kopf der Seite —
+            mindestens 900 ms lang, per Konstruktion, auch bei warmem Cache.
+            Zudem sperrte er das Scrollen, was auf dem Telefon wie eine
+            hängende Seite wirkt, und verschob den grössten sichtbaren
+            Inhalt (LCP) um genau diese Zeit nach hinten.
+
+            Die Seite baut sich jetzt auf, wie sie ankommt: Text zuerst, die
+            Szene sobald ihr Chunk da ist. Die Hero-Animationen laufen beim
+            Mounten los statt auf ein Signal des Vorhangs zu warten. */}
+        <ScrollLayout>
+          <AdaptiveGrid />
+          <ReducedMotion />
+          {/* No cookie banner, and that is a deliberate result rather than an
+              omission. The page sets no cookies, loads no analytics, and — since
+              the typeface is self-hosted — makes no third-party request at all.
+              The one external embed, the Google map, is behind an explicit
+              click that carries its own consent. Under TDDDG §25 a banner is
+              required for storage that is not strictly necessary; there is
+              none here, so a banner would be asking permission for nothing
+              while covering the call to action on a phone. If tracking is ever
+              added, the template's `LazyCookie` is still in
+              `components/common/Cookie/` and this is where it mounts. */}
+          {children}
+        </ScrollLayout>
       </body>
     </html>
   );

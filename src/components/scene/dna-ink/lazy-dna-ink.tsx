@@ -10,18 +10,25 @@
  * the client. It also guarantees the scene never runs during SSR, where there
  * is no canvas and no WebGL context to build one from.
  *
- * That laziness is exactly why `gatesPreload` exists. `window.load` does not
- * wait for a chunk fetched after hydration, so the [[preloader]] would lift its
- * curtain onto an empty hero. The gate is claimed **here**, in the eagerly
- * mounted wrapper, rather than inside the lazy component — by the time that
- * chunk arrives the preloader may already have finished, and there would be
- * nothing left to hold.
+ * ## Why the scene fades in
+ *
+ * This used to be the other way round: the wrapper held a preloader curtain
+ * open until the scene had drawn its first frame, so by the time anyone saw the
+ * page the canvas was already there. The curtain is gone — it cost every
+ * visitor the better part of a second before they could read anything — and
+ * without it the scene simply appears mid-scroll, several hundred milliseconds
+ * after the text, which reads as a glitch.
+ *
+ * So the canvas starts transparent and is faded in on its first frame. The box
+ * around it has its final size from the first paint either way, so nothing
+ * moves; only the scene itself resolves. `@react-spring/web`, like every other
+ * animation on the site (hard rule #1).
  */
 
+import { animated, useSpring } from "@react-spring/web";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { usePreload } from "@/components/common/preloader";
 import { getDeviceTier } from "@/lib/scene/device";
 
 import type { DnaInkProps } from "./dna-ink";
@@ -31,13 +38,10 @@ const DnaInk = dynamic(
   { ssr: false, loading: () => null },
 );
 
+/** Slow enough to read as the scene resolving, short enough not to be a wait. */
+const FADE_CONFIG = { tension: 60, friction: 26 };
+
 export interface LazyDnaInkProps extends DnaInkProps {
-  /**
-   * Hold the preloader's curtain until this scene has drawn its first frame.
-   * Set it on the hero instance only: a scene that is off screen never renders,
-   * so its gate would never resolve.
-   */
-  gatesPreload?: boolean;
   /**
    * Skip the scene entirely below the desktop tier.
    *
@@ -51,13 +55,8 @@ export interface LazyDnaInkProps extends DnaInkProps {
   desktopOnly?: boolean;
 }
 
-export const LazyDnaInk = ({
-  gatesPreload,
-  desktopOnly,
-  ...props
-}: LazyDnaInkProps) => {
-  const { registerGate } = usePreload();
-  const releaseRef = useRef<(() => void) | null>(null);
+export const LazyDnaInk = ({ desktopOnly, ...props }: LazyDnaInkProps) => {
+  const [painted, setPainted] = useState(false);
 
   /**
    * The tier check happens in an EFFECT, never during render.
@@ -75,18 +74,15 @@ export const LazyDnaInk = ({
     setAllowed(getDeviceTier() === "desktop");
   }, [desktopOnly]);
 
-  useEffect(() => {
-    if (!gatesPreload) return;
-    const release = registerGate();
-    releaseRef.current = release;
-    // Released on unmount too, so a scene that is torn down before it ever
-    // paints cannot strand the curtain.
-    return release;
-  }, [gatesPreload, registerGate]);
+  const handleReady = useCallback(() => setPainted(true), []);
 
-  const handleReady = useCallback(() => releaseRef.current?.(), []);
+  const fade = useSpring({ opacity: painted ? 1 : 0, config: FADE_CONFIG });
 
   if (!allowed) return null;
 
-  return <DnaInk {...props} onReady={gatesPreload ? handleReady : undefined} />;
+  return (
+    <animated.div className="size-full" style={fade}>
+      <DnaInk {...props} onReady={handleReady} />
+    </animated.div>
+  );
 };

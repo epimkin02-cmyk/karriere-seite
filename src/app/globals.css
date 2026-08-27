@@ -345,3 +345,78 @@ body {
     display: block !important;
   }
 }
+
+/**
+ * Einblenden des ersten Bildschirms — ohne JavaScript.
+ *
+ * Alle übrigen Reveals der Seite laufen über `spring-text-engine` und
+ * `@react-spring/web` (Hausregel #1). Für den Hero geht das seit dem Ausbau des
+ * Ladevorhangs nicht mehr auf, und der Grund ist zeitlicher Art: eine
+ * federbasierte Animation startet frühestens, wenn React hydriert hat. Gemessen
+ * auf einem 390er-Viewport war das erste Wort der Überschrift **694 ms** nach
+ * dem ersten Byte sichtbar — vorher lag genau darüber der Vorhang, jetzt sieht
+ * man ein leeres Band. Für eine Seite, deren Zweck es ist, die Frage „ist das
+ * mein Steuerberater?" schnell zu beantworten, ist das der falsche Handel.
+ *
+ * Eine CSS-Animation startet dagegen mit dem ersten Paint, braucht kein
+ * JavaScript und lässt den Text auch dann stehen, wenn nie welches ankommt.
+ * Deshalb — und nur hier, für die Blöcke über der Falz — CSS statt Feder.
+ * Die Werte sind aus `text-presets.ts` übernommen, damit der Hero dieselbe
+ * Sprache spricht wie der Rest der Seite: Auflösen aus einer Unschärfe, leicht
+ * steigend, Wort für Wort.
+ */
+@layer components {
+  @keyframes kanzlei-entry {
+    from {
+      opacity: 0;
+      filter: blur(var(--entry-blur));
+      transform: translate3d(0, var(--entry-rise), 0);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* `both` hält den Von-Zustand während der Verzögerung — ohne das blitzt jedes
+     Wort einmal fertig auf, bevor sein Versatz beginnt. */
+  .entry-item {
+    --entry-blur: 12px;
+    --entry-rise: 12px;
+    --entry-stagger: 45ms;
+    --entry-duration: 420ms;
+    --entry-delay: 0ms;
+    animation: kanzlei-entry var(--entry-duration) var(--ease-entrance) both;
+    animation-delay: calc(
+      var(--entry-index, 0) * var(--entry-stagger) + var(--entry-delay)
+    );
+  }
+
+  /* Wörter sind inline-block, damit `filter` und `transform` überhaupt greifen —
+     auf einem reinen Inline-Element tun sie das nicht. */
+  .entry-word {
+    display: inline-block;
+  }
+
+  .entry-heading {
+    --entry-blur: 20px;
+    --entry-rise: 28px;
+    --entry-stagger: 55ms;
+    --entry-duration: 520ms;
+  }
+
+  .entry-body {
+    --entry-rise: 16px;
+    --entry-stagger: 26ms;
+    --entry-duration: 460ms;
+  }
+
+  /* Kein Ersatz durch eine kürzere Bewegung: wer das System auf „reduziert"
+     stellt, will keine Bewegung, und der Text steht dann schlicht da. */
+  @media (prefers-reduced-motion: reduce) {
+    .entry-item {
+      animation: none;
+    }
+  }
+}

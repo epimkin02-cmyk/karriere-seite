@@ -60,8 +60,8 @@ export interface DnaInkProps {
   className?: string;
   /**
    * Called once, after the first frame has actually been drawn — not on mount.
-   * The preloader uses this to hold its curtain until the scene is really on
-   * screen; see [[preloader]].
+   * [[LazyDnaInk]] fades the canvas in on this signal, so it has to mean
+   * "there are pixels", not "the component exists".
    */
   onReady?: () => void;
 }
@@ -239,8 +239,8 @@ export const DnaInk = ({
       scene.render();
 
       // Announce readiness only after a frame has been drawn. Mount is far too
-      // early — the GL context exists but nothing is on screen yet, which is
-      // precisely the state the preloader is there to hide.
+      // early — the GL context exists but nothing is on screen yet, and fading
+      // in an empty canvas at that point would show exactly nothing.
       if (!announcedRef.current) {
         announcedRef.current = true;
         onReadyRef.current?.();

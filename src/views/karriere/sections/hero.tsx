@@ -14,22 +14,20 @@
  * order and the desktop composition is reconstructed by the `lg:` offsets. That
  * avoids a pile of `order-*` overrides.
  *
- * **Every block enters.** Each is wrapped in [[RevealOnReady]], which both
- * carries the block's positioning and holds its animation until the preloader
- * curtain is on its way out. Copy animates through the text presets; everything
+ * **Every block enters.** Copy animates through the text presets; everything
  * else through `<Spring>` with `ELEMENT_MOTION`, cascading down the composition
- * via `ENTRY_DELAY` so the hero assembles rather than appearing at once.
+ * via `ENTRY_DELAY` so the hero assembles rather than appearing at once. The
+ * blocks are in view from the first frame, so those reveals fire on mount.
  *
  * The mockup's right-hand image (`image 659`) is a still of the DNA Ink scene,
- * so the live [[dna-ink-scene]] renders there instead. It is deliberately *not*
- * wrapped: it holds the preloader open until it has drawn a frame, so by the
- * time anything here animates the scene is already on screen.
+ * so the live [[dna-ink-scene]] renders there instead. It arrives on its own
+ * schedule — its chunk is fetched after hydration — and lands inside a box
+ * that already has its final size, so nothing reflows around it.
  */
 
 import TextEngine from "spring-text-engine";
 
 import { Spring } from "@/components/animation/springs/spring";
-import { RevealOnReady } from "@/components/common/preloader";
 import { LazyDnaInk } from "@/components/scene/dna-ink";
 import { Button } from "@/components/ui/button";
 import type { HeroContent } from "@/data/mocks/karriere";
@@ -64,7 +62,7 @@ export const Hero = ({ content }: HeroProps) => (
     {/* `z-10` is load-bearing: the markup is in mobile order, so the scene's
         canvas comes *after* the copy in the DOM and would otherwise paint over
         it once both are absolutely positioned at `lg`. */}
-    <RevealOnReady className="z-10 lg:absolute lg:top-[28.55%] lg:left-10 lg:w-[44.75rem]">
+    <div className="z-10 lg:absolute lg:top-[28.55%] lg:left-10 lg:w-[44.75rem]">
       <div className="flex flex-col gap-6 lg:gap-12">
         <div className="flex flex-col gap-4 lg:gap-8">
           <TextEngine
@@ -90,9 +88,9 @@ export const Hero = ({ content }: HeroProps) => (
           {content.description}
         </TextEngine>
       </div>
-    </RevealOnReady>
+    </div>
 
-    <RevealOnReady className="z-10 lg:absolute lg:top-[89.375%] lg:left-10">
+    <div className="z-10 lg:absolute lg:top-[89.375%] lg:left-10">
       <Spring
         {...ELEMENT_MOTION}
         delayIn={ENTRY_DELAY.actions}
@@ -109,21 +107,21 @@ export const Hero = ({ content }: HeroProps) => (
           </Button>
         ))}
       </Spring>
-    </RevealOnReady>
+    </div>
 
     {/* Mobile gives the scene a fixed slice of the viewport; desktop restores
         the artboard's box (x 361, width 1140 — overhanging and clipped). */}
     <div className="pointer-events-none -mx-5 h-[40lvh] md:-mx-10 lg:absolute lg:inset-y-0 lg:left-[22.5625rem] lg:mx-0 lg:h-auto lg:w-[71.25rem]">
-      <LazyDnaInk className="block size-full" gatesPreload />
+      <LazyDnaInk className="block size-full" />
     </div>
 
-    <RevealOnReady className="lg:absolute lg:top-[78.625%] lg:right-10 lg:left-[2.5625rem]">
+    <div className="lg:absolute lg:top-[78.625%] lg:right-10 lg:left-[2.5625rem]">
       <Spring {...ELEMENT_MOTION} delayIn={ENTRY_DELAY.divider}>
         <hr className="border-t border-border-subtle" />
       </Spring>
-    </RevealOnReady>
+    </div>
 
-    <RevealOnReady className="lg:absolute lg:top-[83.625%] lg:left-10">
+    <div className="lg:absolute lg:top-[83.625%] lg:left-10">
       <Spring
         {...ELEMENT_MOTION}
         delayIn={ENTRY_DELAY.trustLine}
@@ -133,9 +131,9 @@ export const Hero = ({ content }: HeroProps) => (
         {content.trustLine}
         <span aria-hidden="true" className="h-px w-[3.125rem] bg-accent" />
       </Spring>
-    </RevealOnReady>
+    </div>
 
-    <RevealOnReady className="lg:absolute lg:top-[83.625%] lg:left-[55.5625rem] lg:w-[31.9375rem]">
+    <div className="lg:absolute lg:top-[83.625%] lg:left-[55.5625rem] lg:w-[31.9375rem]">
       <Spring
         {...ELEMENT_MOTION}
         delayIn={ENTRY_DELAY.chips}
@@ -151,6 +149,6 @@ export const Hero = ({ content }: HeroProps) => (
           </li>
         ))}
       </Spring>
-    </RevealOnReady>
+    </div>
   </section>
 );

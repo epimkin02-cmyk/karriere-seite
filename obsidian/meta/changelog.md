@@ -824,3 +824,35 @@ Dichte der MULTIPLY-Mischung bleibt, wo sie war.
 Kontrast verbessert sich dabei überall: Akzenttext auf Weiss 5,94 → 6,49:1, auf
 Mint 5,34 → 5,84:1, Limette auf dem Akzent (Logo) 5,64 → 6,17:1. Barrierefreiheit
 danach erneut geprüft: 0 Befunde von 10.
+
+## 2026-08-27 — Ladevorhang entfernt, Hero blendet ohne JavaScript ein
+
+Der Preloader ist raus: `src/components/common/preloader/` gelöscht, samt
+`PreloadProvider`, `RevealOnReady` und dem WebGL-Tor `gatesPreload`.
+
+**Warum.** Er hielt jeden Besuch mindestens 900 ms auf (`MIN_DURATION_MS`, per
+Konstruktion auch bei warmem Cache), wartete zusätzlich auf Schriften und das
+erste Frame der WebGL-Szene und sperrte solange das Scrollen. Auf einer Seite,
+deren häufigster Zweck „wie erreiche ich die Kanzlei?" ist, steht das zwischen
+dem Besucher und der Telefonnummer.
+
+**Was dabei sichtbar wurde.** Ohne Vorhang lag der Hero offen — und war leer.
+`spring-text-engine` rendert serverseitig `opacity: 0` und startet erst nach der
+Hydration; gemessen auf 390 px war das erste Wort der Überschrift **694 ms** nach
+dem ersten Byte sichtbar. Ohne JavaScript blieb es unsichtbar. Der Vorhang hatte
+das verdeckt, nicht gelöst.
+
+**Die Folge.** Für die Blöcke über der Falz — und nur für die — läuft die
+Einblendung jetzt als CSS-Animation (`.entry-item` in `globals.css`, neue
+Komponente `views/kanzlei/sections/eintritt.tsx`). Gleiche Bewegung wie die
+Presets (Auflösen aus der Unschärfe, leicht steigend, Wort für Wort versetzt),
+aber gestartet vom ersten Paint statt von React. Alles, was erst beim Scrollen
+ins Bild kommt, bleibt bei `TextEngine`: dort ist die Verzögerung unsichtbar,
+und `mode="always"` heilt eine verhungerte Feder, was CSS nicht kann.
+
+Die 3D-Szene wird in `LazyDnaInk` beim ersten gezeichneten Frame eingeblendet
+(`@react-spring/web`), statt hart aufzupoppen. `onReady` in `dna-ink.tsx` bleibt
+damit erhalten, hat aber einen neuen Abnehmer.
+
+Messung auf 390 px: erstes Wort **694 → 287 ms**, LCP **432 ms**, kein
+gesperrtes Scrollen, keine Konsolenfehler. Barrierefreiheit: 0 Befunde von 10.

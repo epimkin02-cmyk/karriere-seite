@@ -6,11 +6,9 @@
  * ## Die 3D-Szene steht nur hier
  *
  * `LazyDnaInk` ist auf der ganzen Kanzlei-Website genau einmal im DOM, nämlich
- * hier (HAUSREGELN-KANZLEI §1). Diese eine Instanz trägt deshalb auch
- * `gatesPreload`: sie hält den Preloader-Vorhang, bis das erste Frame gezeichnet
- * ist. Seit die fünf Seiten eine einzige geworden sind, ist das umso strikter —
- * eine zweite Szene weiter unten rendert ausserhalb des Viewports nie und würde
- * das Tor nie freigeben.
+ * hier (HAUSREGELN-KANZLEI §1). Sie kommt nach, sobald ihr Chunk geladen ist —
+ * seit der Ladevorhang draussen ist, wartet niemand mehr darauf. Der Streifen
+ * hat eine feste Höhe, damit beim Eintreffen nichts springt.
  *
  * **Der Textblock trägt `relative z-10`, und das ist tragend.** Das Markup steht
  * in Mobile-Reihenfolge, der Canvas also im DOM *nach* der Copy. Ab `lg` liegt
@@ -26,24 +24,20 @@
  * Rechnerisch: Kopfzeile 5rem plus Streifen 12rem lassen auf einem 390×844-Gerät
  * den kompletten Textblock samt Button über der Falz.
  *
- * `RevealOnReady` bleibt diesem Band vorbehalten: es ist das einzige, das beim
- * ersten Frame schon im Viewport steht.
+ * ## Die Copy blendet per CSS ein, nicht per Feder
+ *
+ * Als einziges Band der Seite. Der Grund steht ausführlich in [[Eintritt]]:
+ * Federn starten erst nach der Hydration, und seit der Ladevorhang draussen
+ * ist, sähe man bis dahin ein leeres Band — gemessen 694 ms. Alles, was erst
+ * beim Scrollen ins Bild kommt, bleibt bei `TextEngine`; dort ist diese
+ * Verzögerung unsichtbar. Der Effekt ist derselbe, nur die Uhr ist eine andere.
  */
 
-import TextEngine from "spring-text-engine";
-
-import { Spring } from "@/components/animation/springs/spring";
-import { RevealOnReady } from "@/components/common/preloader";
 import { LazyDnaInk } from "@/components/scene/dna-ink";
 import { Button } from "@/components/ui/button";
 import { HERO_CONTENT } from "@/data/kanzlei/startseite";
-import {
-  BODY_MOTION,
-  ELEMENT_MOTION,
-  EYEBROW_MOTION,
-  HEADING_MOTION,
-} from "@/lib/motion/text-presets";
 
+import { Eintritt } from "./eintritt";
 import { ANCHOR_OFFSET, BODY, EYEBROW } from "./typografie";
 
 /**
@@ -69,43 +63,47 @@ export const Hero = () => (
     {/* `relative z-10`: der Canvas steht im DOM weiter unten und liegt ab `lg`
         absolut über dieser Spalte — ohne eigene Stapelebene würde er den Text
         übermalen. */}
-    <RevealOnReady className="relative z-10 mx-auto w-full max-w-[85rem]">
+    <div className="relative z-10 mx-auto w-full max-w-[85rem]">
       <div className="flex flex-col gap-5 lg:max-w-[29rem] lg:gap-6">
-        <TextEngine tag="p" className={EYEBROW} {...EYEBROW_MOTION}>
-          {HERO_CONTENT.eyebrow}
-        </TextEngine>
+        <Eintritt className={EYEBROW}>{HERO_CONTENT.eyebrow}</Eintritt>
         {/* Der einzige `<h1>` des Dokuments — und seit der Zusammenlegung der
             einzige der ganzen Website ausser den Rechtstexten. `hyphens-auto`
             wegen „Steuerberater": deutsche Komposita brechen sonst aus der
             Spalte. */}
-        <TextEngine
+        <Eintritt
           id="start-heading"
           tag="h1"
-          className="justify-start text-left text-[2.25rem] leading-display font-light hyphens-auto lg:text-[3.25rem]"
-          {...HEADING_MOTION}
+          variant="heading"
+          delay={80}
+          className="text-left text-[2.25rem] leading-display font-light hyphens-auto lg:text-[3.25rem]"
         >
           {HERO_CONTENT.title}
-        </TextEngine>
-        <TextEngine
-          tag="p"
-          className={`max-w-[38rem] justify-start text-left ${BODY}`}
-          {...BODY_MOTION}
+        </Eintritt>
+        <Eintritt
+          variant="body"
+          delay={260}
+          className={`max-w-[38rem] text-left ${BODY}`}
         >
           {HERO_CONTENT.lead}
-        </TextEngine>
-        <Spring {...ELEMENT_MOTION} delayIn={140} tag="div" className="mt-3">
+        </Eintritt>
+        {/* Der Button trägt keine eigene Wortstaffelung, deshalb steht die
+            Klasse direkt auf dem Wrapper statt über die Komponente zu laufen. */}
+        <div
+          className="entry-item entry-body mt-3"
+          style={{ "--entry-delay": "460ms" } as React.CSSProperties}
+        >
           <Button href={toAnchor(HERO_CONTENT.action.href)} variant="primary">
             {HERO_CONTENT.action.label}
           </Button>
-        </Spring>
+        </div>
       </div>
-    </RevealOnReady>
+    </div>
 
     {/* Telefon: ein begrenzter Streifen unter der Copy, der bis an die
         Bandkanten läuft. Ab `lg` die rechte Hälfte des Bandes; das
         `overflow-hidden` der Sektion schneidet ihn an der Rundung ab. */}
     <div className="pointer-events-none -mx-5 mt-8 h-[12rem] md:-mx-10 lg:absolute lg:inset-y-0 lg:right-0 lg:left-1/2 lg:mx-0 lg:mt-0 lg:h-auto">
-      <LazyDnaInk className="block size-full" gatesPreload />
+      <LazyDnaInk className="block size-full" />
     </div>
   </section>
 );
