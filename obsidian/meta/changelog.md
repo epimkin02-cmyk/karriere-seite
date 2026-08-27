@@ -738,3 +738,44 @@ Effekt.
 **Offen.** Fotos und Testimonial-Wortlaut sind markierte Platzhalter, das
 Bewerbungsformular validiert, versendet aber noch nicht, Loader-Prewarm und ein
 Test auf echtem Gerät stehen aus.
+
+## 2026-08-26 — Kanzlei-Website gebaut, Karriereseite wird Unterseite
+
+**Struktur.** Aus einer Landingpage wurde eine Website. `/` trägt jetzt die
+Kanzlei-Seite, die bisherige Funnel-Landingpage liegt unter `/karriere` und
+behält ihr eigenes Chrome und ihr `noindex`. Gemeinsame Kopf- und Fusszeile für
+die Website liegen in der Routen-Gruppe `(kanzlei)`.
+
+**Neu:** `/`, `/ueber-uns`, `/fuer-unternehmen`, `/fuer-private`, `/kontakt`
+plus `/impressum`, `/datenschutzerklaerung`, `/barrierefreiheitserklaerung`.
+Inhalte wörtlich von der Live-Seite, in `src/data/kanzlei/`.
+
+**Der Leistungskatalog** auf `/fuer-unternehmen` (10 Blöcke, 47 Punkte) liegt in
+nativen `<details>`/`<summary>` — tastaturbedienbar ohne ein einziges `aria-*`,
+und Strg+F findet auch zugeklappten Text.
+
+**Mailversand.** Kontaktformular und Schnellbewerbung laufen über einen
+gemeinsamen Weg (`src/lib/mail.ts`, Resend). Nur Textmails, kein HTML — der
+Inhalt besteht vollständig aus Fremdeingaben. Keine Nutzdaten in den Logs.
+
+**Weiterleitungen** von den alten URLs liegen in `src/middleware.ts`, nicht in
+`redirects()`: Next vergleicht dort case-insensitiv, wodurch `/Impressum` →
+`/impressum` auch die Kleinschreibung traf und in eine Endlosschleife lief.
+
+**Typografie-Fehler behoben, der alle Seiten betraf.** TextEngine-Wortboxen
+massen 82px bei 44px Zeilenhöhe, umbrochene Überschriften standen dadurch fast
+doppelt so weit auseinander wie gesetzt. Ursache waren zwei Flex-Effekte
+zugleich: `align-items: stretch` zog jede Wortbox auf Zeilenhöhe,
+`align-content` verteilte zusätzlich die Höhe auf die Flex-Zeilen. Behoben mit
+zwei Regeln in `@layer components` (ADR-0012 erlaubt dort
+Third-Party-DOM-Overrides), weil die ClassName-Props der Engine gegen deren
+eigene Inline-Styles verlieren. Zeilenabstand jetzt 45px.
+
+**Barrierefreiheit gemessen** über alle 7 Routen in Mobil und Desktop: genau ein
+`h1` und ein `main` je Seite, keine Sprünge in der Überschriftenhierarchie, kein
+Bild ohne `alt`, kein horizontaler Überlauf, keine Kontrastverstösse, keine
+JS-Fehler. 0 Befunde von 14 Durchläufen.
+
+**Mängel der Live-Seite, die NICHT übernommen wurden:** der unbearbeitete
+Baukasten-Platzhalter in der Fusszeile jeder Unterseite, „Powered by Sellwerk",
+und die englische Formular-Legende „Contact Us".

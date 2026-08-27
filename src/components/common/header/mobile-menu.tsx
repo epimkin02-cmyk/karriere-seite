@@ -23,7 +23,7 @@ import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import type { CtaLink, NavLink } from "@/data/mocks/home";
+import type { CtaLink, NavLink } from "@/data/mocks/karriere";
 
 const PANEL_SPRING = { tension: 260, friction: 30 };
 

@@ -9,9 +9,9 @@ import { publicEnv } from "@/env";
 export const siteConfig = {
   name: "Steuerkanzlei Kutscher",
   /** Used as the `<title>` when a page doesn't set its own. */
-  title: "Karriere bei der Steuerkanzlei Kutscher in Pößneck",
+  title: "Ihr Steuerberater in Pößneck — Frank Kutscher Steuerberatungsgesellschaft",
   description:
-    "Steuerfachangestellte/r oder Steuerfachwirt/in (m/w/d) in Pößneck: überdurchschnittliches Gehalt, bis zu drei Tage Homeoffice, 4-Tage-Woche möglich, 600 € Gesundheitsbudget. Schnellbewerbung ohne Unterlagen.",
+    "Steuerberatung für Unternehmen und Privatpersonen in Pößneck und Umgebung: Finanz- und Lohnbuchführung, Jahresabschlüsse, Betriebsprüfung, Existenzgründung und Generationsnachfolge.",
   /**
    * Public origin, no trailing slash. Drives canonical URLs, OG tags, the
    * sitemap, and JSON-LD. Set `NEXT_PUBLIC_SITE_URL` in production.
@@ -25,12 +25,15 @@ export const siteConfig = {
   twitterHandle: undefined,
   author: "Frank Kutscher Steuerberatungsgesellschaft mbH",
   /**
-   * The page is deliberately excluded from search engines — it is the landing
-   * page of a paid recruiting funnel, and the client wants it reachable only
-   * through the ad. `robots.ts`, the metadata generator and the sitemap all
-   * read this one flag, so flipping it here is the whole switch.
+   * Die **Website** soll gefunden werden — das war zu Zeiten, als das Projekt
+   * nur aus der Anzeigen-Landingpage bestand, umgekehrt.
+   *
+   * Der `noindex` gilt seitdem nur noch für `/karriere` und steht dort in
+   * `src/app/karriere/layout.tsx`. Beides an einem Ort zu steuern ging nicht
+   * mehr, sobald indexierte und nicht indexierte Seiten in derselben App
+   * liegen: `robots.txt` gilt für die ganze Domain, die Metadaten je Route.
    */
-  noindex: true,
+  noindex: false,
   /** Browser theme-color (address bar / PWA) — the brand green. */
   themeColor: "#246f65",
   /** Brand palette, shared with the generated icon and OG routes. */

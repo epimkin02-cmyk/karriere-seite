@@ -30,6 +30,30 @@ const publicSchema = z.object({
 const serverSchema = z.object({
   /** Optional upstream the contact endpoint forwards leads to (CRM / webhook). */
   CONTACT_ENDPOINT: optionalUrl(),
+
+  /**
+   * Resend-API-Key. **Unpräfixt** — ein `NEXT_PUBLIC_`-Name würde den Wert in
+   * das Client-Bundle inlinen und damit an jeden Besucher ausliefern.
+   *
+   * Optional, damit sich das Projekt ohne Mailkonfiguration bauen und lokal
+   * starten lässt. Fehlt der Key, antworten die Formular-Endpunkte mit 503
+   * „nicht konfiguriert" statt beim Build zu scheitern — das ist die
+   * ehrlichere Fehlermeldung als ein grüner Build, der im Betrieb schweigt.
+   */
+  RESEND_API_KEY: z.string().min(1).optional(),
+
+  /**
+   * Absenderadresse. Ihre Domain muss bei Resend verifiziert sein, sonst
+   * verweigert der Versand. Kein Postfach dahinter nötig — Antworten laufen
+   * über `Reply-To` an die absendende Person.
+   */
+  MAIL_FROM: z
+    .string()
+    .min(1)
+    .default("Kutscher Website <website@kutscher-stb.de>"),
+
+  /** Postfach der Kanzlei, in dem die Formularmeldungen ankommen. */
+  MAIL_TO: z.string().min(1).default("kanzlei@kutscher-stb.de"),
 });
 
 /** Public env — safe to read anywhere (server or client). */
@@ -46,6 +70,9 @@ let cachedServerEnv: z.infer<typeof serverSchema> | undefined;
 export function getServerEnv() {
   cachedServerEnv ??= serverSchema.parse({
     CONTACT_ENDPOINT: process.env.CONTACT_ENDPOINT,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    MAIL_FROM: process.env.MAIL_FROM,
+    MAIL_TO: process.env.MAIL_TO,
   });
   return cachedServerEnv;
 }

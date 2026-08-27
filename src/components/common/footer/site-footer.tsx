@@ -15,7 +15,7 @@
  * Server Component — no state, no handlers, no browser API.
  */
 
-import type { FooterContent } from "@/data/mocks/home";
+import type { FooterContent } from "@/data/mocks/karriere";
 import { siteConfig } from "@/lib/site";
 
 export interface SiteFooterProps {

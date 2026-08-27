@@ -18,7 +18,7 @@ import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
-import type { CtaLink } from "@/data/mocks/home";
+import type { CtaLink } from "@/data/mocks/karriere";
 
 const REVEAL_CONFIG = { tension: 210, friction: 30 };
 /** Fire as soon as any sliver of the target shows. */

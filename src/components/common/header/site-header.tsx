@@ -16,7 +16,7 @@
 import Link from "next/link";
 
 import { KutscherMark } from "@/components/ui/icons";
-import type { CtaLink, NavLink } from "@/data/mocks/home";
+import type { CtaLink, NavLink } from "@/data/mocks/karriere";
 
 import { HeaderCta } from "./header-cta";
 import { MobileMenu } from "./mobile-menu";

@@ -289,4 +289,53 @@ body {
 }
 
 @layer components {
+  /**
+   * TextEngine: Wortbox auf eine Zeile zurückholen.
+   *
+   * Die Engine rendert jedes Wort als `<span class="line-word"><span>Wort</span></span>`.
+   * Der äussere Span ist Flex-Item des Textcontainers und damit blockifiziert;
+   * der innere bekommt `display: inline-block` als INLINE-STYLE. Ein
+   * inline-block sitzt auf der Grundlinie, also hält die Zeilenbox des äusseren
+   * darunter zusätzlich Platz frei: gemessen 82px Wrapper-Höhe bei 44px
+   * Zeilenhöhe. Sichtbar wird das erst, wenn eine Überschrift umbricht — dann
+   * stehen die Zeilen fast doppelt so weit auseinander wie gesetzt. Am
+   * `line-height` zu drehen hilft nicht, weil das Leading nicht die Ursache ist.
+   *
+   * Warum hier und nicht über die ClassName-Props der Engine: `wordClassName`
+   * kommt am inneren Span an, verliert aber gegen dessen Inline-Style — Inline
+   * schlägt Klasse, dieselbe Falle, die der Vault für `position: relative`
+   * beschreibt. `wrapWordClassName` erreicht den `.line-word` nachweislich gar
+   * nicht. Damit bleibt nur eine Regel, die den Inline-Style überstimmt, und
+   * genau dafür ist `@layer components` laut ADR-0012 reserviert:
+   * Third-Party-DOM-Overrides.
+   *
+   * `display: block` statt eines `vertical-align`-Tricks, weil ein Block-Kind
+   * gar keine Grundlinienbindung hat. `line-height` bleibt unangetastet und
+   * erbt weiter vom Textcontainer — Fliesstext behält so `leading-body`,
+   * Überschriften `leading-display`. Transform, Opacity und Filter der Engine
+   * sind davon nicht berührt.
+   */
+  /*
+   * Der TextEngine-Container ist `display: flex; flex-wrap: wrap`. Bei mehreren
+   * umbrochenen Zeilen verteilt `align-content: normal` (wirkt wie `stretch`)
+   * die Höhe auf die Flex-Zeilen, und `align-items: stretch` zieht zusätzlich
+   * jede Wortbox auf die Zeilenhöhe. Gemessen wurde dadurch eine Wortbox von
+   * 82px bei 44px Zeilenhöhe und ein Zeilenabstand von 83px statt 44px.
+   *
+   * Der Container lässt sich nicht über eine Klasse erreichen: zwischen ihm und
+   * den Wortboxen liegt ein `display: contents`-Span der Engine, und die
+   * Sektionen setzen ihre Klassen am Element selbst. `:has()` mit
+   * Kindkombinator trifft deshalb genau den Container und nichts darüber.
+   */
+  :has(> [aria-hidden="true"] > .line-word) {
+    align-content: start;
+  }
+
+  .line-word {
+    align-self: start;
+  }
+
+  .line-word > span {
+    display: block !important;
+  }
 }
