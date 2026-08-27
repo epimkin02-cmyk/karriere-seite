@@ -899,3 +899,33 @@ Platzhalterentscheidung mehr. Die Personenkarten in `UeberUns` bleiben
 typografisch, bis echte Porträts vorliegen.
 
 Barrierefreiheit danach: 0 Befunde von 10.
+
+## 2026-08-27 — 3D-Szene auf dem Telefon durch ein Standbild ersetzt
+
+Gemessen auf 390 px mit vierfach gedrosselter CPU, Startseite gegen eine Seite
+ohne Szene (`/impressum`):
+
+| | mit Szene | ohne |
+|---|---|---|
+| JavaScript | 344 KB | 194 KB |
+| LCP | 1196 ms | 228 ms |
+| blockierter Hauptthread | 4412 ms in 52 Tasks | 251 ms in 2 |
+
+Die Szene kostete also 150 KB und rund vier Sekunden Hauptthread — für eine
+Dekoration, auf den rund 90 % der Besuche, die vom Telefon kommen.
+
+Unterhalb des Tablet-Tiers steht deshalb jetzt `szene-standbild.webp` (11 KB):
+aus der laufenden Szene bei voller Punktdichte aufgenommen, im
+Seitenverhältnis des Streifens, den ein Telefon zeigt. Der Bildrand ist
+pixelgenau `#eff4f2` — dieselbe Farbe, mit der die Szene ihren Puffer löscht und
+mit der das Band hinterlegt ist, damit an den Kanten keine Naht steht. `three`
+wird in diesem Fall gar nicht erst geholt.
+
+Auf dem Rechner bleibt die Szene live und liegt jetzt **über** demselben
+Standbild, das dort als Posterbild dient — vorher stand da ein leerer Kasten,
+bis der Chunk ankam.
+
+Nachher, gleiche Messbedingungen: JavaScript **344 → 210 KB**, LCP
+**1196 → 680 ms**, blockierter Hauptthread **4412 → 450 ms** in 3 statt 52
+Tasks. Damit lädt die Startseite auf dem Telefon so viel JavaScript wie das
+Impressum. Barrierefreiheit: 0 Befunde von 10.
