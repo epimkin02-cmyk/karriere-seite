@@ -929,3 +929,47 @@ Nachher, gleiche Messbedingungen: JavaScript **344 → 210 KB**, LCP
 **1196 → 680 ms**, blockierter Hauptthread **4412 → 450 ms** in 3 statt 52
 Tasks. Damit lädt die Startseite auf dem Telefon so viel JavaScript wie das
 Impressum. Barrierefreiheit: 0 Befunde von 10.
+
+## 2026-08-27 — Echte Fotos der Kanzlei, Unsplash-Platzhalter entfernt
+
+Sieben Aufnahmen aus dem Fotoshooting geliefert (je rund 33 Megapixel, als WebP).
+Daraus die Webfassungen gerechnet; die Originale sind **nicht** im Repo geblieben
+— eine 7008 × 4672 grosse Datei unter `public/` ist öffentlich herunterladbar und
+wandert bei jedem Deploy mit, ohne dass ein Browser sie je anfordert.
+
+| Datei | Grösse | Stelle |
+|---|---|---|
+| `empfang.webp` | 2200 px, 202 KB | Willkommen |
+| `beratung.webp` | 2200 px, 70 KB | Für Private |
+| `buero.webp` | 2200 px, 222 KB | Für Unternehmen |
+| `team-gruppe.webp` | 1600 px, 122 KB | Über uns |
+| `portraet-kutscher.webp` | 640 px, quadratisch | Personenkarte |
+| `portraet-koeber.webp` | 640 px, quadratisch | Personenkarte |
+| `besprechungsraum.webp` | 2200 px, 179 KB | Karriereseite |
+
+**Die vier Unsplash-Platzhalter sind gelöscht** — auch auf der Karriereseite.
+Dort trug `PROCESS_CONTENT.person.image` bis eben ein Stockporträt unter dem
+Namen „Frank Kutscher"; das war der letzte Rest der Platzhalterei, der eine
+Aussage über einen echten Menschen gemacht hat.
+
+**Über uns steht jetzt zweispaltig.** Das Gruppenbild ist hochformatig — das Team
+auf der Treppe vor dem Haus, in die Höhe gestaffelt — und wäre in einem
+21:9-Querband ein Streifen mit abgeschnittenen Köpfen geworden. Neben der
+Textspalte behält es sein Format; `lg:items-center`, weil der Text dieses
+Abschnitts kurz ist und oben ausgerichtet links ein Loch von rund 350 px stünde.
+
+**Die Personenkarten tragen Porträts.** Zuordnung über `member.id`, nicht über
+die Position im Array. Eine Person ohne hinterlegtes Porträt bekommt weiter den
+Akzentstrich statt eines fremden Gesichts.
+
+**`Bild` hat ein `focus` bekommen.** `object-cover` schneidet mittig zu, und beim
+Beratungsbild lag der Kopf der stehenden Kollegin dadurch oberhalb der Kante.
+Der Ausschnitt ist damit eine Entscheidung und keine Voreinstellung.
+
+⚠️ **Offen:** die Zuordnung der beiden Porträts (`_DSC6764` → Frank Kutscher,
+`_DSC6668` → Manuela Köber) ist vom Kunden zu bestätigen — sie folgt dem
+einzigen Anhaltspunkt, den es gab. `DJI_0246` (Gebäude mit Schriftzug) fehlt
+noch; es soll in den Anfahrtsbereich.
+
+Messung danach: LCP 364 ms, Bilder zusammen 31 KB auf dem ersten Bildschirm.
+Barrierefreiheit 0 Befunde von 10, keine 404, keine kaputten Bilder.

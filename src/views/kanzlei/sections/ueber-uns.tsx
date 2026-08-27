@@ -12,31 +12,24 @@
  * sein einleitender Fliesstext, „Wir stellen uns vor:" eine `<h3>` und die
  * Namen sind `<h4>`. Der Button des Seitenkopfs entfällt.
  *
- * ## Die Personenkarten haben kein Foto — und vermissen keines
+ ## Die Personenkarten tragen jetzt echte Porträts
  *
- * `TeamMember.image` ist bei beiden Personen `null`; die Kanzlei führt keine
- * Porträts. Ein leerer Bildrahmen oder ein grauer Kreis mit Initialen wäre die
- * schlechteste Antwort darauf: er zeigt nicht eine Person, sondern das Fehlen
- * ihres Bildes, und tut das auf jeder Karte gleich gross. Die Karte ist deshalb
- * ein **typografisches Namensschild** und kein Bildplatzhalter: ein kurzer
- * Akzentstrich als Anker, darunter der Name und die Funktion in
- * `text-foreground-muted`. So gelesen ist die Karte vollständig — es fehlt
- * sichtbar nichts.
+ * Lange stand hier ein Akzentstrich statt eines Bildes, weil die Kanzlei keine
+ * Porträts geführt hat — und ein Stockfoto unter einem echten Namen ist keine
+ * Platzhalterentscheidung, sondern eine Aussage über einen Menschen. Seit dem
+ * 27.08. liegen die richtigen vor, aus einer Serie vor demselben Sprossenfenster
+ * aufgenommen, hier auf Kopf und Schultern beschnitten.
  *
- * **Wie das Foto später hineinkommt.** Die Karte ist bereits als Reihe angelegt
- * (`flex-col`, ab `lg` `flex-row items-center`) mit genau einem Kind, der
- * Textspalte. Kommt ein Porträt, wird es als *erstes* Kind dieser Reihe
- * gerendert — ein `next/image` mit fester Kantenlänge und `rounded-card`, `alt`
- * aus `member.name`. Das Raster darüber ist `lg:items-start`, eine dadurch
- * höhere Karte zieht ihre Nachbarin also nicht mit. Bewusst wird **kein** Platz
- * reserviert: eine leere Box vorzuhalten wäre genau der Platzhalter, den es hier
- * nicht geben soll.
+ * Der Fallback ist geblieben: `PORTRAETS` ordnet über `member.id` zu, und eine
+ * Person ohne Eintrag bekommt weiter den Strich statt eines fremden Gesichts
+ * oder einer leeren Box.
  *
  * Die Karten liegen auf Mint und sind deshalb weiss gefüllt — umgekehrt zur
  * früheren Fassung, wo das Band weiss war. React-Keys kommen aus `member.id`,
  * nicht aus dem Namen.
  */
 
+import Image from "next/image";
 import TextEngine from "spring-text-engine";
 
 import { Inview } from "@/components/animation/springs/in-view";
@@ -47,8 +40,7 @@ import {
   HEADING_MOTION,
 } from "@/lib/motion/text-presets";
 
-import { Bild } from "./bild";
-import { FOTOS } from "./fotos";
+import { FOTOS, type Foto } from "./fotos";
 import {
   ANCHOR_OFFSET,
   BODY,
@@ -57,6 +49,20 @@ import {
   SUBHEADING,
 } from "./typografie";
 
+/**
+ * Porträt je Person, zugeordnet über `member.id` aus den Inhaltsdaten.
+ *
+ * Getrennt von `FOTOS` gehalten, weil hier eine **Zuordnung** steht und nicht
+ * nur ein Pfad: welches Gesicht zu welchem Namen gehört. Wer eine dritte Person
+ * ergänzt, ohne ein Porträt zu haben, lässt den Eintrag weg — die Karte fällt
+ * dann auf den Akzentstrich zurück, statt mit einem fremden Gesicht zu
+ * erscheinen.
+ */
+const PORTRAETS: Partial<Record<string, Foto>> = {
+  "frank-kutscher": FOTOS.portraetKutscher,
+  "manuela-koeber": FOTOS.portraetKoeber,
+};
+
 export const UeberUns = () => (
   <section
     id="ueber-uns"
@@ -64,38 +70,61 @@ export const UeberUns = () => (
     className={`rounded-section bg-surface-section px-5 py-16 md:px-10 lg:py-24 ${ANCHOR_OFFSET}`}
   >
     <div className="mx-auto flex w-full max-w-[85rem] flex-col gap-10 lg:gap-16">
-      <div className="flex flex-col gap-5">
-        {/* `justify-start` neben `text-left`: der TextEngine-Container ist eine
-            Flex-Zeile, `text-align` allein richtet dort nichts aus. */}
-        <TextEngine tag="p" className={EYEBROW} {...EYEBROW_MOTION}>
-          {HERO_CONTENT.eyebrow}
-        </TextEngine>
-        {/* `hyphens-auto` wegen „Steuerberater" — deutsche Komposita brechen
-            sonst aus der Spalte. */}
-        <TextEngine
-          id="ueber-uns-heading"
-          tag="h2"
-          className={`max-w-[45rem] hyphens-auto ${HEADING}`}
-          {...HEADING_MOTION}
-        >
-          {HERO_CONTENT.title}
-        </TextEngine>
+      {/* Kopf und Gruppenbild stehen NEBENEINANDER, nicht untereinander.
+
+          Grund ist das Motiv: die Aufnahme ist hochformatig — das Team steht
+          auf der Treppe vor dem Haus, in die Höhe gestaffelt. In ein
+          21:9-Querband gezwungen bliebe davon ein Streifen mit abgeschnittenen
+          Köpfen. Neben der Textspalte behält es sein Format, und der Abschnitt
+          gewinnt die einzige zweispaltige Stelle der Seite — was ihm guttut,
+          weil er der kürzeste ist.
+
+          `lg:items-center` statt `items-start`: der Text dieses Abschnitts ist
+          kurz — Überschrift und drei Zeilen — und das Bild ist hoch. Oben
+          ausgerichtet stünde links unter dem Absatz ein Loch von rund 350 px.
+          Mittig gelesen wirkt dasselbe Verhältnis gesetzt statt vergessen. */}
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
+        <div className="flex flex-col gap-5 lg:flex-1">
+          {/* `justify-start` neben `text-left`: der TextEngine-Container ist eine
+              Flex-Zeile, `text-align` allein richtet dort nichts aus. */}
+          <TextEngine tag="p" className={EYEBROW} {...EYEBROW_MOTION}>
+            {HERO_CONTENT.eyebrow}
+          </TextEngine>
+          {/* `hyphens-auto` wegen „Steuerberater" — deutsche Komposita brechen
+              sonst aus der Spalte. */}
+          <TextEngine
+            id="ueber-uns-heading"
+            tag="h2"
+            className={`max-w-[45rem] hyphens-auto ${HEADING}`}
+            {...HEADING_MOTION}
+          >
+            {HERO_CONTENT.title}
+          </TextEngine>
+          <Inview
+            {...ELEMENT_MOTION}
+            mode="once"
+            tag="div"
+            className="max-w-[38rem]"
+          >
+            <p className={BODY}>{HERO_CONTENT.lead}</p>
+          </Inview>
+        </div>
+
         <Inview
           {...ELEMENT_MOTION}
           mode="once"
           tag="div"
-          className="max-w-[38rem]"
+          className="relative aspect-[4/5] w-full overflow-hidden rounded-card bg-background lg:w-[22rem] lg:shrink-0"
         >
-          <p className={BODY}>{HERO_CONTENT.lead}</p>
+          <Image
+            src={FOTOS.team.src}
+            alt={FOTOS.team.alt}
+            fill
+            sizes="(min-width: 64rem) 352px, calc(100vw - 2.5rem)"
+            className="object-cover"
+          />
         </Inview>
       </div>
-
-      {/* Stimmungsbild statt Porträts: die Kanzlei führt keine, und ein
-          Stockfoto unter einem echten Namen wäre eine Aussage über einen
-          Menschen. Eine Gesprächssituation sagt dasselbe über die Arbeitsweise,
-          ohne jemanden zu behaupten. `alt=""`, weil es genau das ist — Stimmung,
-          kein Informationsträger. */}
-      <Bild src={FOTOS.team} alt="" />
 
       <section
         id="team"
@@ -125,16 +154,34 @@ export const UeberUns = () => (
               key={member.id}
               className="flex flex-col gap-6 rounded-card border border-border-subtle bg-background px-6 py-8 lg:flex-row lg:items-center lg:px-8 lg:py-10"
             >
-              {/* Hier kommt das Porträt hin, sobald es geliefert ist — als
-                  erstes Kind dieser Reihe. Solange nicht, steht hier nichts:
-                  kein reservierter Rahmen, keine leere Fläche. */}
+              {/* Das Porträt steht als erstes Kind der Reihe — genau dort, wo
+                  der Kommentar an dieser Stelle es seit dem Bau vorgesehen
+                  hatte. `PORTRAETS` ordnet es über `member.id` zu, nicht über
+                  die Position im Array: eine dritte Person würde die Reihenfolge
+                  ändern, ihre `id` nicht.
+
+                  Karten ohne hinterlegtes Porträt behalten den Akzentstrich.
+                  Beides zugleich wäre zu viel — der Strich ist der Ersatz für
+                  das Bild, nicht sein Beiwerk. */}
+              {PORTRAETS[member.id] ? (
+                <Image
+                  src={PORTRAETS[member.id]!.src}
+                  alt={PORTRAETS[member.id]!.alt}
+                  width={640}
+                  height={640}
+                  sizes="(min-width: 64rem) 128px, 112px"
+                  className="size-28 shrink-0 rounded-card object-cover lg:size-32"
+                />
+              ) : null}
               <div className="flex flex-col gap-2">
                 {/* Der Akzentstrich ersetzt das Bild als optischen Anker der
                     Karte. Dekoration, deshalb `aria-hidden`. */}
-                <span
-                  aria-hidden="true"
-                  className="block w-12 border-t-2 border-accent"
-                />
+                {PORTRAETS[member.id] ? null : (
+                  <span
+                    aria-hidden="true"
+                    className="block w-12 border-t-2 border-accent"
+                  />
+                )}
                 <h4 className="text-[1.5rem] leading-display font-light lg:text-[1.75rem]">
                   {member.name}
                 </h4>

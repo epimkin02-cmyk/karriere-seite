@@ -52,10 +52,11 @@ export const Willkommen = () => (
     </div>
 
       {/* Das erste Foto der Seite, direkt unter der Begrüssung: bis hierher war
-          alles über der Falz Typografie und eine abstrakte Grafik. Ein Blick in
-          einen hellen Arbeitsraum beantwortet die Frage „wo lande ich da
-          eigentlich?" schneller als der Absatz darüber. */}
-      <Bild src={FOTOS.kanzlei} alt="" />
+          alles über der Falz Typografie und eine abstrakte Grafik. Der Empfang
+          beantwortet die Frage „wo lande ich da eigentlich?" schneller als der
+          Absatz darüber — und er ist buchstäblich das Erste, was jemand sieht,
+          der die Treppe hochkommt. */}
+      <Bild foto={FOTOS.empfang} />
     </div>
   </section>
 );

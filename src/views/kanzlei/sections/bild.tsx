@@ -38,20 +38,26 @@ import Image from "next/image";
 import { Inview } from "@/components/animation/springs/in-view";
 import { ELEMENT_MOTION } from "@/lib/motion/text-presets";
 
+import type { Foto } from "./fotos";
+
+const FOCUS = {
+  oben: "object-top",
+  mitte: "object-center",
+  unten: "object-[50%_82%]",
+} as const;
+
 export interface BildProps {
-  src: string;
+  /** Bild samt Alternativtext aus [[FOTOS]]. */
+  foto: Foto;
   /**
-   * Beschreibt, was zu sehen ist — nicht, wofür es steht.
-   *
-   * Bei einem reinen Stimmungsbild ist auch der leere String die richtige
-   * Antwort: dann überspringt eine Vorlesefunktion das Bild, statt eine
-   * Beschreibung vorzulesen, die nichts zur Seite beiträgt.
+   * Welcher Teil des Motivs beim Zuschnitt sicher im Bild bleibt.
+   * `oben` bei Personen, deren Köpfe sonst abgeschnitten werden.
    */
-  alt: string;
+  focus?: keyof typeof FOCUS;
   className?: string;
 }
 
-export const Bild = ({ src, alt, className }: BildProps) => (
+export const Bild = ({ foto, focus = "mitte", className }: BildProps) => (
   <Inview
     {...ELEMENT_MOTION}
     mode="once"
@@ -59,15 +65,15 @@ export const Bild = ({ src, alt, className }: BildProps) => (
     className={`relative aspect-[4/3] w-full overflow-hidden rounded-card bg-surface-section md:aspect-[16/9] lg:aspect-[21/9] ${className ?? ""}`}
   >
     <Image
-      src={src}
-      alt={alt}
+      src={foto.src}
+      alt={foto.alt}
       fill
       // Bis `lg` volle Breite minus der Seitenränder, darüber gedeckelt durch
       // die 85rem des Inhaltsmasses. Ohne diese Angabe nimmt Next `100vw` an
       // und liefert einem Rechner die grösste Fassung für eine Fläche, die nie
       // breiter als 1360 px wird.
       sizes="(min-width: 85rem) 1360px, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 2.5rem)"
-      className="object-cover"
+      className={`object-cover ${FOCUS[focus]}`}
     />
   </Inview>
 );

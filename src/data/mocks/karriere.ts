@@ -274,9 +274,9 @@ export const WHY_CONTENT: WhyContent = {
     "Deine Karriere mit Perspektive — bei einer Kanzlei, die ihre Mitarbeiter als Fundament versteht und nicht als Ressource.",
   actions: [PRIMARY_CTA],
   trailImages: [
-    "/assets/kutscher/arbeitsplatz.jpg",
-    "/assets/kutscher/team.jpg",
-    "/assets/kutscher/frank-kutscher.jpg",
+    "/assets/kutscher/buero.webp",
+    "/assets/kutscher/team-gruppe.webp",
+    "/assets/kutscher/portraet-kutscher.webp",
   ],
 };
 
@@ -307,7 +307,7 @@ export const SERVICE_CARDS: readonly ServiceCard[] = [
     index: "02",
     title: "Homeoffice",
     variant: "photo",
-    image: "/assets/kutscher/arbeitsplatz.jpg",
+    image: "/assets/kutscher/buero.webp",
     body:
       "Egal ob Gleitzeitmodell oder eins bis drei Tage Homeoffice pro Woche, du entscheidest, wann und wo du arbeitest. Wir haben immer ein offenes Ohr für deine Wünsche und gestalten gemeinsam mit dir den Arbeitsplatz, der zu deinem Leben passt.",
   },
@@ -315,7 +315,7 @@ export const SERVICE_CARDS: readonly ServiceCard[] = [
     index: "03",
     title: "Kostenlose Massagen",
     variant: "photo",
-    image: "/assets/kutscher/team.jpg",
+    image: "/assets/kutscher/beratung.webp",
     body:
       "Wenn Zahlen und Finanzbehörden mal wieder auf die Nerven gehen, sorgt unser Masseur dafür, dass der Stress wegmassiert wird, alle zwei Wochen für jeden Mitarbeiter kostenlos.",
   },
@@ -323,7 +323,7 @@ export const SERVICE_CARDS: readonly ServiceCard[] = [
     index: "04",
     title: "600 € Gesundheitsbudget",
     variant: "photo",
-    image: "/assets/kutscher/kanzlei.jpg",
+    image: "/assets/kutscher/besprechungsraum.webp",
     body:
       "Du bekommst jedes Jahr ein Gesundheitsbudget in Höhe von 600 €. Dieses kannst du flexibel für Leistungen nutzen, die deine Krankenkasse nicht übernimmt – z. B. für Brillen, Kontaktlinsen oder Zahnbehandlungen.",
   },
@@ -343,7 +343,7 @@ export const SERVICE_CARDS: readonly ServiceCard[] = [
 
 export const ABOUT_CONTENT: AboutContent = {
   eyebrow: "Unsere Mitarbeiter sind das Fundament", // aus der Original-Headline
-  bannerImage: "/assets/kutscher/team.jpg",
+  bannerImage: "/assets/kutscher/team-gruppe.webp",
   /**
    * `StatCounter` parses `value` as prefix / digits / suffix — every entry
    * needs digits in it or the number renders static instead of counting.
@@ -522,7 +522,7 @@ export const PROCESS_CONTENT: ProcessContent = {
   person: {
     name: "Frank Kutscher",
     role: "Dein Ansprechpartner", // aus "Deine Ansprechpartner" im Original
-    image: "/assets/kutscher/frank-kutscher.jpg",
+    image: "/assets/kutscher/portraet-kutscher.webp",
     phone: "03647 44558200",
     phoneHref: "tel:+4936474455820",
     email: "frank.kutscher@kutscher-stb.de",

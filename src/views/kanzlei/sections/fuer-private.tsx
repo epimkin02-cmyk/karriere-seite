@@ -49,7 +49,9 @@ import {
   HEADING_MOTION,
 } from "@/lib/motion/text-presets";
 
+import { Bild } from "./bild";
 import { CheckIcon } from "./check-icon";
+import { FOTOS } from "./fotos";
 import {
   ANCHOR_OFFSET,
   BODY,
@@ -89,6 +91,11 @@ export const FuerPrivate = () => (
             <p className={BODY}>{HERO_CONTENT.lead}</p>
           </Inview>
         </div>
+
+        {/* `focus="oben"`: der Mittenausschnitt hätte der stehenden Kollegin
+            den Kopf abgeschnitten — das Band ist 21:9, das Foto 3:2, und was
+            dabei wegfällt, entscheidet sich hier und nicht im Zufall. */}
+        <Bild foto={FOTOS.beratung} focus="oben" />
 
         {/* Auf `lg` steht die Überschrift links neben dem Fliesstext statt
             darüber: das hält die Textspalte bei ~38rem, also im lesbaren Mass. */}

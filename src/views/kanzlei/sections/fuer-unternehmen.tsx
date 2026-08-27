@@ -117,7 +117,7 @@ export const FuerUnternehmen = () => (
         {/* Der Katalog darunter ist der längste zusammenhängende Textblock der
             Seite — 47 Leistungen in zehn Klappblöcken. Ein Bild davor gibt dem
             Auge einen Halt, bevor es dort hineingeht. */}
-        <Bild src={FOTOS.arbeitsplatz} alt="" />
+        <Bild foto={FOTOS.buero} />
 
         {/* Auf `lg` steht die Überschrift links neben dem Fliesstext statt
             darüber: das hält die Textspalte bei ~38rem, also im lesbaren Mass,
