@@ -50,6 +50,24 @@ export interface BildProps {
   /** Bild samt Alternativtext aus [[FOTOS]]. */
   foto: Foto;
   /**
+   * Ohne Rundung und ohne Seitenrand — das Bild bricht aus der Textspalte aus.
+   *
+   * Genau **einmal** auf der Seite, und das ist der Punkt: alle anderen Bilder
+   * sitzen brav in der Inhaltsspalte, in derselben Breite wie der Text darüber.
+   * Ein einziges Bild, das aus dieser Spalte ausbricht, ist ein Bruch im
+   * Rhythmus — und ein Bruch wirkt nur, solange er die Ausnahme bleibt. Zwei
+   * randlose Bilder wären wieder ein Muster.
+   *
+   * Technisch heben negative Ränder das Padding der Sektion auf. Bis rund
+   * 1440 px Fensterbreite ist das buchstäblich randlos; darüber bleibt das
+   * Inhaltsmass von 85rem stehen und es wird „nur" deutlich breiter als der
+   * Text. Bewusst so, statt mit `100vw` und einer Verschiebung um die halbe
+   * Breite: dieser Trick rechnet die Scrollleiste nicht mit und erzeugt auf
+   * Windows genau das, was diese Seite nirgends haben darf — waagerechtes
+   * Scrollen.
+   */
+  randlos?: boolean;
+  /**
    * Welcher Teil des Motivs beim Zuschnitt sicher im Bild bleibt.
    * `oben` bei Personen, deren Köpfe sonst abgeschnitten werden.
    */
@@ -57,12 +75,27 @@ export interface BildProps {
   className?: string;
 }
 
-export const Bild = ({ foto, focus = "mitte", className }: BildProps) => (
+export const Bild = ({
+  foto,
+  focus = "mitte",
+  randlos = false,
+  className,
+}: BildProps) => (
   <Inview
     {...ELEMENT_MOTION}
     mode="once"
     tag="div"
-    className={`relative aspect-[4/3] w-full overflow-hidden rounded-card bg-surface-section md:aspect-[16/9] lg:aspect-[21/9] ${className ?? ""}`}
+    // `w-full` steht bewusst NICHT im gemeinsamen Teil: `w-full` und `w-auto`
+    // haben dieselbe Spezifität, und welche gewinnt, entscheidet dann die
+    // Reihenfolge im erzeugten Stylesheet — nicht die im Klassenstring. Genau
+    // das ist hier einmal passiert: das randlose Bild war um sein negatives
+    // Aussenmass nach links verschoben statt breiter. Jeder Zweig setzt seine
+    // Breite deshalb selbst.
+    className={`relative overflow-hidden bg-surface-section ${
+      randlos
+        ? "-mx-5 aspect-[3/2] w-[calc(100%+2.5rem)] md:-mx-10 md:aspect-[21/9] md:w-[calc(100%+5rem)] lg:aspect-[3/1]"
+        : "aspect-[4/3] w-full rounded-card md:aspect-[16/9] lg:aspect-[21/9]"
+    } ${className ?? ""}`}
   >
     <Image
       src={foto.src}
@@ -72,7 +105,11 @@ export const Bild = ({ foto, focus = "mitte", className }: BildProps) => (
       // die 85rem des Inhaltsmasses. Ohne diese Angabe nimmt Next `100vw` an
       // und liefert einem Rechner die grösste Fassung für eine Fläche, die nie
       // breiter als 1360 px wird.
-      sizes="(min-width: 85rem) 1360px, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 2.5rem)"
+      sizes={
+        randlos
+          ? "100vw"
+          : "(min-width: 85rem) 1360px, (min-width: 768px) calc(100vw - 5rem), calc(100vw - 2.5rem)"
+      }
       className={`object-cover ${FOCUS[focus]}`}
     />
   </Inview>

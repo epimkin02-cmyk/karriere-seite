@@ -65,6 +65,7 @@ import { Kontakt } from "./sections/kontakt";
 import { UeberUns } from "./sections/ueber-uns";
 import { Wegweiser } from "./sections/wegweiser";
 import { Willkommen } from "./sections/willkommen";
+import { Zahlen } from "./sections/zahlen";
 
 export const Startseite = () => (
   <>
@@ -72,6 +73,7 @@ export const Startseite = () => (
     <Willkommen />
     <Kernkompetenzen />
     <Wegweiser />
+    <Zahlen />
     <FuerUnternehmen />
     <FuerPrivate />
     <UeberUns />

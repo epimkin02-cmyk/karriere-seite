@@ -1,6 +1,6 @@
 "use client";
 
-// 📖 Docs: obsidian/frontend/components/home-sections.md
+// 📖 Docs: obsidian/frontend/components/common.md
 
 /**
  * Counting stat value — "98%", "24h", "60+", "15".

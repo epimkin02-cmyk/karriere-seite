@@ -21,7 +21,7 @@ import type { AboutContent } from "@/data/mocks/karriere";
 import { BODY_MOTION, EYEBROW_MOTION } from "@/lib/motion/text-presets";
 
 import { AboutBanner } from "./about-banner";
-import { StatCounter } from "./stat-counter";
+import { StatCounter } from "@/components/common/stat-counter";
 
 export interface AboutProps {
   content: AboutContent;

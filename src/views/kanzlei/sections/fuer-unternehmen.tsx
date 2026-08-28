@@ -116,8 +116,12 @@ export const FuerUnternehmen = () => (
 
         {/* Der Katalog darunter ist der längste zusammenhängende Textblock der
             Seite — 47 Leistungen in zehn Klappblöcken. Ein Bild davor gibt dem
-            Auge einen Halt, bevor es dort hineingeht. */}
-        <Bild foto={FOTOS.buero} />
+            Auge einen Halt, bevor es dort hineingeht.
+
+            Und es ist das eine randlose Bild der Seite (siehe [[Bild]]): es
+            bricht aus der Inhaltsspalte aus, in der sonst alles steht. Der
+            Bruch sitzt hier, weil dahinter der schwerste Abschnitt kommt. */}
+        <Bild foto={FOTOS.buero} randlos />
 
         {/* Auf `lg` steht die Überschrift links neben dem Fliesstext statt
             darüber: das hält die Textspalte bei ~38rem, also im lesbaren Mass,

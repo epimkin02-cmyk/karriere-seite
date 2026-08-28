@@ -973,3 +973,46 @@ noch; es soll in den Anfahrtsbereich.
 
 Messung danach: LCP 364 ms, Bilder zusammen 31 KB auf dem ersten Bildschirm.
 Barrierefreiheit 0 Befunde von 10, keine 404, keine kaputten Bilder.
+
+## 2026-08-27 — Rhythmus gebrochen: dunkles Zahlenband, ein randloses Bild
+
+Befund zuerst, weil er die Änderungen erklärt: die Seite hatte acht Abschnitte
+mit **identischem Aufbau** — Kapitälchen, dünne Überschrift, Fliesstext — auf
+abwechselnd weissem und mintfarbenem Grund. Über 11 200 px Höhe gab es keine
+einzige Stelle, an der das Auge hängenbleibt, und keinen einzigen Beweis für
+irgendeine der Behauptungen. Das ist der Grund, warum die Seite langweilte —
+nicht fehlende Animation.
+
+**Neues Band `#zahlen`** (`views/kanzlei/sections/zahlen.tsx`), dunkelgrün auf
+`--raw-color-brand-900`, zwischen Wegweiser und den Leistungsabschnitten. Es
+löst beide Probleme mit einer Fläche: es teilt die Seite optisch in ein Davor
+und ein Danach, und es belegt zum ersten Mal etwas.
+
+**Jede Zahl darin ist nachgerechnet**, und das ist die Bedingung, unter der das
+Band existieren darf: **47** Leistungen und **10** Fachgebiete sind zur Bauzeit
+aus `CATALOGUE_CONTENT` gezählt, **12** Mitarbeitende stehen wörtlich im
+Fliesstext der Kanzlei. Ein Gründungsjahr fehlt bewusst — es steht nirgends,
+und geraten wird auf der Seite einer Steuerkanzlei nichts.
+
+⚠️ Die Karriereseite sagt an derselben Stelle **15+**. Einer der Werte ist
+veraltet; bis das geklärt ist, steht auf der Website die Zahl der Website.
+
+Kontrast gemessen: Weiss auf dem Grund **11,52:1**, die Limette der Zahlen
+**10,95:1**, die Beschriftung in `white/80` **7,9:1**.
+
+**Ein randloses Bild** — das Büro vor dem Leistungskatalog bricht aus der
+Inhaltsspalte aus, in der sonst alles steht. Genau eines, weil ein Bruch nur
+wirkt, solange er die Ausnahme bleibt. Umgesetzt mit negativen Aussenmassen und
+nicht mit `100vw` plus Verschiebung: dieser Trick rechnet die Scrollleiste nicht
+mit und erzeugt auf Windows waagerechtes Scrollen. Geprüft — auf 390 px und
+1440 px scrollt nichts quer.
+
+Dabei ein Fehler gefunden und behoben: `w-full` und `w-auto` haben dieselbe
+Spezifität, und welche gewinnt, entscheidet die Reihenfolge im erzeugten
+Stylesheet statt der im Klassenstring. Das randlose Bild war dadurch nach links
+verschoben statt breiter. Jeder Zweig setzt seine Breite jetzt selbst.
+
+`StatCounter` ist von `views/karriere/sections/` nach `components/common/`
+gewandert — er wird jetzt von beiden Auftritten benutzt.
+
+Barrierefreiheit danach: 0 Befunde von 10.
