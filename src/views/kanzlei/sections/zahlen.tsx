@@ -90,57 +90,85 @@ export const Zahlen = () => (
   <section
     id="zahlen"
     aria-labelledby="zahlen-heading"
-    className={`rounded-section flaeche-verlauf-tief px-5 py-16 text-white md:px-10 lg:py-24 ${ANCHOR_OFFSET}`}
+    // `pb-6`: die Tafel stösst sonst unten hart an das Mintband, das seine
+    // eigene Rundung nach oben mitbringt — zwei Rundungen, die einander auf
+    // demselben Pixel berühren, sehen aus wie ein Fehler. Nach oben braucht es
+    // nichts, dort liegt schon das weisse Ende des Abschnitts darüber.
+    className={`px-5 pb-6 md:px-10 ${ANCHOR_OFFSET}`}
   >
-    <div className="mx-auto flex w-full max-w-[85rem] flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
-      <h2
-        id="zahlen-heading"
-        className="max-w-[26rem] text-[1.75rem] leading-display font-light hyphens-auto lg:text-[2.25rem]"
-      >
-        Eine Kanzlei, die alles abdeckt, nicht nur die Steuererklärung.
-      </h2>
+    {/* Die dunkle Fläche ist eine **Tafel** und kein Band über die volle Breite.
+     *
+     * Das war sie bis zum 01.09. nämlich, wie alle anderen Bänder der Seite
+     * auch. Bei den hellen Bändern fällt das nicht auf — sie gehen in den
+     * weissen Seitenhintergrund über. Bei diesem hier schon: die abgerundeten
+     * Ecken von `rounded-section` sassen links und rechts genau auf der
+     * Fensterkante, und eine Rundung, die an der Kante verschwindet, sieht nicht
+     * gerundet aus, sondern abgeschnitten.
+     *
+     * Der Seitenrand sitzt deshalb jetzt aussen an der Sektion, die Tafel
+     * darin. Am Text ändert das nichts: die Sektion nimmt die üblichen 5 bzw.
+     * 10 Einheiten, die Tafel innen dieselben noch einmal, und das Inhaltsmass
+     * von 85rem in der Mitte landet damit auf denselben Pixeln wie in den
+     * Abschnitten darüber und darunter — nachgemessen. Die Tafel selbst ragt
+     * nur weiter nach aussen als der Text, und genau das macht sie zur Tafel. */}
+    <div className="rounded-section flaeche-verlauf-tief px-5 py-16 text-white md:px-10 lg:py-24">
+      <div className="mx-auto flex w-full max-w-[85rem] flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
+        <h2
+          id="zahlen-heading"
+          className="max-w-[26rem] text-[1.75rem] leading-display font-light hyphens-auto lg:text-[2.25rem]"
+        >
+          Eine Kanzlei, die alles abdeckt, nicht nur die Steuererklärung.
+        </h2>
 
-      {/* `<dl>` statt `<div>`: Zahl und Beschriftung sind ein Begriffspaar, und
-          genau das ist eine Definitionsliste. Eine Vorlesefunktion liest damit
-          „47, Leistungen für Unternehmen" als Einheit statt als zwei
-          zusammenhanglose Fetzen.
+        {/* `<dl>` statt `<div>`: Zahl und Beschriftung sind ein Begriffspaar, und
+            genau das ist eine Definitionsliste. Eine Vorlesefunktion liest damit
+            „47, Leistungen für Unternehmen" als Einheit statt als zwei
+            zusammenhanglose Fetzen.
 
-          Die Zahl steht im `<dd>` und die Beschriftung im `<dt>` — also
-          scheinbar verkehrt herum. Ist es nicht: der Begriff ist „Leistungen
-          für Unternehmen", der Wert dazu ist 47. Optisch steht die Zahl oben,
-          weil sie die Aufmerksamkeit trägt. Untereinander (bis `sm`) dreht
-          `flex-col-reverse` das Sichtbare um, im Raster darüber `row-start` —
-          beide Male ohne die Bedeutung anzufassen. */}
-      {/* `<Inview>` kennt `dl` nicht als Tag, deshalb der Wrapper: die
-          Bewegung sitzt aussen, die Bedeutung innen. */}
-      <Inview {...ELEMENT_MOTION} mode="once" tag="div">
-        {/* `grid-rows-2` plus `grid-rows-subgrid` in den Kindern: die Zahlen
-            teilen sich eine Zeile, die Beschriftungen die andere. Ohne das
-            richtet sich jedes Paar für sich aus, und sobald **eine**
-            Beschriftung zweizeilig wird — „Mitarbeiterinnen und Mitarbeiter" —
-            rutscht ihre Zahl nach oben aus der Reihe. Gemessen waren es 16 px.
+            Die Zahl steht im `<dd>` und die Beschriftung im `<dt>` — also
+            scheinbar verkehrt herum. Ist es nicht: der Begriff ist „Leistungen
+            für Unternehmen", der Wert dazu ist 47. Optisch steht die Zahl oben,
+            weil sie die Aufmerksamkeit trägt. Untereinander (bis `sm`) dreht
+            `flex-col-reverse` das Sichtbare um, im Raster darüber `row-start` —
+            beide Male ohne die Bedeutung anzufassen. */}
+        {/* `<Inview>` kennt `dl` nicht als Tag, deshalb der Wrapper: die
+            Bewegung sitzt aussen, die Bedeutung innen. */}
+        <Inview {...ELEMENT_MOTION} mode="once" tag="div">
+          {/* `grid-rows-2` plus `grid-rows-subgrid` in den Kindern: die Zahlen
+              teilen sich eine Zeile, die Beschriftungen die andere. Ohne das
+              richtet sich jedes Paar für sich aus, und sobald **eine**
+              Beschriftung zweizeilig wird — „Mitarbeiterinnen und Mitarbeiter" —
+              rutscht ihre Zahl nach oben aus der Reihe. Gemessen waren es 16 px.
 
-            Warum nicht einfach `items-end` auf dem Raster: dann stünden die
-            Beschriftungen bündig und die Zahlen unterschiedlich hoch — also
-            derselbe Fehler, nur an der anderen Kante. Subgrid richtet beide
-            Zeilen aus, weil die Kinder das Raster des Elternteils übernehmen
-            statt ein eigenes aufzumachen. */}
-        <dl className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:grid-rows-[auto_auto] lg:gap-14">
-          {ZAHLEN.map((zahl) => (
-            <div
-              key={zahl.label}
-              className="flex flex-col-reverse gap-1 sm:grid sm:row-span-2 sm:grid-rows-subgrid"
-            >
-              <dt className="max-w-[12rem] text-sm leading-body font-light text-white/80 sm:row-start-2">
-                {zahl.label}
-              </dt>
-              <dd className="text-[3rem] leading-none font-light text-action-secondary sm:row-start-1 lg:text-[4rem]">
-                <StatCounter value={zahl.wert} />
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </Inview>
+              Warum nicht einfach `items-end` auf dem Raster: dann stünden die
+              Beschriftungen bündig und die Zahlen unterschiedlich hoch — also
+              derselbe Fehler, nur an der anderen Kante. Subgrid richtet beide
+              Zeilen aus, weil die Kinder das Raster des Elternteils übernehmen
+              statt ein eigenes aufzumachen. */}
+          <dl className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:grid-rows-[auto_auto] lg:gap-14">
+            {ZAHLEN.map((zahl) => (
+              <div
+                key={zahl.label}
+                // `gap-3` statt der früheren `gap-1`: die Zahl steht mit
+                // `leading-none` in einer Zeilenbox, die eng am Zeichen sitzt,
+                // und 4 px darunter klebte die Beschriftung förmlich am Fuss der
+                // Ziffer. Der Abstand gilt in beiden Anordnungen — die Spalte
+                // unter `sm` ist ein Flex-Kasten, darüber ein Subgrid, und ein
+                // Subgrid bringt seine eigenen Rinnen mit (nachgemessen: der
+                // Wert hier gewinnt, nicht die 56 px der `<dl>`).
+                className="flex flex-col-reverse gap-3 sm:grid sm:row-span-2 sm:grid-rows-subgrid lg:gap-4"
+              >
+                <dt className="max-w-[12rem] text-sm leading-body font-light text-white/80 sm:row-start-2">
+                  {zahl.label}
+                </dt>
+                <dd className="text-[3rem] leading-none font-light text-action-secondary sm:row-start-1 lg:text-[4rem]">
+                  <StatCounter value={zahl.wert} />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Inview>
+      </div>
     </div>
   </section>
 );
