@@ -81,6 +81,13 @@ export const Stellen = ({ content }: StellenProps) => (
             key={job.href + job.title}
             {...ELEMENT_MOTION}
             tag="li"
+            // `min-w-0` hebt die Vorgabe `min-width: auto` des Rasterfeldes auf.
+            // Ohne sie kann ein Feld nicht schmaler werden als sein Inhalt —
+            // und „Steuerfachangestellte/r (m/w/d)" plus Scheibe und Innenrand
+            // messen 358 px, wo auf einem 360er-Telefon 305 zur Verfügung
+            // stehen. Die Karte trat dann aus ihrer Spalte heraus und schob die
+            // ganze Seite um 18 px zur Seite.
+            className="min-w-0"
             delayIn={ENTRY_DELAY.card + index * ENTRY_DELAY.cardStep}
           >
             <a
@@ -92,10 +99,15 @@ export const Stellen = ({ content }: StellenProps) => (
               <div className="flex min-w-0 flex-col gap-2 lg:gap-3">
                 {/* Static, no TextEngine: card titles are not section headings
                     (hard rule §2). `hyphens-auto` + `lang` because
-                    "Steuerfachangestellte/r" is wider than the mobile column. */}
+                    "Steuerfachangestellte/r" is wider than the mobile column.
+
+                    `break-words` daneben als Rückfall: `hyphens-auto` trennt
+                    nur, wo der Browser ein deutsches Trennwörterbuch hat. Fehlt
+                    es, bricht der harte Umbruch — unschön, aber immer noch
+                    besser als ein Titel, der aus seiner Karte läuft. */}
                 <h3
                   lang="de"
-                  className="text-[1.5rem] leading-display font-light hyphens-auto lg:text-[1.75rem]"
+                  className="text-[1.5rem] leading-display font-light break-words hyphens-auto lg:text-[1.75rem]"
                 >
                   {job.title}
                 </h3>

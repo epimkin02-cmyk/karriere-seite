@@ -54,7 +54,14 @@ export const KanzleiHeader = () => (
           nichts springt.
 
           Unter `lg` kleiner: bei 390 px teilen sich Logo, Telefonknopf und
-          Burger die Zeile, und mit voller Breite wird es rechnerisch zu eng. */}
+          Burger die Zeile, und mit voller Breite wird es rechnerisch zu eng.
+
+          Und unter 380 px noch einmal kleiner. Ausgemessen: Logo 156 px,
+          Telefonknopf mit Beschriftung 121, Burger 44, dazwischen 24 Abstand,
+          aussen 40 Innenrand — zusammen 385. Auf einem iPhone SE (375) und
+          erst recht auf 320 px reicht das nicht, und die Kopfzeile schob die
+          ganze Seite waagerecht heraus. Ab dieser Schwelle also ein kleineres
+          Logo und ein Telefonknopf ohne Wort. */}
       <Link
         href="/"
         className="flex shrink-0 items-center rounded-mark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -65,7 +72,7 @@ export const KanzleiHeader = () => (
           height={LOGO.height}
           alt={LOGO.alt}
           priority
-          className="h-7 w-auto lg:h-9"
+          className="h-6 w-auto min-[380px]:h-7 lg:h-9"
         />
       </Link>
 
@@ -92,14 +99,25 @@ export const KanzleiHeader = () => (
             wählt er direkt, am Rechner bietet er die Nummer zum Kopieren an. */}
         <a
           href={PRIMARY_PHONE.href}
-          className="inline-flex min-h-11 items-center gap-2 rounded-action flaeche-verlauf px-4 text-action-primary-foreground hover:flaeche-verlauf-tief focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:px-5"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-action flaeche-verlauf px-3 text-action-primary-foreground hover:flaeche-verlauf-tief focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent min-[380px]:px-4 lg:px-5"
         >
           <PhoneIcon className="size-4 shrink-0" />
-          {/* Genau EIN Textknoten je Breakpoint. Beide gleichzeitig zu rendern
+          {/* Genau EIN Textknoten je Breite. Beide gleichzeitig zu rendern
               und einen davon `sr-only` zu setzen, liest ein Screenreader als
               „03647 44558200 Anrufen" vor — der versteckte Text verschwindet
-              nur optisch, nicht aus dem Baum. `hidden` entfernt ihn wirklich. */}
-          <span className="text-base leading-body font-light lg:hidden">
+              nur optisch, nicht aus dem Baum. `hidden` entfernt ihn wirklich.
+
+              Drei Stufen statt zwei: unter 380 px bleibt nur das Hörer-Symbol,
+              und der Name des Knopfes kommt dort von einem `sr-only`-Wort. Das
+              ist **kein** Widerspruch zum Absatz darüber — der Fehler wäre, ein
+              sichtbares und ein verstecktes Wort gleichzeitig im Baum zu haben.
+              Hier ist das versteckte Wort das einzige; ohne es wäre der Knopf
+              für eine Vorlesefunktion namenlos. Ein `aria-label` stattdessen
+              ginge nicht: ab `lg` steht sichtbar die Rufnummer im Knopf, und
+              ein davon abweichender Name bricht „Label in Name" (WCAG 2.5.3)
+              für alle, die per Sprache bedienen. */}
+          <span className="sr-only min-[380px]:hidden">Anrufen</span>
+          <span className="hidden text-base leading-body font-light min-[380px]:inline lg:hidden">
             Anrufen
           </span>
           <span className="hidden text-base leading-body font-light lg:inline">

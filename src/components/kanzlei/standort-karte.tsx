@@ -27,9 +27,30 @@
  * Maps in einem neuen Tab. Das ist eine bewusste Handlung des Besuchers und
  * damit einwilligungsfrei — und der Link wird aus der Postanschrift gebaut,
  * nicht aus Koordinaten, ist also unabhängig davon korrekt, wo der Pin sitzt.
+ *
+ * ## Die Scrollsperre
+ *
+ * Eine geladene Karte ist eine Falle im Scrollweg. Das iframe bringt seine
+ * eigene Kartenbibliothek mit, und die verschluckt jedes Rad- und Wischereignis,
+ * das über ihr ankommt: statt weiterzulesen, zoomt man. Auf der Landingpage ist
+ * die Karte 44rem hoch und liegt zwischen Kontaktband und Fusszeile — man kommt
+ * an ihr nicht vorbei, sondern bleibt in ihr hängen.
+ *
+ * Deshalb liegt über dem iframe eine Schaltfläche, solange niemand danach
+ * gefragt hat. Sie deckt die Fläche vollständig ab, das iframe bekommt zusätzlich
+ * `pointer-events-none` — Rad und Finger treffen damit die Seite und nicht die
+ * Karte, und man scrollt an ihr vorbei wie an einem Bild. Ein Klick oder Tipp
+ * schaltet sie frei.
+ *
+ * Und sie schaltet sich von selbst wieder scharf: sobald der Zeiger die Karte
+ * verlässt (Rechner) oder die Seite wieder scrollt (Telefon). Das ist der Teil,
+ * der auf dem Telefon zählt — dort gibt es kein `mouseleave`, und ohne diesen
+ * zweiten Weg wäre die Karte nach dem ersten Tipp für den Rest des Besuchs
+ * wieder eine Falle. Wer sie schliesslich wirklich erkunden will, ist mit
+ * „Route planen" ohnehin besser bedient.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -108,7 +129,40 @@ export const StandortKarte = ({
   gross = false,
 }: StandortKarteProps) => {
   const [loaded, setLoaded] = useState(autoLoad);
+  const [bedienbar, setBedienbar] = useState(false);
   const frame = `${FRAME_BASE} ${gross ? FRAME_HOEHE.gross : FRAME_HOEHE.normal}`;
+
+  /**
+   * Der Rückweg auf dem Telefon.
+   *
+   * `mouseleave` sperrt die Karte auf dem Rechner wieder; auf einem Touchgerät
+   * gibt es das Ereignis nicht. Dort ist das Scrollen der Seite selbst das
+   * Signal: es passiert nur, wenn der Finger gerade **nicht** auf der Karte
+   * liegt — beim Ziehen in der Karte scrollt die Seite ja nicht. Wer also
+   * weiterliest, bekommt die Sperre zurück, ohne etwas dafür zu tun.
+   *
+   * Die 80 px Schwelle sind der Grund, warum hier eine Startposition gemerkt
+   * wird und nicht einfach auf das erste Ereignis reagiert: nach dem Tipp läuft
+   * auf einem Telefon oft noch der Nachlauf der vorherigen Wischbewegung, und
+   * ein einzelnes Restpixel würde die Karte im selben Moment wieder sperren, in
+   * dem sie aufgegangen ist. Erst eine Bewegung, die als Weiterlesen zu erkennen
+   * ist, schliesst sie.
+   *
+   * Der Zuhörer hängt nur an, solange die Karte offen ist, und ist `passive` —
+   * ein Scroll-Zuhörer ohne diese Zusage zwingt den Browser, vor jedem
+   * Bildaufbau auf JavaScript zu warten.
+   */
+  useEffect(() => {
+    if (!bedienbar) return;
+
+    const start = window.scrollY;
+    const sperren = () => {
+      if (Math.abs(window.scrollY - start) > 80) setBedienbar(false);
+    };
+
+    window.addEventListener("scroll", sperren, { passive: true });
+    return () => window.removeEventListener("scroll", sperren);
+  }, [bedienbar]);
 
   const { lat, lon } = coords;
   const bbox = [
@@ -125,16 +179,40 @@ export const StandortKarte = ({
   return (
     <div className="flex flex-col gap-4">
       {loaded ? (
-        <div className={frame}>
+        <div className={frame} onMouseLeave={() => setBedienbar(false)}>
           {/* `title` ist der zugängliche Name des iframes — ohne ihn kündigt ein
-              Screenreader einen namenlosen Rahmen an. */}
+              Screenreader einen namenlosen Rahmen an.
+
+              `pointer-events-none` im gesperrten Zustand ist der eigentliche
+              Schalter: das iframe ist dann kein Ziel mehr für Rad, Finger und
+              Zeiger, und beides — Scrollen und Klicken — landet bei der Seite.
+              Die Schaltfläche darüber allein würde zwar auch decken, aber nur
+              solange sie wirklich lückenlos deckt; zwei Wege sind hier billiger
+              als ein Zweifel. */}
           <iframe
             src={embedSrc}
             title={title}
             loading="lazy"
             referrerPolicy="no-referrer"
-            className="h-full w-full border-0"
+            className={`h-full w-full border-0 ${bedienbar ? "" : "pointer-events-none"}`}
           />
+
+          {!bedienbar && (
+            /* Eine echte Schaltfläche, keine Attrappe: sie ist mit der Tastatur
+               erreichbar, trägt einen Namen und sagt damit auch einer
+               Vorlesefunktion, dass die Karte hier erst freigeschaltet werden
+               muss. Der Hinweis sitzt unten mittig mit `pb-8` — darunter liegt
+               die Herkunftszeile von OpenStreetMap, die frei bleiben soll. */
+            <button
+              type="button"
+              onClick={() => setBedienbar(true)}
+              className="absolute inset-0 flex cursor-pointer items-end justify-center pb-8 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+            >
+              <span className="rounded-chip bg-background/90 px-4 py-2 text-sm leading-body font-medium backdrop-blur-glass">
+                Karte aktivieren
+              </span>
+            </button>
+          )}
         </div>
       ) : (
         <div

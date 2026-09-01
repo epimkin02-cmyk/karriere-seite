@@ -41,15 +41,37 @@ export interface RechtstextProps {
 
 /** Ein Mass für alle Textspalten — rund 70 Zeichen je Zeile. */
 const COLUMN = "max-w-[42rem]";
-const BODY =
-  "text-[1.0625rem] leading-relaxed font-light lg:text-[1.125rem]";
+
+/**
+ * `hyphens-auto break-words` steht an jedem Text dieser Seite, und das ist
+ * Rechnerei, keine Vorsicht.
+ *
+ * Rechtstexte sind die Heimat der längsten Wörter, die das Deutsche hergibt —
+ * „Bundessteuerberaterkammer", „Barrierefreiheitserklärung",
+ * „Berufshaftpflichtversicherung". Auf einem 360 px breiten Android-Telefon
+ * bleiben nach den Seitenrändern 320 px Spalte; „Barrierefreiheitserklärung"
+ * ist als Überschrift **353 px** breit. Gemessen: die Seite liess sich dort um
+ * 13 px seitwärts schieben.
+ *
+ * Beide Angaben zusammen, weil sie verschiedene Fälle abdecken. `hyphens-auto`
+ * trennt sauber nach den Regeln der Sprache — aber nur, wenn der Browser ein
+ * Trennwörterbuch für Deutsch mitbringt. Wo es fehlt, greift `break-words` und
+ * bricht hart. Ein harter Umbruch ist hässlich; eine Seite, die sich waagerecht
+ * verschieben lässt, ist kaputt.
+ *
+ * `lang="de"` steht am `<html>`, sonst wüsste die Trennung nicht, nach welchen
+ * Regeln sie arbeiten soll.
+ */
+const UMBRUCH = "hyphens-auto break-words";
+
+const BODY = `text-[1.0625rem] leading-relaxed font-light lg:text-[1.125rem] ${UMBRUCH}`;
 const LINK =
   "rounded-mark text-accent underline underline-offset-4 transition-colors duration-[var(--duration-fast)] ease-entrance hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 const HEADING_CLASSES: Record<2 | 3 | 4, string> = {
-  2: "text-[1.5rem] leading-display font-light lg:text-[1.75rem]",
-  3: "text-[1.25rem] leading-display font-medium lg:text-[1.375rem]",
-  4: "text-[1.0625rem] leading-display font-medium lg:text-[1.125rem]",
+  2: `text-[1.5rem] leading-display font-light lg:text-[1.75rem] ${UMBRUCH}`,
+  3: `text-[1.25rem] leading-display font-medium lg:text-[1.375rem] ${UMBRUCH}`,
+  4: `text-[1.0625rem] leading-display font-medium lg:text-[1.125rem] ${UMBRUCH}`,
 };
 
 const Block = ({ block }: { block: LegalBlock }) => {
@@ -183,7 +205,9 @@ export const Rechtstext = ({ document }: RechtstextProps) => (
   <>
     <section className="rounded-b-section bg-surface-section px-5 pt-14 pb-12 md:px-10 lg:pt-20 lg:pb-16">
       <div className="mx-auto w-full max-w-[85rem]">
-        <h1 className="max-w-[42rem] text-[2rem] leading-display font-light md:text-[2.5rem] lg:text-[3rem]">
+        <h1
+          className={`max-w-[42rem] text-[2rem] leading-display font-light md:text-[2.5rem] lg:text-[3rem] ${UMBRUCH}`}
+        >
           {document.title}
         </h1>
       </div>
