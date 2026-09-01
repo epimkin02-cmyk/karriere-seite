@@ -111,6 +111,22 @@ export const Hero = () => (
      * also genau im Verlauf, und die Kolleginnen links waren verwaschene
      * Silhouetten. Der schmalere Kasten rückt sie aus dem Verlauf heraus.
      *
+     * ## Warum das Foto beschnitten ist und nicht verschoben
+     *
+     * Rechts standen Pergola, Hecke und Himmel — leere Fläche, während die
+     * Gruppe links im Verlauf hing. Naheliegend wäre, den Ausschnitt nach links
+     * zu schieben. Das geht hier nicht: dafür müsste das Bild seitlich
+     * überstehen, und in einem Kasten, der breiter proportioniert ist als das
+     * Foto, steht es das nie — `object-position` hätte waagerecht keinerlei
+     * Wirkung. Deshalb ist die leere rechte Fünftel aus der **Datei** heraus
+     * (2400 → 1920 px); die vollständige Aufnahme liegt in der Git-Historie und
+     * im Drive des Fotografen.
+     *
+     * Dadurch ist das Foto mit 1,2 deutlich hochformatiger als der Kasten mit
+     * 1,85 — es wird jetzt oben und unten stark beschnitten. `50% 18%` statt
+     * `center`: mittig gerechnet fielen 156 px oben weg, die obersten Köpfe
+     * sitzen aber schon bei 89 px.
+     *
      * **Auf dem Telefon** liegt es als eigener Streifen unter dem Text, und das
      * ist keine Bequemlichkeit, sondern Rechnerei. Das Band ist dort rund
      * 840 px hoch und 390 px breit; ein 3:2-Foto, das diese Fläche deckend
@@ -130,7 +146,7 @@ export const Hero = () => (
         fill
         priority
         sizes="100vw"
-        className="object-cover object-[50%_22%] lg:object-center"
+        className="object-cover object-[50%_22%] lg:object-[50%_18%]"
       />
 
       {/* Der Übergang von Weiss zum Foto — ein reiner Farbverlauf, sonst nichts.
@@ -156,14 +172,14 @@ export const Hero = () => (
        * Die Richtung folgt dem Layout: auf dem Telefon fällt der Verlauf von
        * oben nach unten in den Streifen hinein, ab `lg` von links nach rechts.
        *
-       * Bis 16 % der Bildbreite deckt reines Weiss, und das ist ausgemessen:
+       * Bis 14 % der Bildbreite deckt reines Weiss, und das ist ausgemessen:
        * die Textspalte endet bei 504 px, der Bildkasten beginnt bei 374 px —
        * macht gut 12 % seiner Breite. Deckend und nicht halbtransparent, damit
        * der Kontrast des Textes nicht davon abhängt, was auf dem Foto zu sehen
        * ist. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-b from-white from-0% to-transparent to-26% lg:bg-gradient-to-r lg:from-16% lg:to-46%"
+        className="absolute inset-0 bg-gradient-to-b from-white from-0% to-transparent to-26% lg:bg-gradient-to-r lg:from-14% lg:to-38%"
       />
     </div>
   </section>

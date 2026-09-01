@@ -1188,3 +1188,26 @@ Fliesstext und der Routenlink.
 
 Die Höhe ist ein Prop (`gross`) und keine neue Vorgabe: auf der Karriereseite
 ist die Karte eine Randnotiz neben den Standortvorteilen und bleibt bei 30rem.
+
+## 2026-09-01 — Hero-Foto beschnitten statt verschoben
+
+Rechts standen Pergola, Hecke und Himmel — leere Fläche, während die Gruppe
+links im Verlauf hing. Naheliegend wäre gewesen, den Ausschnitt nach links zu
+schieben; das geht hier nicht. `object-position` verschiebt nur, wo das Bild
+übersteht, und in einem Kasten, der breiter proportioniert ist (1,85) als das
+Foto (1,5), steht es seitlich nie über — waagerecht hätte die Angabe keinerlei
+Wirkung gehabt.
+
+Deshalb ist das leere rechte Fünftel aus der **Datei** heraus: 2400 → 1920 px
+(257 KB). Die vollständige Aufnahme liegt in der Git-Historie und im Drive des
+Fotografen.
+
+Das Foto ist damit mit 1,2 deutlich hochformatiger als der Kasten und wird oben
+und unten stark beschnitten. `50% 18%` statt `center`: mittig gerechnet fielen
+156 px oben weg, die obersten Köpfe sitzen aber schon bei 89 px.
+
+Der Verlauf endet dadurch früher — deckend bis 14 %, auslaufend bis 38 % statt
+46 %, weil links jetzt eine Person steht, wo vorher Hauswand war. Nachgemessen:
+hinter jedem Pixel des Textes steht weiterhin #ffffff.
+
+Barrierefreiheit: 0 Befunde von 10.
