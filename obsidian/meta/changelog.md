@@ -1064,3 +1064,29 @@ Die beiden hochgeladenen Dateien lagen mit Leerzeichen und Umlaut im Namen
 direkt in `public/`; sie sind zu Webfassungen gerechnet und entfernt.
 
 LCP 684 ms, Barrierefreiheit 0 Befunde von 10.
+
+## 2026-09-01 — Zeichen auf den Kernkompetenz-Karten
+
+Die vier Karten trugen eine Ordnungszahl (`01`–`04`), weil `FeatureCard.icon`
+zwar einen Dateinamen führte (`frank-pneck-001` …), die Dateien aber nie
+existierten. Jetzt liegen vier Strichzeichnungen im Markengrün vor; sie
+**ersetzen** die Ziffer statt sie zu ergänzen — Zeichen und Zähler nebeneinander
+wären zwei Anker um dieselbe Aufmerksamkeit.
+
+Zugeordnet wird über `card.id`, nicht über die Position im Array: die
+Reihenfolge kann sich ändern, die Kennung nicht, und ein Herz-Symbol über
+„Zuverlässig" wäre der Fehler, den bei einer Umsortierung niemand bemerkt. Der
+Pfad in `card.icon` bleibt ungelesen — er zeigt auf Dateien, die es nie gab, und
+an den Datendateien wird nichts geändert.
+
+**Die Vorlagen sind beschnitten, nicht bloss verkleinert.** Geliefert als
+1254 px grosse PNG mit unterschiedlich viel Luft um das Motiv; ungeschnitten
+nebeneinander wirken vier gleich grosse Kacheln dadurch verschieden gross — das
+Schild füllte seinen Rahmen, die Person schwamm darin. Sie sind deshalb auf
+ihren sichtbaren Inhalt beschnitten, wieder quadratisch aufgefüllt und auf
+256 px gerechnet: zusammen 108 KB statt 1,1 MB, dargestellt bei 48 bzw. 56 px.
+
+`alt=""` — die Zeichen illustrieren die Überschrift daneben und tragen keine
+eigene Information; die Reihenfolge sagt die `<ol>` ohnehin an.
+
+Barrierefreiheit: 0 Befunde von 10, keine 404.

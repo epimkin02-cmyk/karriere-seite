@@ -3,22 +3,35 @@
 /**
  * Band `#kernkompetenzen` — die vier Alleinstellungsmerkmale.
  *
- * ## Die vier Karten ohne Bild
+ ## Die vier Karten tragen jetzt Zeichen statt Ziffern
  *
- * `FeatureCard.icon` trägt einen Dateinamen (`frank-pneck-001` …), **die Dateien
- * existieren aber nicht** unter `public/assets/kanzlei/`. Ein `next/image` auf
- * einen fehlenden Pfad ist im Build kein Fehler, sondern erst zur Laufzeit ein
- * kaputtes Bild plus ein 404 je Karte — auf einer Seite mit
- * Barrierefreiheitssiegel der schlechteste denkbare Tausch. Die Karten sind
- * deshalb rein typografisch: eine Ordnungszahl, der Titel als `<h3>`, der Text
- * darunter. Das Feld bleibt in den Daten stehen (die Datendateien werden nicht
- * angefasst) und wird hier bewusst nicht gelesen; sobald die Bilder geliefert
- * sind, ist die Karte die eine Stelle, die es dafür zu ändern gilt.
+ * Lange stand hier eine Ordnungszahl, weil `FeatureCard.icon` zwar einen
+ * Dateinamen trug (`frank-pneck-001` …), die Dateien aber nicht existierten.
+ * Seit dem 01.09. liegen vier Strichzeichnungen vor, und sie ersetzen die
+ * Ziffer — nicht sie ergänzen: eine Karte mit Zeichen *und* Zähler hätte zwei
+ * Anker um dieselbe Aufmerksamkeit konkurrieren lassen.
  *
- * Die Ziffer ist `aria-hidden`: die `<ol>` sagt einer Vorlesefunktion die
- * Position ohnehin an, vorgelesen wäre sie eine Dopplung ohne Bezugswort.
+ * **Zugeordnet wird über `card.id`, nicht über die Position.** Die
+ * Reihenfolge im Datenarray kann sich ändern, die Kennung nicht — und ein
+ * Herz-Symbol über „Zuverlässig" wäre der Fehler, den bei einer Umsortierung
+ * niemand bemerkt. Der Pfad in `card.icon` bleibt dabei ungelesen: er zeigt auf
+ * Dateien, die es nie gab, und an den Datendateien wird nichts geändert
+ * (HAUSREGELN-KANZLEI §3).
+ *
+ * Die Zeichen sind `alt=""` — sie illustrieren die Überschrift daneben und
+ * tragen keine eigene Information. Die Reihenfolge sagt die `<ol>` einer
+ * Vorlesefunktion ohnehin an.
+ *
+ * ## Die Vorlagen sind beschnitten, nicht bloss verkleinert
+ *
+ * Geliefert wurden sie als 1254 px grosse PNG mit unterschiedlich viel Luft um
+ * das Motiv. Ungeschnitten nebeneinander gestellt wirken vier gleich grosse
+ * Kacheln dadurch **verschieden gross** — das Schild füllte seinen Rahmen, die
+ * Person schwamm darin. Sie sind deshalb auf ihren sichtbaren Inhalt
+ * beschnitten, wieder quadratisch aufgefüllt und auf 256 px gerechnet.
  */
 
+import Image from "next/image";
 import TextEngine from "spring-text-engine";
 
 import { Inview } from "@/components/animation/springs/in-view";
@@ -30,6 +43,19 @@ import {
 } from "@/lib/motion/text-presets";
 
 import { ANCHOR_OFFSET, BODY, EYEBROW, HEADING } from "./typografie";
+
+/**
+ * Zeichen je Karte, zugeordnet über `card.id` aus den Inhaltsdaten.
+ *
+ * Eine Karte ohne Eintrag bekommt kein Zeichen und keinen Ersatz — die
+ * Überschrift trägt die Karte auch allein.
+ */
+const ZEICHEN: Partial<Record<string, string>> = {
+  "persoenliche-betreuung": "/assets/kanzlei/persoenliche-betreuung.png",
+  "individuelle-beratung": "/assets/kanzlei/individuelle-beratung.png",
+  professionell: "/assets/kanzlei/professionell.png",
+  zuverlaessig: "/assets/kanzlei/zuverlaessig.png",
+};
 
 export const Kernkompetenzen = () => (
   <section
@@ -63,17 +89,21 @@ export const Kernkompetenzen = () => (
         tag="ol"
         className="grid grid-cols-1 gap-4 hyphens-auto lg:grid-cols-2 lg:items-start"
       >
-        {FEATURES_CONTENT.cards.map((card, index) => (
+        {FEATURES_CONTENT.cards.map((card) => (
           <li
             key={card.id}
             className="flex flex-col gap-3 rounded-card border border-border-subtle bg-background px-6 py-7"
           >
-            <span
-              aria-hidden="true"
-              className="text-sm leading-body font-medium text-accent"
-            >
-              {String(index + 1).padStart(2, "0")}
-            </span>
+            {ZEICHEN[card.id] ? (
+              <Image
+                src={ZEICHEN[card.id]!}
+                alt=""
+                width={256}
+                height={256}
+                sizes="56px"
+                className="mb-1 size-12 lg:size-14"
+              />
+            ) : null}
             {/* Kartentitel bleiben statisch — `HEADING_MOTION` gehört den
                 Sektionsüberschriften. */}
             <h3 className="text-[1.25rem] leading-display font-light lg:text-[1.5rem]">
