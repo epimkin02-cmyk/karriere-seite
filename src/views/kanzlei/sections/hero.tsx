@@ -139,6 +139,9 @@ export const Hero = () => (
        *
        * `backdrop-blur` weicht das Foto dort auf, wo Text darüber liegt. Ohne
        * die Unschärfe konkurrieren Gesichter und Fensterrahmen mit der Schrift.
+       * Bewusst nur 5 px: die erste Fassung hatte `backdrop-blur-md` (12 px),
+       * und weil der Verlauf zugleich viel zu weit lief, war das halbe Foto
+       * weichgezeichnet — auf dem Telefon praktisch das ganze.
        *
        * `mask-image` blendet **die Unschärfe selbst** aus. Das ist der Kniff:
        * ein blosser Farbverlauf würde nur das Weiss ausblenden, das Foto bliebe
@@ -149,15 +152,22 @@ export const Hero = () => (
        * Die Richtung folgt dem Layout: auf dem Telefon fällt der Verlauf von
        * oben nach unten in den Streifen hinein, ab `lg` von links nach rechts.
        *
-       * Der Wert 22 % ist nicht gegriffen, sondern ausgemessen: die Textspalte
+       * **Wie weit er läuft, ist der eigentliche Regler.** Auf dem Telefon
+       * endet er nach 24 % der Streifenhöhe, auf dem Rechner nach 44 % der
+       * Bildbreite. In der ersten Fassung waren es 70 % beziehungsweise 58 %,
+       * und das Ergebnis war ein Foto, das durchgehend verwaschen aussah statt
+       * an einer Kante weich zu werden.
+       *
+       * Der Wert 18 % ist nicht gegriffen, sondern ausgemessen: die Textspalte
        * endet bei 504 px, der Bildkasten beginnt bei 374 px, macht 130 px oder
-       * eben rund 22 % seiner Breite. Bis dorthin deckt reines Weiss — und zwar
+       * eben gut 12 % seiner Breite. 18 % lässt Luft dahinter. Bis dorthin
+       * deckt reines Weiss — und zwar
        * deckend und nicht halbtransparent, damit der Kontrast des Textes nicht
        * davon abhängt, was gerade auf dem Foto zu sehen ist. Nachgemessen steht
        * hinter jedem Textpixel #ffffff. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-b from-white to-transparent to-70% backdrop-blur-md [mask-image:linear-gradient(to_bottom,#000_0%,transparent_70%)] lg:bg-gradient-to-r lg:from-white lg:from-22% lg:to-58% lg:[mask-image:linear-gradient(to_right,#000_22%,transparent_58%)]"
+        className="absolute inset-0 bg-gradient-to-b from-white to-transparent to-24% backdrop-blur-[5px] [mask-image:linear-gradient(to_bottom,#000_0%,transparent_24%)] lg:bg-gradient-to-r lg:from-white lg:from-18% lg:to-44% lg:[mask-image:linear-gradient(to_right,#000_18%,transparent_44%)]"
       />
     </div>
   </section>

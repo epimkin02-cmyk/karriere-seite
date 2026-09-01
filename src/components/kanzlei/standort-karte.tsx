@@ -43,6 +43,21 @@ export interface StandortKarteProps {
   consentBody: string;
   consentAction: string;
   routeLabel: string;
+  /**
+   * Karte sofort laden, ohne die Einwilligungsschwelle.
+   *
+   * ⚠️ Das ist eine **rechtliche** Entscheidung, keine gestalterische. Mit
+   * `autoLoad` baut die Seite beim Aufruf eine Verbindung zu OpenStreetMap auf
+   * und überträgt dabei die IP-Adresse des Besuchers, ohne dass er zugestimmt
+   * hat. Damit ist die Aussage „diese Seite macht keine Drittanfragen", auf der
+   * das Fehlen eines Cookie-Banners beruht, nicht mehr vollständig richtig —
+   * die Datenschutzerklärung muss die Karte dann benennen.
+   *
+   * Vorgabe ist deshalb `false`. Auf der Kanzlei-Landingpage steht es auf
+   * `true`, weil der Kunde die Karte ausdrücklich sichtbar haben wollte;
+   * zurückgedreht ist es ein Wort.
+   */
+  autoLoad?: boolean;
 }
 
 /**
@@ -75,8 +90,9 @@ export const StandortKarte = ({
   consentBody,
   consentAction,
   routeLabel,
+  autoLoad = false,
 }: StandortKarteProps) => {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(autoLoad);
 
   const { lat, lon } = coords;
   const bbox = [

@@ -48,14 +48,26 @@ export const Willkommen = () => (
       >
         {HERO_CONTENT.pageTitle}
       </TextEngine>
-      {/* Ein `<Inview>` für den Block, und der Absatz ohne TextEngine (§2b):
+      {/* `lg:pt-1.5` richtet Überschrift und Fliesstext auf eine Höhe.
+          Ausgemessen: die Versalhöhe des Absatzes lag 5,5 px über der der
+          Überschrift. Beide Kästen beginnen bei derselben Y-Koordinate — der
+          Versatz kommt allein aus dem Durchschuss, der bei 40 px Schrift mit
+          44 px Zeilenhöhe deutlich enger sitzt als bei 18 px mit 21,6 px. Die
+          Kästen bündig zu stellen heisst hier eben nicht, dass die Schrift
+          bündig steht.
+
+          6 px statt der gemessenen 5,5 — ein halber Pixel Versatz ist nicht zu
+          sehen, ein Wert ausserhalb der Abstandsskala des Systems dagegen
+          irgendwann schon.
+
+          Ein `<Inview>` für den Block, und der Absatz ohne TextEngine (§2b):
           ein Begrüssungstext dieser Länge, der sich Wort für Wort aus einer
           Unschärfe aufbaut, ist Unruhe statt Auftritt. */}
       <Inview
         {...ELEMENT_MOTION}
         mode="once"
         tag="div"
-        className={`lg:flex-1 ${PROSA_FLIESSEND}`}
+        className={`lg:flex-1 lg:pt-1.5 ${PROSA_FLIESSEND}`}
       >
         <p className={BODY}>{HERO_CONTENT.intro}</p>
       </Inview>

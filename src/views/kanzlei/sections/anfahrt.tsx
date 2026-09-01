@@ -85,6 +85,9 @@ export const Anfahrt = () => (
           consentBody={LOCATION_CONTENT.mapConsentBody}
           consentAction={LOCATION_CONTENT.mapConsentAction}
           routeLabel={LOCATION_CONTENT.routeLabel}
+          // Vom Kunden so gewünscht: die Karte soll ohne Klick zu sehen sein.
+          // Was das rechtlich bedeutet, steht an der Prop in [[StandortKarte]].
+          autoLoad
         />
       </Inview>
     </div>

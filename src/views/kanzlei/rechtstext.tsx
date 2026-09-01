@@ -108,7 +108,7 @@ const Block = ({ block }: { block: LegalBlock }) => {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${LINK} inline-flex min-h-11 items-center`}
+                className={`${LINK} flex min-h-11 w-fit items-center`}
               >
                 {item.label}
               </a>

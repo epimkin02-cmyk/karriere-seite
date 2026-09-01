@@ -1120,3 +1120,48 @@ Betroffen: Willkommen, Überblick Unternehmen, Überblick Private, Anfahrt.
 Unterhalb von `lg` bleibt alles einspaltig — dort ist der Bildschirm für zwei
 Spalten zu schmal. Geprüft: `column-count: auto` auf 390 px, kein waagerechtes
 Scrollen. Barrierefreiheit 0 Befunde von 10.
+
+## 2026-09-01 — Hero entschärft, Fusszeile umgebaut, Karte ohne Klick
+
+**Der Hero war verwaschen, und zwar aus zwei Gründen zugleich.** Der
+Weichzeichner stand auf `backdrop-blur-md` (12 px), und der Verlauf, der ihn
+begrenzt, lief viel zu weit: auf dem Telefon über 70 % der Streifenhöhe, auf dem
+Rechner über 58 % der Bildbreite. Das Foto sah dadurch nicht an einer Kante
+weich aus, sondern durchgehend. Jetzt 5 px Unschärfe, Verlauf bis 24 % (mobil)
+beziehungsweise 44 % (ab `lg`). Die Textspalte endet bei 504 px und der
+Bildkasten beginnt bei 374 px — die 18 %, bis zu denen reines Weiss deckt,
+lassen dahinter Luft.
+
+**Willkommen: Überschrift und Fliesstext stehen auf einer Höhe.** Beide Kästen
+begannen schon vorher bei derselben Y-Koordinate; der sichtbare Versatz von
+5,5 px kam allein aus dem Durchschuss — 40 px Schrift auf 44 px Zeile sitzt
+enger als 18 px auf 21,6 px. `lg:pt-1.5` auf der Textspalte, gemessener Rest
+0,5 px.
+
+**Fusszeile.** Die Öffnungszeiten sind raus; sie versprachen an dieser Stelle
+mehr, als sie halten — eine Kanzlei arbeitet nach Termin. `OPENING_HOURS` bleibt
+in `firma.ts` stehen. An ihrer Stelle steht ein Wegweiser über die fünf Anker
+der Seite plus `/karriere`, das sonst nirgends verlinkt ist. Darüber das Logo,
+bewusst ohne Link: es steht am Fuss derselben Seite, auf die es zeigen würde.
+
+**Dabei einen Fehler gefunden, der schon länger drin war.** Die Links in der
+Fusszeile trugen `inline-flex min-h-11` — die 44px-Zielgrösse (WCAG 2.5.8) war
+also gefordert, hat aber nicht gewirkt: ein `inline-flex` wächst über seine
+Zeilenbox hinaus, statt das `<li>` mitzunehmen. Gemessen standen die vier
+Telefonnummern 15 px auseinander bei je 44 px Höhe — sie überlappten einander um
+zwei Drittel, und auf dem Telefon wählt man damit beim Tippen die falsche
+Nummer. `flex w-fit` statt `inline-flex`; nachgemessen jetzt 48 px Abstand. In
+der Linkliste der Rechtstexte stand derselbe Fehler.
+
+**Karte lädt ohne Klick** (`autoLoad` an [[StandortKarte]], Vorgabe bleibt
+`false`). ⚠️ Das ist eine rechtliche Entscheidung: die Seite baut damit beim
+Aufruf eine Verbindung zu OpenStreetMap auf und überträgt die IP-Adresse, ohne
+Einwilligung. Die Aussage „keine Drittanfragen", auf der das Fehlen eines
+Cookie-Banners beruht, stimmt dann nicht mehr vollständig.
+
+⚠️ **Der Pin sitzt weiterhin auf dem Stadtzentrum von Pößneck**, nicht auf der
+Naßäckerstraße. Geokodierung ist aus diesem Netz nicht erreichbar (Nominatim und
+Photon antworten nicht), und geraten wird eine Adresse nicht. Der Routen-Link
+daneben ist davon unberührt — er wird aus der Postanschrift gebaut.
+
+Barrierefreiheit: 0 Befunde von 10.
