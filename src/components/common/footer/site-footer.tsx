@@ -42,7 +42,7 @@ const LINK_CLASSES =
   "-mx-3 inline-flex min-h-11 items-center rounded-panel px-3 leading-body font-light underline underline-offset-4 transition-colors duration-[var(--duration-fast)] ease-entrance hover:bg-action-primary-border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action-primary-foreground";
 
 export const SiteFooter = ({ content }: SiteFooterProps) => (
-  <footer className="bg-action-primary px-5 py-16 text-action-primary-foreground md:px-10 lg:py-20">
+  <footer className="flaeche-verlauf px-5 py-16 text-action-primary-foreground md:px-10 lg:py-20">
     <div className="mx-auto flex w-full max-w-[85rem] flex-col gap-10 lg:gap-12">
       <div className="flex flex-col items-start gap-4">
         <p className="text-base leading-body font-medium">{legal.name}</p>

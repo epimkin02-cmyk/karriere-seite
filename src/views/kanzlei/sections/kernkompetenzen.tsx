@@ -81,13 +81,19 @@ export const Kernkompetenzen = () => (
 
       {/* `<ol>`, weil die Ziffern eine Ordnung behaupten — eine Vorlesefunktion
           kündigt sie dann als „Liste mit 4 Einträgen" an und zählt selbst mit.
-          Auf `lg` zwei Spalten mit `items-start`, damit die unterschiedlich
-          langen Texte die Nachbarkarte nicht mitwachsen lassen. */}
+          Auf `lg` zwei Spalten, **ohne** `items-start`: die Karten strecken
+          sich damit auf die Höhe der höchsten ihrer Zeile. Vorher stand dort
+          `items-start`, mit der Begründung, ein langer Text solle die
+          Nachbarkarte nicht mitwachsen lassen — sichtbar war davon aber vor
+          allem, dass zwei nebeneinanderliegende Karten unterschiedlich weit
+          nach unten reichten (gemessen 236 gegen 258 px). Eine Kante, die
+          nicht durchläuft, fällt mehr auf als etwas Weissraum in der kürzeren
+          Karte. */}
       <Inview
         {...ELEMENT_MOTION}
         mode="once"
         tag="ol"
-        className="grid grid-cols-1 gap-4 hyphens-auto lg:grid-cols-2 lg:items-start"
+        className="grid grid-cols-1 gap-4 hyphens-auto lg:grid-cols-2"
       >
         {FEATURES_CONTENT.cards.map((card) => (
           <li

@@ -46,7 +46,7 @@ export const Abschluss = () => (
           direkt, am Rechner bietet er die Nummer zum Kopieren an. */}
       <a
         href={CLOSING_CONTENT.phoneHref}
-        className={`inline-flex min-h-12 shrink-0 items-center rounded-action bg-action-primary px-8 text-[1.125rem] leading-body font-light text-action-primary-foreground transition-colors duration-[var(--duration-fast)] ease-entrance hover:bg-action-primary-border ${FOCUS}`}
+        className={`inline-flex min-h-12 shrink-0 items-center rounded-action flaeche-verlauf px-8 text-[1.125rem] leading-body font-light text-action-primary-foreground hover:flaeche-verlauf-tief ${FOCUS}`}
       >
         {CLOSING_CONTENT.phoneLabel}
       </a>

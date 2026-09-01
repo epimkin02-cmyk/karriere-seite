@@ -53,13 +53,22 @@ export const PROSA_SPALTEN =
   "lg:columns-2 lg:gap-12 [&>p]:break-inside-avoid [&>p+p]:mt-5";
 
 /**
- * Wie [[PROSA_SPALTEN]], aber für einen **einzelnen langen** Absatz.
+ * ## Warum es keine Variante für einen einzelnen langen Absatz gibt
  *
- * Ohne `break-inside-avoid`, denn hier soll der Absatz ja über den
- * Spaltenumbruch laufen — mit der Regel bliebe er komplett in der ersten
- * Spalte stehen und die zweite bliebe leer.
+ * Es gab eine (`PROSA_FLIESSEND`, ohne `break-inside-avoid`), damit ein langer
+ * Absatz über den Spaltenumbruch laufen kann. Sie ist wieder raus, weil
+ * Chromium dabei die zweite Spalte um **4,4 px** nach unten versetzt: der
+ * Absatz wird fragmentiert, und das zweite Fragment beginnt nicht exakt am
+ * Spaltenanfang. Nachgemessen mit `Range.getBoundingClientRect()` über jedes
+ * Zeichen — Spalte 1 startet bei 754,5, Spalte 2 bei 758,9. Weder ein anderer
+ * `column-fill`, noch eine ganzzahlige Zeilenhöhe, noch `orphans`/`widows`
+ * ändern daran etwas.
+ *
+ * Mit `break-inside-avoid` tritt das nicht auf, weil dann kein Absatz
+ * fragmentiert wird: gemessen starten beide Spalten der Überblicksabschnitte
+ * auf den Pixel genau gleich. Ein einzelner langer Absatz wird deshalb vor dem
+ * Rendern in zwei aufgeteilt (siehe [[Willkommen]]) statt umbrochen.
  */
-export const PROSA_FLIESSEND = "lg:columns-2 lg:gap-12";
 
 export const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";

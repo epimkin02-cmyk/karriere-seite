@@ -23,6 +23,12 @@
      Aktion; sie ist bewusst kein eigener Farbton, damit Grundfarbe und
      Hover-Zustand nicht auseinanderdriften. */
   --raw-color-brand-500: #016d32;
+  /* Der Zwischenton für die Verläufe auf grünen Flächen.
+     78 % Helligkeit der 500er, also derselbe Farbton — kein eigener, damit
+     Fläche und Verlauf nicht auseinanderdriften. Weiss darauf misst 9,01:1,
+     Limette 8,56:1; der hellste Punkt jedes Verlaufs bleibt die 500er mit
+     6,49:1 und damit weit über den 4,5:1 der AA-Stufe. */
+  --raw-color-brand-700: #015527;
   --raw-color-brand-900: #00431f;
   --raw-color-lime-200: #f8ffb4;
   --raw-color-lime-400: #e5ed9b;
@@ -99,6 +105,9 @@
   /* Eyebrow labels, logo mark, primary actions. */
   --accent: var(--raw-color-brand-500);
   --action-primary: var(--raw-color-brand-500);
+  /* Das untere Ende des Verlaufs auf primären Flächen. Siehe
+     `.flaeche-verlauf` weiter unten. */
+  --action-primary-deep: var(--raw-color-brand-700);
   --action-primary-border: var(--raw-color-brand-900);
   --action-primary-foreground: var(--raw-color-white);
   --action-secondary: var(--raw-color-lime-200);
@@ -177,6 +186,7 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-action-primary: var(--action-primary);
+  --color-action-primary-deep: var(--action-primary-deep);
   --color-action-primary-border: var(--action-primary-border);
   --color-action-primary-foreground: var(--action-primary-foreground);
   --color-action-secondary: var(--action-secondary);
@@ -419,4 +429,52 @@ body {
       animation: none;
     }
   }
+}
+
+/**
+ * Verlauf auf grünen Flächen — Knöpfe, Kacheln, das Zahlenband.
+ *
+ * Eine einzige Klasse statt fünf gleichlautender Utility-Ketten an fünf
+ * Stellen: der Verlauf ist eine Entscheidung über das Erscheinungsbild der
+ * Marke, keine Eigenschaft des jeweiligen Knopfes. Wer ihn ändern will, ändert
+ * ihn hier.
+ *
+ * **Von oben nach unten**, nicht diagonal. Eine Fläche, die oben heller ist,
+ * liest sich als von oben beleuchtet — das ist die Richtung, aus der Licht
+ * kommt, und deshalb die einzige, die nicht als Effekt auffällt. Diagonale
+ * Verläufe auf kleinen Knöpfen wirken bei jeder Breite anders, weil der Winkel
+ * sich mit dem Seitenverhältnis ändert.
+ *
+ * **Nur 22 % Helligkeitsunterschied.** Sichtbar genug, dass die Fläche Tiefe
+ * bekommt, flach genug, dass sie nicht nach Web 2.0 aussieht.
+ *
+ * ## Zum Hover
+ *
+ * Er wechselt hart statt weich, und das lässt sich nicht ändern: Browser
+ * interpolieren `background-image` nicht, ein `transition` auf einem Verlauf
+ * bleibt wirkungslos. Ein weicher Übergang bräuchte eine zweite, überlagerte
+ * Ebene, deren Deckkraft animiert wird — für den Unterschied zwischen zwei
+ * Grüntönen ist das ein Aufwand ohne Gegenwert. Der Wechsel ist klein genug,
+ * dass er als Rückmeldung liest und nicht als Sprung.
+ */
+@utility flaeche-verlauf {
+  /* Die Grundfarbe steht zusätzlich als `background-color`, und das aus zwei
+     Gründen: sie trägt, falls der Verlauf nicht gemalt wird, und
+     Prüfwerkzeuge für Kontrast lesen ausschliesslich `background-color` — ohne
+     sie meldet jeder Audit weisse Schrift auf durchsichtigem Grund. */
+  background-color: var(--action-primary);
+  background-image: linear-gradient(
+    to bottom,
+    var(--action-primary),
+    var(--action-primary-deep)
+  );
+}
+
+@utility flaeche-verlauf-tief {
+  background-color: var(--action-primary-deep);
+  background-image: linear-gradient(
+    to bottom,
+    var(--action-primary-deep),
+    var(--action-primary-border)
+  );
 }

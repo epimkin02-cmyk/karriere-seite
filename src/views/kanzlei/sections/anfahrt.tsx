@@ -33,13 +33,7 @@ import {
   HEADING_MOTION,
 } from "@/lib/motion/text-presets";
 
-import {
-  ANCHOR_OFFSET,
-  BODY,
-  EYEBROW,
-  HEADING,
-  PROSA_FLIESSEND,
-} from "./typografie";
+import { ANCHOR_OFFSET, BODY, EYEBROW, HEADING } from "./typografie";
 
 const ADDRESS_LINE = `${CONTACT_CARD.address.street}, ${CONTACT_CARD.address.postalCode} ${CONTACT_CARD.address.city}`;
 
@@ -68,7 +62,7 @@ export const Anfahrt = () => (
           {...ELEMENT_MOTION}
           mode="once"
           tag="p"
-          className={`lg:flex-1 ${BODY} ${PROSA_FLIESSEND}`}
+          className={`max-w-[45rem] lg:flex-1 ${BODY}`}
         >
           {DIRECTIONS_CONTENT.body}
         </Inview>

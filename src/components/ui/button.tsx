@@ -47,7 +47,7 @@ const BASE_CLASSES =
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary:
-    "bg-action-primary border-action-primary-border text-action-primary-foreground hover:bg-action-primary-border",
+    "flaeche-verlauf border-action-primary-border text-action-primary-foreground hover:flaeche-verlauf-tief",
   secondary:
     "bg-action-secondary border-action-secondary-border text-action-secondary-foreground hover:bg-action-secondary-border",
 };

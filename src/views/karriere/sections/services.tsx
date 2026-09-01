@@ -38,7 +38,7 @@ const CARD_VARIANT: Record<ServiceCard["variant"], string> = {
   // and the card silently reads as empty. The black base means the worst case
   // is an unstyled-looking card that can still be read.
   photo: "bg-foreground text-white lg:w-[27.9375rem]",
-  brand: "bg-accent text-white lg:w-[27.9375rem]",
+  brand: "flaeche-verlauf text-white lg:w-[27.9375rem]",
 };
 
 export const Services = ({ intro, cards }: ServicesProps) => (

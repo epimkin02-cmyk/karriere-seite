@@ -1211,3 +1211,80 @@ Der Verlauf endet dadurch früher — deckend bis 14 %, auslaufend bis 38 % stat
 hinter jedem Pixel des Textes steht weiterhin #ffffff.
 
 Barrierefreiheit: 0 Befunde von 10.
+
+## 2026-09-01 — Verlauf auf allen grünen Flächen
+
+Knöpfe, Kacheln und das Zahlenband waren einfarbig. Jetzt tragen sie einen
+Verlauf von oben nach unten: primäre Flächen von der 500er (#016d32) auf eine
+neue 700er (#015527), das dunkle Zahlenband von der 700er auf die 900er.
+
+**Die 700er ist kein neuer Farbton**, sondern 78 % Helligkeit der 500er — so
+driften Fläche und Verlauf nicht auseinander, wenn die Akzentfarbe einmal
+wechselt. Derselbe Grundsatz galt schon für die 900er.
+
+**Von oben nach unten, nicht diagonal.** Eine Fläche, die oben heller ist, liest
+sich als von oben beleuchtet; das ist die Richtung, aus der Licht kommt, und
+deshalb die einzige, die nicht als Effekt auffällt. Diagonale Verläufe wirken
+auf kleinen Knöpfen bei jeder Breite anders, weil der Winkel vom
+Seitenverhältnis abhängt. Der Unterschied beträgt 22 % Helligkeit — genug für
+Tiefe, zu wenig für Web 2.0.
+
+Zwei Utilities in `globals.css` statt fünf gleichlautender Klassenketten an fünf
+Stellen: der Verlauf ist eine Entscheidung über das Erscheinungsbild der Marke,
+keine Eigenschaft des einzelnen Knopfes.
+
+Beide setzen zusätzlich eine `background-color`. Sie trägt, falls der Verlauf
+nicht gemalt wird — und Kontrast-Prüfwerkzeuge lesen ausschliesslich
+`background-color`; ohne sie meldet jeder Audit weisse Schrift auf durchsichtigem
+Grund.
+
+**Der Hover wechselt hart**, und das ist keine Nachlässigkeit: Browser
+interpolieren `background-image` nicht, ein `transition` auf einem Verlauf bleibt
+wirkungslos. Ein weicher Wechsel bräuchte eine zweite überlagerte Ebene mit
+animierter Deckkraft — für den Unterschied zwischen zwei Grüntönen ist das
+Aufwand ohne Gegenwert.
+
+Kontrast: der hellste Punkt jedes Verlaufs bleibt die 500er mit 6,49:1 gegen
+Weiss. Auf der 700er misst Weiss 9,01:1, Limette 8,56:1, die gedämpfte
+Beschriftung des Zahlenbands 6,38:1. Barrierefreiheit: 0 Befunde von 10.
+
+## 2026-09-01 — Vier Stellen ausgerichtet
+
+Alle vier vom Kunden gemeldet, alle vier nachgemessen statt nach Augenmass
+korrigiert.
+
+**Willkommen: die zweite Spalte stand 4,4 px tiefer.** Ursache war nicht das
+Layout, sondern die Fragmentierung: ein **einzelner** Absatz, der über den
+Spaltenumbruch läuft, beginnt in Chromium im zweiten Fragment nicht exakt am
+Spaltenanfang. Gemessen mit `Range.getBoundingClientRect()` über jedes Zeichen —
+Spalte 1 bei 754,5, Spalte 2 bei 758,9. Weder `column-fill: auto` noch eine
+ganzzahlige Zeilenhöhe noch `orphans`/`widows` ändern etwas daran.
+
+Der Begrüssungstext wird deshalb vor dem Rendern an einer Satzgrenze in zwei
+Absätze geteilt, die je in ihrer Spalte bleiben (`break-inside-avoid`). Beide
+starten jetzt auf den Pixel genau bei 760.
+
+Die Trennstelle ist die **ausgeglichenste**, nicht die erste hinter der Hälfte.
+Der erste Versuch nahm letztere und lieferte 380 zu 149 Zeichen — die erste
+Spalte wurde dadurch zu hoch für ihre Hälfte, der Absatz liess sich nicht
+brechen, und die zweite Spalte blieb leer. Der Vergleich aller Trennstellen
+liefert 237 zu 292.
+
+`PROSA_FLIESSEND` ist damit ersatzlos entfallen.
+
+**Zahlenband: die dritte Zahl stand 16 px höher.** Die Beschriftung
+„Mitarbeiterinnen und Mitarbeiter" bricht zweizeilig um, und jedes Paar richtete
+sich für sich aus. Jetzt teilen sich alle drei über `grid-rows-subgrid` dieselben
+zwei Rasterzeilen — Zahlen in der einen, Beschriftungen in der anderen.
+`items-end` hätte nur die Kante gewechselt, an der es klemmt.
+
+**Kernkompetenz-Karten: 236 gegen 258 px in derselben Zeile.** `lg:items-start`
+ist raus; die Karten strecken sich auf die Höhe der höchsten ihrer Zeile. Die
+alte Begründung („ein langer Text soll die Nachbarkarte nicht mitwachsen
+lassen") wiegt weniger als eine Unterkante, die nicht durchläuft.
+
+**Anfahrt: einspaltig statt zweispaltig.** Drei Zeilen Text in zwei Spalten
+ergaben 2 zu 1 — sichtbar unausgeglichen. Die Mehrspaltigkeit lohnt erst ab
+Absätzen, die sich verteilen lassen.
+
+Barrierefreiheit: 0 Befunde von 10.

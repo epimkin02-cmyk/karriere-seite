@@ -92,7 +92,7 @@ export const KanzleiHeader = () => (
             wählt er direkt, am Rechner bietet er die Nummer zum Kopieren an. */}
         <a
           href={PRIMARY_PHONE.href}
-          className="inline-flex min-h-11 items-center gap-2 rounded-action bg-action-primary px-4 text-action-primary-foreground transition-colors duration-[var(--duration-fast)] ease-entrance hover:bg-action-primary-border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:px-5"
+          className="inline-flex min-h-11 items-center gap-2 rounded-action flaeche-verlauf px-4 text-action-primary-foreground hover:flaeche-verlauf-tief focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:px-5"
         >
           <PhoneIcon className="size-4 shrink-0" />
           {/* Genau EIN Textknoten je Breakpoint. Beide gleichzeitig zu rendern

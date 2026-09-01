@@ -135,7 +135,7 @@ export const Gruende = ({ content }: GruendeProps) => (
             der Spur als Antwort liest und nicht als achtzehnter Vorteil. */}
         <li
           lang="de"
-          className={`flex w-[20rem] shrink-0 flex-col justify-between rounded-card bg-action-primary p-5 text-action-primary-foreground hyphens-auto lg:w-[24rem] lg:p-6 ${CARD_HEIGHT}`}
+          className={`flex w-[20rem] shrink-0 flex-col justify-between rounded-card flaeche-verlauf p-5 text-action-primary-foreground hyphens-auto lg:w-[24rem] lg:p-6 ${CARD_HEIGHT}`}
         >
           <div className="flex flex-col gap-2 lg:gap-3">
             <h3 className="text-[1.25rem] leading-display font-light lg:text-[1.5rem]">

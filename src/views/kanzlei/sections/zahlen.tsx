@@ -42,6 +42,11 @@
  *
  * ## Kontrast
  *
+ * Das Band trägt seit dem 01.09. einen Verlauf (`flaeche-verlauf-tief`), oben
+ * die 700er, unten die 900er. Massgeblich für den Kontrast ist damit das obere,
+ * hellere Ende: Weiss darauf misst **9,01:1**, Limette **8,56:1**, die
+ * Beschriftung in `white/80` **6,38:1**.
+ *
  * Gemessen, nicht geschätzt: Weiss auf `--raw-color-brand-900` (#00431f)
  * ergibt **11,52:1**, die Limette der Zahlen (#f8ffb4) **10,95:1**, die
  * gedämpfte Beschriftung in `white/80` **7,9:1**. Alle drei liegen weit über
@@ -85,7 +90,7 @@ export const Zahlen = () => (
   <section
     id="zahlen"
     aria-labelledby="zahlen-heading"
-    className={`rounded-section bg-action-primary-border px-5 py-16 text-white md:px-10 lg:py-24 ${ANCHOR_OFFSET}`}
+    className={`rounded-section flaeche-verlauf-tief px-5 py-16 text-white md:px-10 lg:py-24 ${ANCHOR_OFFSET}`}
   >
     <div className="mx-auto flex w-full max-w-[85rem] flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
       <h2
@@ -103,18 +108,33 @@ export const Zahlen = () => (
           Die Zahl steht im `<dd>` und die Beschriftung im `<dt>` — also
           scheinbar verkehrt herum. Ist es nicht: der Begriff ist „Leistungen
           für Unternehmen", der Wert dazu ist 47. Optisch steht die Zahl oben,
-          weil sie die Aufmerksamkeit trägt; `flex-col-reverse` dreht das
-          Sichtbare um, ohne die Bedeutung anzufassen. */}
+          weil sie die Aufmerksamkeit trägt. Untereinander (bis `sm`) dreht
+          `flex-col-reverse` das Sichtbare um, im Raster darüber `row-start` —
+          beide Male ohne die Bedeutung anzufassen. */}
       {/* `<Inview>` kennt `dl` nicht als Tag, deshalb der Wrapper: die
           Bewegung sitzt aussen, die Bedeutung innen. */}
       <Inview {...ELEMENT_MOTION} mode="once" tag="div">
-        <dl className="grid grid-cols-1 gap-8 sm:grid-cols-3 lg:gap-14">
+        {/* `grid-rows-2` plus `grid-rows-subgrid` in den Kindern: die Zahlen
+            teilen sich eine Zeile, die Beschriftungen die andere. Ohne das
+            richtet sich jedes Paar für sich aus, und sobald **eine**
+            Beschriftung zweizeilig wird — „Mitarbeiterinnen und Mitarbeiter" —
+            rutscht ihre Zahl nach oben aus der Reihe. Gemessen waren es 16 px.
+
+            Warum nicht einfach `items-end` auf dem Raster: dann stünden die
+            Beschriftungen bündig und die Zahlen unterschiedlich hoch — also
+            derselbe Fehler, nur an der anderen Kante. Subgrid richtet beide
+            Zeilen aus, weil die Kinder das Raster des Elternteils übernehmen
+            statt ein eigenes aufzumachen. */}
+        <dl className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:grid-rows-[auto_auto] lg:gap-14">
           {ZAHLEN.map((zahl) => (
-            <div key={zahl.label} className="flex flex-col-reverse gap-1">
-              <dt className="max-w-[12rem] text-sm leading-body font-light text-white/80">
+            <div
+              key={zahl.label}
+              className="flex flex-col-reverse gap-1 sm:grid sm:row-span-2 sm:grid-rows-subgrid"
+            >
+              <dt className="max-w-[12rem] text-sm leading-body font-light text-white/80 sm:row-start-2">
                 {zahl.label}
               </dt>
-              <dd className="text-[3rem] leading-none font-light text-action-secondary lg:text-[4rem]">
+              <dd className="text-[3rem] leading-none font-light text-action-secondary sm:row-start-1 lg:text-[4rem]">
                 <StatCounter value={zahl.wert} />
               </dd>
             </div>

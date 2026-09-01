@@ -29,8 +29,47 @@ import {
   ANCHOR_OFFSET,
   BODY,
   HEADING,
-  PROSA_FLIESSEND,
+  PROSA_SPALTEN,
 } from "./typografie";
+
+/**
+ * Teilt den Begrüssungstext an einer Satzgrenze möglichst nah an der Mitte.
+ *
+ * Nötig, weil ein **einzelner** Absatz, der über den Spaltenumbruch läuft, in
+ * Chromium die zweite Spalte um 4,4 px nach unten versetzt (die Messung steht
+ * in [[typografie]]). Zwei Absätze, die je in ihrer Spalte bleiben, starten auf
+ * den Pixel genau gleich.
+ *
+ * Der Text bleibt dabei unangetastet — er wird nur an einem Punkt getrennt, den
+ * er selbst vorgibt. `HAUSREGELN-KANZLEI §3` verbietet, die Daten zu ändern,
+ * nicht, sie zu setzen.
+ */
+const zweiAbsaetze = (text: string): [string, string] => {
+  const saetze = text.match(/[^.!?]+[.!?]+\s*/g) ?? [text];
+  if (saetze.length < 2) return [text, ""];
+
+  // Die **ausgeglichenste** Trennstelle, nicht die erste hinter der Hälfte.
+  // Beim Begrüssungstext (6 Sätze, 529 Zeichen) liefert „erste hinter der
+  // Hälfte" 380 zu 149 Zeichen — die erste Spalte wird dadurch zu hoch für
+  // ihre Hälfte, `break-inside-avoid` hält den Absatz zusammen, und die zweite
+  // Spalte bleibt leer. Der Vergleich aller Trennstellen liefert 237 zu 292.
+  let schnitt = 1;
+  let besteAbweichung = Number.POSITIVE_INFINITY;
+  let gelesen = 0;
+  for (let i = 0; i < saetze.length - 1; i += 1) {
+    gelesen += saetze[i].length;
+    const abweichung = Math.abs(gelesen - (text.length - gelesen));
+    if (abweichung < besteAbweichung) {
+      besteAbweichung = abweichung;
+      schnitt = i + 1;
+    }
+  }
+
+  return [
+    saetze.slice(0, schnitt).join("").trim(),
+    saetze.slice(schnitt).join("").trim(),
+  ];
+};
 
 export const Willkommen = () => (
   <section
@@ -67,9 +106,13 @@ export const Willkommen = () => (
         {...ELEMENT_MOTION}
         mode="once"
         tag="div"
-        className={`lg:flex-1 lg:pt-1.5 ${PROSA_FLIESSEND}`}
+        className={`lg:flex-1 lg:pt-1.5 ${PROSA_SPALTEN}`}
       >
-        <p className={BODY}>{HERO_CONTENT.intro}</p>
+        {zweiAbsaetze(HERO_CONTENT.intro).map((absatz) => (
+          <p key={absatz} className={BODY}>
+            {absatz}
+          </p>
+        ))}
       </Inview>
     </div>
 
