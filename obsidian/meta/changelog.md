@@ -1090,3 +1090,33 @@ ihren sichtbaren Inhalt beschnitten, wieder quadratisch aufgefüllt und auf
 eigene Information; die Reihenfolge sagt die `<ol>` ohnehin an.
 
 Barrierefreiheit: 0 Befunde von 10, keine 404.
+
+## 2026-09-01 — Fliesstext nutzt die volle Breite, zweispaltig
+
+Die Abschnitte, die einen alten Seitenkopf aufgenommen haben, sind zweigeteilt:
+Überschrift links in einer 22rem-Spalte, Fliesstext rechts daneben. Der Text
+stand dabei auf 38rem gedeckelt, das Inhaltsmass ist 85rem — rechts blieb
+sichtbar ein knappes Drittel der Seite leer.
+
+**Nicht** einspaltig auf die volle Restbreite gezogen: bei rund 59rem Laufweite
+stünden etwa 130 Zeichen in einer Zeile. Ab ungefähr 90 Zeichen findet das Auge
+den Anfang der nächsten Zeile nicht mehr zuverlässig, und §2c der Hausregeln
+nennt 70 als Obergrenze. Statt dessen **zwei Spalten** ab `lg`: die Fläche ist
+genutzt, die Zeile bleibt bei rund 55 Zeichen. Gemessen nach dem Umbau: 441 px
+Spaltenbreite in den Überblicksabschnitten gegenüber 929 px, die eine einzelne
+Spalte belegt hätte.
+
+Zwei Hilfsklassen in `typografie.ts`, weil der Unterschied zählt:
+`PROSA_SPALTEN` für mehrere Absätze hält mit `break-inside-avoid` jeden Absatz
+zusammen; `PROSA_FLIESSEND` für einen einzelnen langen Absatz lässt ihn
+ausdrücklich über den Spaltenumbruch laufen — mit der Regel bliebe er komplett
+in der ersten Spalte und die zweite leer.
+
+Der Absatzabstand kommt über `[&>p+p]:mt-5` statt über ein Flex-`gap`: eine
+Flex-Spalte und `columns` schliessen einander aus, das Flex-Layout gewinnt und
+die Mehrspaltigkeit hätte keine Wirkung gehabt.
+
+Betroffen: Willkommen, Überblick Unternehmen, Überblick Private, Anfahrt.
+Unterhalb von `lg` bleibt alles einspaltig — dort ist der Bildschirm für zwei
+Spalten zu schmal. Geprüft: `column-count: auto` auf 390 px, kein waagerechtes
+Scrollen. Barrierefreiheit 0 Befunde von 10.

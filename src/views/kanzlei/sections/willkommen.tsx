@@ -25,7 +25,12 @@ import { ELEMENT_MOTION, HEADING_MOTION } from "@/lib/motion/text-presets";
 
 import { Bild } from "./bild";
 import { FOTOS } from "./fotos";
-import { ANCHOR_OFFSET, BODY, HEADING } from "./typografie";
+import {
+  ANCHOR_OFFSET,
+  BODY,
+  HEADING,
+  PROSA_FLIESSEND,
+} from "./typografie";
 
 export const Willkommen = () => (
   <section
@@ -46,7 +51,12 @@ export const Willkommen = () => (
       {/* Ein `<Inview>` für den Block, und der Absatz ohne TextEngine (§2b):
           ein Begrüssungstext dieser Länge, der sich Wort für Wort aus einer
           Unschärfe aufbaut, ist Unruhe statt Auftritt. */}
-      <Inview {...ELEMENT_MOTION} mode="once" tag="div" className="max-w-[38rem]">
+      <Inview
+        {...ELEMENT_MOTION}
+        mode="once"
+        tag="div"
+        className={`lg:flex-1 ${PROSA_FLIESSEND}`}
+      >
         <p className={BODY}>{HERO_CONTENT.intro}</p>
       </Inview>
     </div>

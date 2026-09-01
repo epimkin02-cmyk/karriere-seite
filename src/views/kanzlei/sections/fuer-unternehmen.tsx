@@ -71,6 +71,7 @@ import {
   EYEBROW,
   FOCUS,
   HEADING,
+  PROSA_SPALTEN,
   SUBHEADING,
 } from "./typografie";
 
@@ -147,7 +148,7 @@ export const FuerUnternehmen = () => (
             {...ELEMENT_MOTION}
             mode="once"
             tag="div"
-            className="flex max-w-[38rem] flex-col gap-5"
+            className={`lg:flex-1 ${PROSA_SPALTEN}`}
           >
             {OVERVIEW_CONTENT.paragraphs.map((paragraph) => (
               <p key={paragraph} className={BODY}>
