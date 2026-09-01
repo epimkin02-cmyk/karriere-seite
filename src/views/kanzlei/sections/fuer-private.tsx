@@ -8,17 +8,27 @@
  * tiefer als früher (`<h2>` für den Abschnitt, `<h3>` für Überblick und
  * Katalog, `<h4>` für die Blöcke). Dieselbe Handschrift, nur kürzer.
  *
- * ## Warum der Katalog hier offen steht
+ * ## Warum der Katalog hier offen steht — und trotzdem gleich aussieht
  *
- * Der Schwesterabschnitt klappt seine zehn Blöcke mit 47 Punkten in `<details>`
- * ein, weil dort die schiere Menge das Problem ist. Hier sind es **drei Blöcke
- * mit zusammen fünf Punkten** — der ganze Katalog ist kürzer als ein einziger
- * Block drüben. Ein Aufklappmuster würde hier nichts sparen und stattdessen
- * etwas kosten: drei Tipps, um fünf Zeilen zu sehen, plus die stille Behauptung,
+ * Der Schwesterabschnitt sortiert seine zehn Blöcke mit 47 Punkten in vier
+ * Themengruppen und klappt jeden Block in ein `<details>` ein, weil dort die
+ * schiere Menge das Problem ist. Hier sind es **drei Blöcke mit zusammen fünf
+ * Punkten** — der ganze Katalog ist kürzer als ein einziger Block drüben.
+ *
+ * Beides, Gruppierung und Klappen, würde hier nichts sparen und etwas kosten:
+ * Themengruppen über drei Themen sind eine Ordnung, die es nicht zu ordnen
+ * gibt, und drei Tipps, um fünf Zeilen zu sehen, sind die stille Behauptung,
  * hier sei mehr verborgen, als es gibt. Zwei Blöcke bestehen ohnehin aus einer
- * einzigen Zeile — ein Klappmechanismus für eine Zeile ist reine Zeremonie.
+ * einzigen Zeile.
  *
- * Auf `lg` liegen die drei Blöcke nebeneinander, mit `items-start`: der Block
+ * Was die beiden Abschnitte trotzdem als Geschwister lesbar macht, ist die
+ * **Tafel**: gerundeter Rahmen, Titel oben, Haarlinie, darunter der Inhalt.
+ * Drüben trägt der Titel eine Themengruppe und der Inhalt sind Klappzeilen,
+ * hier trägt er das Thema selbst und der Inhalt sind die Punkte. Gleiche Form,
+ * andere Dichte — statt zweimal derselben Mechanik für zwei sehr verschiedene
+ * Mengen.
+ *
+ * Auf `lg` liegen die drei Tafeln nebeneinander, mit `items-start`: der Block
  * „Steuererklärungen" ist dreimal so hoch wie seine Nachbarn, und die sollen
  * nicht auf seine Höhe mitgezogen werden und halbleer wirken.
  *
@@ -150,24 +160,36 @@ export const FuerPrivate = () => (
 
         {/* Die drei Blöcke sind eine echte Liste — ein Screenreader kündigt sie
             als „Liste mit 3 Einträgen" an, und die Punkte darin je Block als
-            eigene Liste. */}
+            eigene Liste.
+
+            Dieselbe Tafel wie im Schwesterabschnitt: gerundeter Rahmen, Titel
+            oben, Haarlinie, darunter der Inhalt. Nur ist der Titel hier das
+            Thema selbst und keine Gruppenbeschriftung, und darunter stehen die
+            Punkte offen statt in einer Klappzeile — bei drei Blöcken mit
+            zusammen fünf Punkten gäbe es nichts zu sparen. Gleiche Handschrift,
+            andere Dichte.
+
+            `lg:items-start`: „Steuererklärungen" ist dreimal so hoch wie seine
+            Nachbarn. Auf gleiche Höhe gezogen stünden neben ihm zwei Tafeln mit
+            einer Zeile und viel Luft — ehrlicher ist es, sie so hoch sein zu
+            lassen, wie ihr Inhalt ist. */}
         <Inview
           {...ELEMENT_MOTION}
           mode="once"
           tag="ul"
-          className="grid grid-cols-1 gap-4 hyphens-auto lg:grid-cols-3 lg:items-start"
+          className="grid grid-cols-1 gap-4 hyphens-auto lg:grid-cols-3 lg:items-start lg:gap-6"
         >
           {CATALOGUE_CONTENT.blocks.map((block) => (
             <li
               key={block.id}
-              className="flex flex-col gap-4 rounded-card border border-border-subtle bg-surface-section px-6 py-7 lg:px-8"
+              className="overflow-hidden rounded-card border border-border-subtle bg-surface-section"
             >
               {/* Kartentitel bleiben statisch — `HEADING_MOTION` gehört den
                   Sektionsüberschriften. */}
-              <h4 className="text-[1.25rem] leading-display font-light lg:text-[1.375rem]">
+              <h4 className="border-b border-border-subtle px-5 py-4 text-[1.125rem] leading-display font-light lg:text-[1.25rem]">
                 {block.title}
               </h4>
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-3 px-5 py-5">
                 {block.items.map((item) => (
                   // Key aus `item.id`, nie aus `item.text` — siehe Kopfkommentar.
                   <li key={item.id} className="flex items-start gap-3">

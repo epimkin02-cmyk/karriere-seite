@@ -41,6 +41,28 @@ export interface CatalogueContent {
   eyebrow: string;
   title: string;
   blocks: readonly ServiceBlock[];
+  groups: readonly CatalogueGroup[];
+}
+
+/**
+ * Eine Themengruppe des Katalogs.
+ *
+ * NEU: das Original reiht seine zehn Leistungsblöcke ohne jede Gliederung
+ * aneinander, in der Reihenfolge, in der sie dort stehen. Diese Gruppen ordnen
+ * genau diese zehn Blöcke — sie fassen zusammen, was zusammengehört, und
+ * **erfinden nichts**: kein Block wird geteilt, keiner weggelassen, kein Punkt
+ * umformuliert. Neu ist allein der Gruppentitel.
+ *
+ * `blockIds` verweist auf `ServiceBlock.id` und nicht auf Positionen: wer in
+ * `SERVICE_BLOCKS` etwas einfügt oder umsortiert, verschiebt damit keine
+ * Zuordnung. Ein Block, der in keiner Gruppe steht, geht trotzdem nicht
+ * verloren — die Ansicht sammelt ihn ein (siehe [[FuerUnternehmen]]).
+ */
+export interface CatalogueGroup {
+  id: string;
+  /** NEU — im Original gibt es keine Gruppentitel. */
+  title: string;
+  blockIds: readonly string[];
 }
 
 export interface ClosingContent {
@@ -239,10 +261,47 @@ export const SERVICE_BLOCKS: readonly ServiceBlock[] = [
   },
 ];
 
+/**
+ * Die vier Themen, in die sich die zehn Blöcke einsortieren lassen.
+ *
+ * Die Reihenfolge folgt dem Jahr einer Firma: erst was laufend anfällt, dann
+ * der Abschluss, dann was man plant, zuletzt der Fall, in dem sich jemand
+ * meldet. Sie folgt bewusst NICHT der Reihenfolge des Originals — genau die
+ * fehlende Ordnung war der Anlass.
+ */
+const CATALOGUE_GROUPS: readonly CatalogueGroup[] = [
+  {
+    id: "laufendes",
+    title: "Laufende Buchhaltung", // NEU
+    blockIds: ["finanzbuchfuehrung", "lohnbuchfuehrung"],
+  },
+  {
+    id: "abschluss",
+    title: "Abschluss und Steuererklärungen", // NEU
+    blockIds: ["jahresabschluss", "schenken-und-erben"],
+  },
+  {
+    id: "beratung",
+    title: "Beratung und Entwicklung", // NEU
+    blockIds: [
+      "betriebswirtschaftliche-beratung",
+      "wirtschaftsberatung",
+      "existenzgruendung",
+      "generationsnachfolge",
+    ],
+  },
+  {
+    id: "vertretung",
+    title: "Vertretung gegenüber Behörden", // NEU
+    blockIds: ["betriebspruefung", "vertretung-vor-finanzbehoerden"],
+  },
+];
+
 export const CATALOGUE_CONTENT: CatalogueContent = {
   eyebrow: "Leistungen", // NEU
   title: "Unser Leistungsangebot für Unternehmen", // NEU — das Original hat über dem Katalog keine Überschrift
   blocks: SERVICE_BLOCKS,
+  groups: CATALOGUE_GROUPS,
 };
 
 /* -------------------------------------------------------------------------- */

@@ -18,16 +18,34 @@
  * ## Warum der Katalog so aufgebaut ist
  *
  * Der Katalog ist das Problem dieses Abschnitts: zehn Blöcke, zusammen 47
- * Punkte. Als eine durchlaufende Häkchenliste sind das auf einem 390px-Telefon
- * rund fünf Bildschirmhöhen ununterbrochener Fachbegriffe — eine Textwüste, die
+ * Punkte. Als durchlaufende Häkchenliste sind das auf einem 390px-Telefon rund
+ * fünf Bildschirmhöhen ununterbrochener Fachbegriffe — eine Textwüste, die
  * niemand liest und in der niemand findet, wonach er sucht. Wer hierher
  * springt, sucht in aller Regel EIN Thema („macht die Kanzlei auch Lohn?"),
  * nicht alle 47.
  *
- * Deshalb ist jeder Block ein natives `<details>`/`<summary>`. Das dreht die
- * Liste aus 47 Punkten in eine Liste aus **zehn Themen** um: eingeklappt passt
- * der ganze Katalog auf etwa anderthalb Bildschirme. Bewusst nativ und nicht
- * als nachgebautes Accordion:
+ * ### Erste Ebene: vier Themen
+ *
+ * Bis zum 01.09. lagen die zehn Blöcke als zweispaltiges Raster nebeneinander,
+ * in der Reihenfolge der alten Website — also in keiner. Das hatte zwei
+ * Nachteile, einen sichtbaren und einen inhaltlichen. Sichtbar: einige Blöcke
+ * starteten offen, andere zu, und im Raster standen dadurch neben einem hohen
+ * offenen Block grosse leere Flächen. Inhaltlich: zehn gleichrangige
+ * Fachbegriffe ohne Oberbegriff sind für jemanden, der keine Kanzlei von innen
+ * kennt, genau so unsortiert wie 47 Punkte.
+ *
+ * Jetzt tragen vier Themengruppen den Katalog (`CATALOGUE_GROUPS` in den
+ * Daten), und jede ist eine eigene Tafel: Überschrift oben, darunter ihre
+ * Blöcke als Zeilen. Die Reihenfolge folgt dem Jahr einer Firma — laufend,
+ * Abschluss, Planung, Behörde. Auf `lg` stehen die vier Tafeln als 2 × 2; das
+ * Öffnen einer Zeile verlängert nur ihre eigene Tafel und nicht die Nachbarn.
+ *
+ * ### Zweite Ebene: die Blöcke als `<details>`
+ *
+ * Jeder Block bleibt ein natives `<details>`/`<summary>`. Das dreht die Liste
+ * aus 47 Punkten in eine Liste aus **vier Themen mit zehn Zeilen** um:
+ * eingeklappt passt der ganze Katalog auf etwa einen Bildschirm. Bewusst nativ
+ * und nicht als nachgebautes Accordion:
  *
  *  - tastaturbedienbar und korrekt ausgezeichnet, ohne ein einziges `aria-*`,
  *  - Strg+F findet auch den Text zugeklappter Blöcke und klappt sie auf,
@@ -37,10 +55,19 @@
  * Accordion machen, bei dem das Öffnen eines Blocks einen anderen zuklappt.
  * Wer Lohn- und Finanzbuchführung vergleichen will, soll beide offen haben.
  *
- * **Was offen startet:** der erste Block, damit überhaupt sichtbar ist, dass
- * hier etwas aufklappt; und jeder Block mit höchstens zwei Punkten, denn ein
- * Klappmechanismus für eine einzige Zeile kostet mehr Aufmerksamkeit, als er
- * Platz spart. Dauerhaft verborgen ist damit nichts: jeder Punkt steht im DOM.
+ * **Alle starten zu.** Früher startete der erste Block offen, „damit man sieht,
+ * dass hier etwas aufklappt", und jeder sehr kurze Block ebenfalls. Beides ist
+ * mit der Gruppierung hinfällig: eine Tafel aus gleich hohen Zeilen mit
+ * Anzahl und Winkel liest sich von selbst als Liste zum Aufklappen, und ein
+ * gemischter Anfangszustand war genau das, was das Raster zerrissen hat.
+ * Dauerhaft verborgen ist nichts: jeder Punkt steht im DOM.
+ *
+ * ### Die Überschriftenebenen
+ *
+ * `<h2>` Abschnitt, `<h3>` Katalog, `<h4>` Themengruppe, `<h5>` Block. Vier
+ * Ebenen sind viel, aber sie bilden genau die Gliederung ab, die man sieht —
+ * und eine Vorlesefunktion kann den Katalog damit Gruppe für Gruppe abgehen,
+ * statt sich durch zehn gleichrangige Überschriften zu hangeln.
  *
  * React-Keys kommen aus `item.id`, nie aus `item.text`: „Meldungen
  * Berufsgenossenschaft" steht in der Lohnbuchführung zweimal (Fehler im
@@ -51,6 +78,7 @@ import TextEngine from "spring-text-engine";
 
 import { Inview } from "@/components/animation/springs/in-view";
 import type { ServiceBlock } from "@/data/kanzlei/firma";
+import type { CatalogueGroup } from "@/data/kanzlei/fuer-unternehmen";
 import {
   CATALOGUE_CONTENT,
   HERO_CONTENT,
@@ -75,11 +103,43 @@ import {
   SUBHEADING,
 } from "./typografie";
 
-/** Ein Block mit höchstens so vielen Punkten startet offen — siehe Kopfkommentar. */
-const ALWAYS_OPEN_MAX_ITEMS = 2;
+/**
+ * Löst die Gruppen der Daten in echte Blöcke auf.
+ *
+ * Der Rest am Ende ist eine Sicherung, kein Feature: er sammelt Blöcke ein, die
+ * in keiner Gruppe stehen. Kommt in `SERVICE_BLOCKS` einmal ein elfter Block
+ * dazu, ohne dass jemand die Gruppen anfasst, steht er trotzdem auf der Seite —
+ * statt lautlos zu verschwinden, was der Fehler wäre, den niemand bemerkt.
+ * Solange die Gruppen vollständig sind, ist diese Tafel leer und wird nicht
+ * gerendert.
+ */
+const gruppiereBloecke = (
+  bloecke: readonly ServiceBlock[],
+  gruppen: readonly CatalogueGroup[],
+) => {
+  const nachId = new Map(bloecke.map((block) => [block.id, block]));
+  const vergeben = new Set<string>();
 
-const isOpenByDefault = (block: ServiceBlock, index: number) =>
-  index === 0 || block.items.length <= ALWAYS_OPEN_MAX_ITEMS;
+  const tafeln = gruppen.map((gruppe) => {
+    const inhalt = gruppe.blockIds
+      .map((id) => {
+        vergeben.add(id);
+        return nachId.get(id);
+      })
+      .filter((block): block is ServiceBlock => block !== undefined);
+    return { id: gruppe.id, title: gruppe.title, bloecke: inhalt };
+  });
+
+  const rest = bloecke.filter((block) => !vergeben.has(block.id));
+  return rest.length > 0
+    ? [...tafeln, { id: "weitere", title: "Weitere Leistungen", bloecke: rest }]
+    : tafeln;
+};
+
+const TAFELN = gruppiereBloecke(
+  CATALOGUE_CONTENT.blocks,
+  CATALOGUE_CONTENT.groups,
+);
 
 export const FuerUnternehmen = () => (
   <section
@@ -178,53 +238,90 @@ export const FuerUnternehmen = () => (
           </h3>
         </div>
 
-        {/* Die zehn Blöcke sind eine echte Liste — ein Screenreader kündigt sie
-            als „Liste mit 10 Einträgen" an, was hier genau die Auskunft ist,
-            die das Aufklappmuster sonst verschweigt. */}
+        {/* Vier Tafeln, je eine Themengruppe. Die äussere `<ul>` ist die Liste
+            der Themen, die innere je die Liste der Blöcke darin — eine
+            Vorlesefunktion kündigt damit „Liste mit 4 Einträgen" an und
+            innerhalb einer Gruppe deren Umfang, statt zehn gleichrangige
+            Punkte am Stück herunterzulesen.
+
+            `lg:items-start`: die Tafeln sind unterschiedlich hoch (zwei bis
+            vier Zeilen), und eine kurze soll nicht auf die Höhe ihrer Nachbarin
+            gezogen werden und halbleer wirken. */}
         <Inview
           {...ELEMENT_MOTION}
           mode="once"
           tag="ul"
-          className="grid grid-cols-1 gap-3 hyphens-auto lg:grid-cols-2 lg:items-start lg:gap-4"
+          className="grid grid-cols-1 gap-4 hyphens-auto lg:grid-cols-2 lg:items-start lg:gap-6"
         >
-          {CATALOGUE_CONTENT.blocks.map((block, index) => (
-            <li key={block.id}>
-              <details
-                open={isOpenByDefault(block, index)}
-                className="group rounded-card border border-border-subtle bg-surface-section"
-              >
-                {/* `list-none` plus die WebKit-Regel entfernen das
-                    Standard-Dreieck; der Zustand wird stattdessen vom eigenen
-                    Chevron angezeigt, das links wie rechts genug Fläche hat. */}
-                <summary
-                  className={`flex min-h-11 cursor-pointer list-none items-center gap-3 rounded-card px-5 py-4 transition-colors duration-[var(--duration-fast)] ease-entrance hover:bg-surface-section-deep ${FOCUS} [&::-webkit-details-marker]:hidden`}
-                >
-                  <h4 className="flex-1 text-[1.25rem] leading-display font-light lg:text-[1.375rem]">
-                    {block.title}
-                  </h4>
-                  {/* Rein optische Vorschau auf den Umfang. `aria-hidden`, weil
-                      die aufgeklappte `<ul>` einem Screenreader ihre Länge
-                      ohnehin ansagt — die Zahl wäre dort eine Dopplung ohne
-                      Bezugswort. */}
-                  <span
-                    aria-hidden="true"
-                    className="grid size-7 shrink-0 place-items-center rounded-chip bg-background text-sm leading-body font-medium"
+          {TAFELN.map((tafel) => (
+            <li
+              key={tafel.id}
+              className="overflow-hidden rounded-card border border-border-subtle bg-surface-section"
+            >
+              {/* Der Gruppentitel in derselben Marke wie die Eyebrows der
+                  Seite: klein, versal, Akzentfarbe. Er ist eine Beschriftung
+                  der Tafel und soll nicht mit den Blocktiteln darunter um
+                  Aufmerksamkeit ringen — die tragen den Inhalt. */}
+              <h4 className="border-b border-border-subtle px-5 py-4 text-sm leading-body font-medium text-accent uppercase">
+                {tafel.title}
+              </h4>
+
+              <ul>
+                {tafel.bloecke.map((block) => (
+                  <li
+                    key={block.id}
+                    className="border-t border-border-subtle first:border-t-0"
                   >
-                    {block.items.length}
-                  </span>
-                  <ChevronIcon className="size-4 shrink-0 text-foreground-muted group-open:rotate-180" />
-                </summary>
-                <ul className="flex flex-col gap-3 px-5 pt-1 pb-5">
-                  {block.items.map((item) => (
-                    // Key aus `item.id`: „Meldungen Berufsgenossenschaft" steht
-                    // in diesem Block zweimal (sic), `text` kollidiert.
-                    <li key={item.id} className="flex items-start gap-3">
-                      <CheckIcon className="mt-0.5 size-4 shrink-0 text-accent" />
-                      <span className={BODY}>{item.text}</span>
-                    </li>
-                  ))}
-                </ul>
-              </details>
+                    <details className="group">
+                      {/* `list-none` plus die WebKit-Regel entfernen das
+                          Standard-Dreieck; der Zustand wird stattdessen vom
+                          eigenen Chevron angezeigt, das links wie rechts genug
+                          Fläche hat.
+
+                          Kein `rounded-card` mehr am `<summary>`: die Zeile ist
+                          jetzt eine Zeile in einer Tafel und keine eigene
+                          Kachel. Die Rundung sitzt an der Tafel, `overflow-hidden`
+                          dort schneidet die erste und letzte Zeile passend ab.
+
+                          Genau dieses `overflow-hidden` macht aber auch
+                          `-outline-offset-2` nötig: der Fokusrahmen aus `FOCUS`
+                          liegt 2 px AUSSERHALB der Zeile, und bei der ersten
+                          und letzten Zeile schneidet die Tafel ihn dort ab —
+                          ein Tastaturnutzer sähe seinen Fokus dann nur zu drei
+                          Vierteln. Nach innen gezeichnet bleibt er vollständig
+                          sichtbar. */}
+                      <summary
+                        className={`flex min-h-11 cursor-pointer list-none items-center gap-3 px-5 py-4 transition-colors duration-[var(--duration-fast)] ease-entrance hover:bg-surface-section-deep ${FOCUS} focus-visible:-outline-offset-2 [&::-webkit-details-marker]:hidden`}
+                      >
+                        <h5 className="flex-1 text-[1.125rem] leading-display font-light lg:text-[1.25rem]">
+                          {block.title}
+                        </h5>
+                        {/* Rein optische Vorschau auf den Umfang. `aria-hidden`,
+                            weil die aufgeklappte `<ul>` einem Screenreader ihre
+                            Länge ohnehin ansagt — die Zahl wäre dort eine
+                            Dopplung ohne Bezugswort. */}
+                        <span
+                          aria-hidden="true"
+                          className="grid size-7 shrink-0 place-items-center rounded-chip bg-background text-sm leading-body font-medium"
+                        >
+                          {block.items.length}
+                        </span>
+                        <ChevronIcon className="size-4 shrink-0 text-foreground-muted group-open:rotate-180" />
+                      </summary>
+                      <ul className="flex flex-col gap-3 px-5 pt-1 pb-5">
+                        {block.items.map((item) => (
+                          // Key aus `item.id`: „Meldungen Berufsgenossenschaft"
+                          // steht in diesem Block zweimal (sic), `text` kollidiert.
+                          <li key={item.id} className="flex items-start gap-3">
+                            <CheckIcon className="mt-0.5 size-4 shrink-0 text-accent" />
+                            <span className={BODY}>{item.text}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  </li>
+                ))}
+              </ul>
             </li>
           ))}
         </Inview>
