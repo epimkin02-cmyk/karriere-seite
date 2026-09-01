@@ -88,6 +88,9 @@ export const Anfahrt = () => (
           // Vom Kunden so gewünscht: die Karte soll ohne Klick zu sehen sein.
           // Was das rechtlich bedeutet, steht an der Prop in [[StandortKarte]].
           autoLoad
+          // Der Abschnitt ist für nichts anderes da als für den Weg hierher —
+          // die Karte füllt ihn deshalb, statt als Streifen darin zu liegen.
+          gross
         />
       </Inview>
     </div>

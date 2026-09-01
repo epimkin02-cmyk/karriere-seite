@@ -133,41 +133,37 @@ export const Hero = () => (
         className="object-cover object-[50%_22%] lg:object-center"
       />
 
-      {/* Der Übergang von Weiss zum Foto.
+      {/* Der Übergang von Weiss zum Foto — ein reiner Farbverlauf, sonst nichts.
        *
-       * Zwei Dinge in einer Ebene, und beide sind nötig:
+       * ## Warum hier kein `backdrop-blur` mehr steht
        *
-       * `backdrop-blur` weicht das Foto dort auf, wo Text darüber liegt. Ohne
-       * die Unschärfe konkurrieren Gesichter und Fensterrahmen mit der Schrift.
-       * Bewusst nur 5 px: die erste Fassung hatte `backdrop-blur-md` (12 px),
-       * und weil der Verlauf zugleich viel zu weit lief, war das halbe Foto
-       * weichgezeichnet — auf dem Telefon praktisch das ganze.
+       * Die erste Fassung zeichnete das Foto unter dem Verlauf weich und
+       * begrenzte den Weichzeichner mit `mask-image`, damit er dort endet, wo
+       * das Weiss endet. In Chromium funktionierte das. In Safari **nicht**:
+       * dort wirkt `backdrop-filter` auf die gesamte Fläche des Elements, die
+       * Maske begrenzt nur dessen eigene Darstellung, nicht den gefilterten
+       * Hintergrund. Ergebnis auf einem Mac: das ganze Foto verwaschen, von
+       * Kante zu Kante — auch rechts, wo gar kein Weiss mehr liegt.
        *
-       * `mask-image` blendet **die Unschärfe selbst** aus. Das ist der Kniff:
-       * ein blosser Farbverlauf würde nur das Weiss ausblenden, das Foto bliebe
-       * überall gleich verwaschen. Mit der Maske endet der Weichzeichner dort,
-       * wo das Weiss endet — das Foto ist zur Bildmitte hin gestochen scharf
-       * und wird nur zum Text hin weich.
+       * Zwei Auswege gäbe es: den Weichzeichner auf ein eigenes, hart
+       * beschnittenes Element legen (dann steht dort eine sichtbare Kante), oder
+       * ihn weglassen. Weglassen ist hier die bessere Antwort, weil er nie die
+       * Aufgabe hatte, gut auszusehen — er sollte den Text vom Bildrauschen
+       * trennen, und das erledigt der deckend weisse Teil des Verlaufs ohnehin
+       * allein. Was bleibt, ist genau das Gewünschte: links Weiss, rechts ein
+       * scharfes Foto, dazwischen ein weicher Übergang.
        *
        * Die Richtung folgt dem Layout: auf dem Telefon fällt der Verlauf von
        * oben nach unten in den Streifen hinein, ab `lg` von links nach rechts.
        *
-       * **Wie weit er läuft, ist der eigentliche Regler.** Auf dem Telefon
-       * endet er nach 24 % der Streifenhöhe, auf dem Rechner nach 44 % der
-       * Bildbreite. In der ersten Fassung waren es 70 % beziehungsweise 58 %,
-       * und das Ergebnis war ein Foto, das durchgehend verwaschen aussah statt
-       * an einer Kante weich zu werden.
-       *
-       * Der Wert 18 % ist nicht gegriffen, sondern ausgemessen: die Textspalte
-       * endet bei 504 px, der Bildkasten beginnt bei 374 px, macht 130 px oder
-       * eben gut 12 % seiner Breite. 18 % lässt Luft dahinter. Bis dorthin
-       * deckt reines Weiss — und zwar
-       * deckend und nicht halbtransparent, damit der Kontrast des Textes nicht
-       * davon abhängt, was gerade auf dem Foto zu sehen ist. Nachgemessen steht
-       * hinter jedem Textpixel #ffffff. */}
+       * Bis 16 % der Bildbreite deckt reines Weiss, und das ist ausgemessen:
+       * die Textspalte endet bei 504 px, der Bildkasten beginnt bei 374 px —
+       * macht gut 12 % seiner Breite. Deckend und nicht halbtransparent, damit
+       * der Kontrast des Textes nicht davon abhängt, was auf dem Foto zu sehen
+       * ist. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-b from-white to-transparent to-24% backdrop-blur-[5px] [mask-image:linear-gradient(to_bottom,#000_0%,transparent_24%)] lg:bg-gradient-to-r lg:from-white lg:from-18% lg:to-44% lg:[mask-image:linear-gradient(to_right,#000_18%,transparent_44%)]"
+        className="absolute inset-0 bg-gradient-to-b from-white from-0% to-transparent to-26% lg:bg-gradient-to-r lg:from-16% lg:to-46%"
       />
     </div>
   </section>

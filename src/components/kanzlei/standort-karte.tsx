@@ -58,6 +58,10 @@ export interface StandortKarteProps {
    * zurückgedreht ist es ein Wort.
    */
   autoLoad?: boolean;
+  /**
+   * Grosse Darstellung — die Karte trägt den Abschnitt, statt darin zu liegen.
+   */
+  gross?: boolean;
 }
 
 /**
@@ -78,9 +82,19 @@ const SPAN_LAT = 0.002;
  * `min-h` ließe den Einwilligungstext die Box auf einem schmalen Schirm wachsen,
  * und das iframe schnappte beim Klick auf den Boden zurück. Genau diesen Sprung
  * unter dem Auge des Lesers soll die feste Höhe verhindern.
+ *
+ * Zwei Grössen, weil die Karte an zwei sehr verschiedenen Stellen steht: auf der
+ * Karriereseite ist sie eine Randnotiz neben den Standortvorteilen, auf der
+ * Kanzlei-Landingpage ist der Abschnitt „Ihr Weg zu unserer Steuerkanzlei" für
+ * nichts anderes da. Dort füllt sie ihn deshalb aus, statt als Streifen darin
+ * zu liegen — 44rem sind auf einem üblichen Notebook rund drei Viertel der
+ * Fensterhöhe.
  */
-const FRAME =
-  "relative w-full overflow-hidden rounded-card h-[22rem] lg:h-[30rem]";
+const FRAME_BASE = "relative w-full overflow-hidden rounded-card";
+const FRAME_HOEHE = {
+  normal: "h-[22rem] lg:h-[30rem]",
+  gross: "h-[26rem] md:h-[34rem] lg:h-[44rem]",
+} as const;
 
 export const StandortKarte = ({
   title,
@@ -91,8 +105,10 @@ export const StandortKarte = ({
   consentAction,
   routeLabel,
   autoLoad = false,
+  gross = false,
 }: StandortKarteProps) => {
   const [loaded, setLoaded] = useState(autoLoad);
+  const frame = `${FRAME_BASE} ${gross ? FRAME_HOEHE.gross : FRAME_HOEHE.normal}`;
 
   const { lat, lon } = coords;
   const bbox = [
@@ -109,7 +125,7 @@ export const StandortKarte = ({
   return (
     <div className="flex flex-col gap-4">
       {loaded ? (
-        <div className={FRAME}>
+        <div className={frame}>
           {/* `title` ist der zugängliche Name des iframes — ohne ihn kündigt ein
               Screenreader einen namenlosen Rahmen an. */}
           <iframe
@@ -122,7 +138,7 @@ export const StandortKarte = ({
         </div>
       ) : (
         <div
-          className={`${FRAME} flex flex-col items-center justify-center gap-4 bg-surface-section-deep p-6 text-center`}
+          className={`${frame} flex flex-col items-center justify-center gap-4 bg-surface-section-deep p-6 text-center`}
         >
           <h3 className="text-[1.5rem] leading-display font-light">
             {consentTitle}

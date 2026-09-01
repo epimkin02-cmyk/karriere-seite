@@ -1123,14 +1123,26 @@ Scrollen. Barrierefreiheit 0 Befunde von 10.
 
 ## 2026-09-01 — Hero entschärft, Fusszeile umgebaut, Karte ohne Klick
 
-**Der Hero war verwaschen, und zwar aus zwei Gründen zugleich.** Der
-Weichzeichner stand auf `backdrop-blur-md` (12 px), und der Verlauf, der ihn
-begrenzt, lief viel zu weit: auf dem Telefon über 70 % der Streifenhöhe, auf dem
-Rechner über 58 % der Bildbreite. Das Foto sah dadurch nicht an einer Kante
-weich aus, sondern durchgehend. Jetzt 5 px Unschärfe, Verlauf bis 24 % (mobil)
-beziehungsweise 44 % (ab `lg`). Die Textspalte endet bei 504 px und der
-Bildkasten beginnt bei 374 px — die 18 %, bis zu denen reines Weiss deckt,
-lassen dahinter Luft.
+**Der Weichzeichner im Hero ist ersatzlos raus.**
+
+Erst sah es nach einer Dosierungsfrage aus: `backdrop-blur-md` (12 px) und ein
+Verlauf, der auf dem Telefon über 70 % der Streifenhöhe lief. Auf 5 px und 24 %
+zurückgenommen sah es in Chromium gut aus — auf dem Mac des Kunden weiterhin
+durchgehend verwaschen, von Kante zu Kante, auch rechts, wo gar kein Weiss mehr
+liegt.
+
+Die Ursache ist kein Wert, sondern ein Browserunterschied: **Safari begrenzt
+`backdrop-filter` nicht durch `mask-image`.** Die Maske beschneidet die eigene
+Darstellung des Elements, der gefilterte Hintergrund bleibt davon unberührt und
+gilt für die gesamte Fläche. In Chromium wirkt die Maske auch auf den Filter —
+deshalb war der Fehler hier nicht zu sehen.
+
+Der Weichzeichner hatte ohnehin nur eine Aufgabe: den Text vom Bildrauschen zu
+trennen. Das erledigt der deckend weisse Teil des Verlaufs allein. Übrig bleibt
+ein reiner Farbverlauf ohne Filter und ohne Maske — links Weiss, rechts ein
+scharfes Foto, dazwischen ein weicher Übergang. Deckend bis 16 % der Bildbreite
+(ausgemessen: die Textspalte endet bei 504 px, der Bildkasten beginnt bei
+374 px), auslaufend bis 46 %; auf dem Telefon 0 % bis 26 % von oben nach unten.
 
 **Willkommen: Überschrift und Fliesstext stehen auf einer Höhe.** Beide Kästen
 begannen schon vorher bei derselben Y-Koordinate; der sichtbare Versatz von
@@ -1165,3 +1177,14 @@ Photon antworten nicht), und geraten wird eine Adresse nicht. Der Routen-Link
 daneben ist davon unberührt — er wird aus der Postanschrift gebaut.
 
 Barrierefreiheit: 0 Befunde von 10.
+
+## 2026-09-01 — Karte trägt den Abschnitt
+
+Sie lag als 30rem hoher Streifen im Band „Ihr Weg zu unserer Steuerkanzlei" —
+zu klein für einen Abschnitt, der für nichts anderes da ist. Jetzt 44rem ab
+`lg` (26rem mobil, 34rem ab `md`), gemessen 1345 × 704 px auf einem
+1440er-Fenster und damit 59 % der Sektionsfläche; der Rest ist Überschrift,
+Fliesstext und der Routenlink.
+
+Die Höhe ist ein Prop (`gross`) und keine neue Vorgabe: auf der Karriereseite
+ist die Karte eine Randnotiz neben den Standortvorteilen und bleibt bei 30rem.
