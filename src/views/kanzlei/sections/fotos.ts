@@ -80,3 +80,9 @@ export const FOTOS = {
     alt: "Manuela Köber",
   },
 } as const satisfies Record<string, Foto>;
+
+// Das Foto der Fusszeile (`team-duo.webp`) steht bewusst NICHT hier, sondern in
+// [[site-footer]]: diese Liste sind die Bilder der Landingpage, die Fusszeile
+// dagegen ist Seitengerüst und steht auch unter den Rechtstexten. Ein
+// `components/`-Modul, das aus `views/` importiert, wäre ausserdem die falsche
+// Richtung.
