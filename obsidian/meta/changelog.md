@@ -1016,3 +1016,51 @@ verschoben statt breiter. Jeder Zweig setzt seine Breite jetzt selbst.
 gewandert — er wird jetzt von beiden Auftritten benutzt.
 
 Barrierefreiheit danach: 0 Befunde von 10.
+
+## 2026-09-01 — Teamfoto statt 3D-Szene im Hero
+
+Die prozedurale WebGL-Grafik ist aus dem Hero raus. Sie war handwerklich das
+Aufwendigste an der Seite und inhaltlich das Leerste: eine abstrakte
+Doppelhelix aus dem Medizin-Template, an genau der Stelle, an der jemand
+entscheidet, ob das seine Kanzlei ist. Dort steht jetzt das Team vor dem
+eigenen Haus (`hero.webp`, 2400 px, 321 KB).
+
+Die Szene lebt nur noch im Kontaktband und dort nur auf dem Rechner
+(`desktopOnly`). Auf dem Telefon lädt `three` gar nicht mehr.
+
+**Der Übergang von Weiss zum Bild** besteht aus zwei Dingen in einer Ebene, und
+beide sind nötig: `backdrop-blur` weicht das Foto dort auf, wo Text darüber
+liegt, und `mask-image` blendet **die Unschärfe selbst** wieder aus. Ohne die
+Maske würde ein Farbverlauf nur das Weiss ausblenden — das Foto bliebe auf
+ganzer Breite gleich verwaschen. So endet der Weichzeichner dort, wo das Weiss
+endet.
+
+Der Text steht auf **deckendem** Weiss, nicht auf einer halbtransparenten
+Fläche: sonst hinge sein Kontrast davon ab, was gerade auf dem Foto zu sehen
+ist. Nachgemessen — hinter jedem Pixel des Leads steht #ffffff.
+
+**Zwei Layouts, ein `<Image>`.** Ab `lg` liegt das Foto absolut in der rechten
+Bandhälfte (ab 26 %), auf dem Telefon als eigener Streifen unter dem Text. Das
+ist Rechnerei, keine Bequemlichkeit: als Hintergrund eines 390 × 840 grossen
+Bandes wird ein 3:2-Foto seitlich beschnitten und oben/unten gar nicht —
+`object-position` kann senkrecht also nichts verschieben, die Köpfe lagen unter
+dem Text und übrig blieb ein Streifen Beine. Als eigener Block mit fester Höhe
+bekommt das Foto seinen Ausschnitt zurück.
+
+Dieselbe Rechnung war der Grund, den Bildkasten auf dem Rechner bei 26 %
+beginnen zu lassen statt bei 0: über die volle Bandbreite sass die Gruppe
+unverrückbar in der Bildmitte und damit im Verlauf.
+
+⚠️ Nebenwirkung: Frank Kutscher steht ganz links im Foto und liegt dadurch
+hinter dem Weiss. Alternative wäre, Bild und Text zu tauschen — rechts im Motiv
+stehen nur Pergola und Hecke, dort ginge niemand verloren.
+
+**Porträt Manuela Köber ersetzt.** Die erste Zuordnung war falsch: geliefert
+wurden zwei Bilder ohne Namen, und die Frau auf `_DSC6668` ist eine andere
+Kollegin. Genau dafür stand der Vorbehalt in `fotos.ts` — ein Gesicht unter
+einem Namen wird nicht geraten.
+
+Die beiden hochgeladenen Dateien lagen mit Leerzeichen und Umlaut im Namen
+direkt in `public/`; sie sind zu Webfassungen gerechnet und entfernt.
+
+LCP 684 ms, Barrierefreiheit 0 Befunde von 10.

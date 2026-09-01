@@ -30,6 +30,18 @@ export interface Foto {
 }
 
 export const FOTOS = {
+  /**
+   * Das Team vor dem Haus — Hintergrund des Heros.
+   *
+   * `alt` ist hier NICHT leer, obwohl es ein Hintergrundbild ist: es zeigt
+   * benannte Menschen an der prominentesten Stelle der Seite, und wer die Seite
+   * vorgelesen bekommt, soll wissen, dass da nicht Dekoration steht, sondern
+   * die Kanzlei selbst.
+   */
+  hero: {
+    src: "/assets/kutscher/hero.webp",
+    alt: "Das Team der Steuerkanzlei Kutscher vor dem Kanzleigebäude",
+  },
   /** Empfangstresen, Tageslicht. Das erste Bild der Seite. */
   empfang: {
     src: "/assets/kutscher/empfang.webp",
@@ -51,12 +63,13 @@ export const FOTOS = {
     alt: "Das Team der Steuerkanzlei Kutscher vor dem Kanzleigebäude",
   },
   /**
-   * ⚠️ Zuordnung vom Kunden bestätigen lassen.
+   * Beide Porträts sind bestätigt.
    *
-   * Die beiden Porträts stammen aus derselben Serie und wurden ohne Namen
-   * geliefert (`_DSC6764` und `_DSC6668`). Die Zuordnung hier folgt dem
-   * einzigen Anhaltspunkt, den es gibt — Frank Kutscher ist der Mann, Manuela
-   * Köber die Frau. Solange das nicht bestätigt ist, steht dieser Hinweis hier.
+   * Bei Manuela Köber war die erste Zuordnung falsch: geliefert wurden zwei
+   * Bilder ohne Namen, und die Frau auf `_DSC6668` ist eine andere Kollegin.
+   * Der Kunde hat das Bild nachgereicht, das hier steht. Genau dafür stand der
+   * Vorbehalt an dieser Stelle — ein Gesicht unter einem Namen wird nicht
+   * geraten.
    */
   portraetKutscher: {
     src: "/assets/kutscher/portraet-kutscher.webp",
