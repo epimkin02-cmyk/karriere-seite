@@ -191,7 +191,7 @@ export const IMPRESSUM: LegalDocument = {
       blocks: [
         {
           kind: "paragraph",
-          text: "Die Inhalte von kutscher-stb.de sind – soweit nicht abweichend angegeben – urheberrechtlich geschützt.",
+          text: "Die Inhalte von kutscher-stb.de sind, soweit nicht abweichend angegeben, urheberrechtlich geschützt.",
         },
         {
           kind: "paragraph",
@@ -205,14 +205,14 @@ export const IMPRESSUM: LegalDocument = {
         {
           kind: "list",
           items: [
-            "© Puwasit Inyavileart – stock.adobe.com",
-            "© Andrey Popov – stock.adobe.com",
-            "© wutzkoh – stock.adobe.com",
-            "© bongkarn – stock.adobe.com",
-            "© New Africa – stock.adobe.com",
-            "© snowing12 – stock.adobe.com",
-            "© PIC SNIPE – stock.adobe.com",
-            "© Natee Meepian – stock.adobe.com",
+            "© Puwasit Inyavileart, stock.adobe.com",
+            "© Andrey Popov, stock.adobe.com",
+            "© wutzkoh, stock.adobe.com",
+            "© bongkarn, stock.adobe.com",
+            "© New Africa, stock.adobe.com",
+            "© snowing12, stock.adobe.com",
+            "© PIC SNIPE, stock.adobe.com",
+            "© Natee Meepian, stock.adobe.com",
           ],
         },
       ],
@@ -485,7 +485,7 @@ export const DATENSCHUTZERKLAERUNG: LegalDocument = {
     },
     {
       id: "webtracker",
-      heading: "Statistische Auswertung der Besuche dieser Internetseite - Webtracker",
+      heading: "Statistische Auswertung der Besuche dieser Internetseite, Webtracker",
       level: 2,
       blocks: [
         {
@@ -1118,7 +1118,7 @@ export const DATENSCHUTZERKLAERUNG: LegalDocument = {
     {
       id: "betroffenenrechte",
       heading:
-        "Auskunftsanspruch und Berichtigungswünsche – Löschung & Einschränkung von Daten - Widerruf von Einwilligungen – Widerspruchsrecht",
+        "Auskunftsanspruch und Berichtigungswünsche, Löschung & Einschränkung von Daten, Widerruf von Einwilligungen, Widerspruchsrecht",
       level: 2,
       blocks: [],
     },
@@ -1428,7 +1428,15 @@ export const BARRIEREFREIHEITSERKLAERUNG: LegalDocument = {
             "Kontaktformular: Sie müssen zur Kontaktaufnahme die vorgesehenen Felder ausfüllen und Ihre Anfrage absenden. Vor dem Absenden müssen Sie noch unseren Spam-Schutz anklicken/auswählen und bestätigen. Das Kontaktformular ist vollständig mit der Tastatur bedienbar und aussagekräftig beschrieben.",
             "Terminbuchungsformular: Im Rahmen unseres Terminbuchungsformulars müssen Sie die notwendigen Pflichtangaben wie z.B. Datum, E-Mail-Adresse angeben und den dahinterliegenden Prozess durchlaufen. Nach Abschluss des Prozesses ist der Termin für Sie im Regelfall reserviert. Bitte beachten Sie, dass Sie eine gesonderte Terminbestätigung von uns erhalten. Alternativ können Sie uns auch anrufen oder per E-Mail kontaktieren.",
             "Online-Shop: Auf unserer Webseite ist ein Online-Shop integriert. Nähere Informationen zur Wahrnehmung des Angebotes und zu den Bedingungen finden Sie in unseren AGB. Die Einlage von Waren und das Durchlaufen des Bestellprozesses werden in diesen erläutert.",
-            "Standort-Karte: Die auf der Website eingebundene Karte können Sie im Rahmen der üblichen Interaktionsmöglichkeiten bedienen. Zum Zoomen stehen Ihnen die in die Karte integrierten Bedienelemente zur Verfügung. Zudem kann die Karte mit der Tastatur gesteuert werden (Pfeiltasten zur Navigation, „+\" und „–\" zum Zoomen).",
+            // Der Satz nennt seit dem 01.09. die Freischaltung: die Karte ist
+            // gesperrt, bis jemand sie anklickt, damit sie das Scrollen der
+            // Seite nicht verschluckt (siehe [[StandortKarte]]). Eine
+            // Barrierefreiheitserklärung, die eine Bedienbarkeit beschreibt,
+            // die erst nach einem Klick eintritt, wäre an dieser Stelle falsch.
+            //
+            // Das „–" am Ende bleibt: es ist das Minuszeichen der
+            // Zoom-Schaltfläche, kein Gedankenstrich.
+            "Standort-Karte: Die auf der Website eingebundene Karte schalten Sie zunächst über die Schaltfläche „Karte aktivieren\" frei. Danach können Sie sie im Rahmen der üblichen Interaktionsmöglichkeiten bedienen. Zum Zoomen stehen Ihnen die in die Karte integrierten Bedienelemente zur Verfügung. Zudem kann die Karte mit der Tastatur gesteuert werden (Pfeiltasten zur Navigation, „+\" und „–\" zum Zoomen).",
           ],
         },
       ],

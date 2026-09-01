@@ -74,7 +74,7 @@ export const OVERVIEW_CONTENT: OverviewContent = {
   title: "Qualifizierte Steuerberatung für Unternehmen",
   paragraphs: [
     "Wir begleiten und betreuen Sie unter anderem bei einer Betriebsprüfung. Unsere Aufgaben bestehen darin, Ihre Firma auf die Prüfung durch das Finanzamt vorzubereiten und für die Einhaltung Ihrer Mitwirkungspflichten zu sorgen.",
-    "Nach Abschluss der steuerlichen Prüfung vertreten wir Sie gern bei der Besprechung mit der Behörde. Nicht nur bei Betriebsprüfungen stehen wir an Ihrer Seite, sondern auch im Fall von Einsprüchen, Beschwerden und Widersprüchen – etwa bei Steuerstrafsachen und Ordnungswidrigkeiten – können Sie auf unsere Unterstützung vertrauen.",
+    "Nach Abschluss der steuerlichen Prüfung vertreten wir Sie gern bei der Besprechung mit der Behörde. Nicht nur bei Betriebsprüfungen stehen wir an Ihrer Seite, sondern auch im Fall von Einsprüchen, Beschwerden und Widersprüchen, etwa bei Steuerstrafsachen und Ordnungswidrigkeiten, können Sie auf unsere Unterstützung vertrauen.",
     "Landet Ihre steuerliche Angelegenheit vor dem Finanzgericht oder dem Bundesfinanzhof, erbringen wir ebenfalls vertrauensvolle Leistungen für eine optimale Vertretung.",
     "Im Rahmen der betriebswirtschaftlichen Beratung entwickeln wir für unsere Geschäftskunden beispielsweise abgestimmte Strategien für eine effiziente Führung der Firma oder Erreichung der gesetzten Ziele. Weiter erstellen wir Liquidationspläne, Kosten- und Leistungsrechnungen und Investitionspläne. Steht Ihr Unternehmen vor einer Umstrukturierung oder einem Wechsel der Geschäftsführung, sind wir ein erstklassiger Ansprechpartner.",
   ],

@@ -20,13 +20,13 @@
  * Seit dem 01.09. steht rechts neben den Kontaktspalten ein Bild. Das ist die
  * einzige Stelle der Website, an der ein Foto ausserhalb der Landingpage
  * auftaucht — unter den Rechtstexten steht sonst nur Text, und die enden damit
- * nicht mehr in einer Wüste aus Paragrafen, sondern mit einem Gesicht.
+ * nicht mehr in einer Wüste aus Paragrafen, sondern mit dem Haus der Kanzlei.
  *
  * Es sitzt in derselben Zeile wie Logo und Spalten, nicht darunter: ein Bild
  * unter der Fusszeile wäre ein weiterer Abschnitt, ein Bild neben ihr ist ihr
  * rechter Abschluss. Deshalb ist der äussere Kasten hier ein Raster mit zwei
  * Spalten und nicht mehr der frühere dreispaltige Block — Logo und Spalten
- * rücken zusammen in die linke, das Bild füllt die rechte über die volle Höhe.
+ * rücken zusammen in die linke, das Bild steht in der rechten.
  */
 
 import Image from "next/image";
@@ -67,15 +67,19 @@ const HEADING = "text-sm leading-body font-medium text-accent uppercase";
  * unter den Rechtstexten. Und ein Modul aus `components/`, das aus `views/`
  * importiert, wäre die falsche Richtung.
  *
- * ⚠️ Der Name der Kollegin ist NICHT bekannt, deshalb steht im `alt` nur der
- * Name, der belegt ist. Sie ist **nicht** Manuela Köber — die trägt eine Brille
- * und ist auf `portraet-koeber.webp` zu sehen. Sobald der zweite Name da ist,
- * gehört er hier hinein. Genau diese Zuordnung ist auf dieser Seite schon
- * einmal falsch gewesen; ein Gesicht unter einem Namen wird nicht geraten.
+ * Seit dem 01.09. das Haus mit dem Firmenschild statt des Doppelporträts. Das
+ * ist inhaltlich die bessere Wahl an dieser Stelle: die Fusszeile trägt
+ * Anschrift und Telefonnummern, und daneben steht jetzt das Gebäude, das zu
+ * dieser Anschrift gehört — wer herfährt, hat es einmal gesehen.
+ *
+ * ⚠️ Wer davor steht, ist NICHT belegt. Es ist nicht Frank Kutscher (der trägt
+ * keine Brille, siehe `portraet-kutscher.webp`), sondern dieselbe Person wie im
+ * Abschnitt „Über uns". Deshalb beschreibt das `alt` und benennt nicht. Sobald
+ * der Name da ist, gehört er hierher.
  */
 const FOOTER_FOTO = {
-  src: "/assets/kutscher/team-duo.webp",
-  alt: "Frank Kutscher mit einer Mitarbeiterin der Kanzlei",
+  src: "/assets/kutscher/gebaeude.webp",
+  alt: "Das Kanzleigebäude mit dem Firmenschild, davor ein Berater der Kanzlei",
 } as const;
 
 const LINK =
@@ -88,14 +92,22 @@ export const KanzleiFooter = () => (
         und ein Link, der nichts tut, ist für Tastatur und Vorlesefunktion ein
         Halt ohne Ziel. `alt` trägt trotzdem den Firmennamen — hier ist es die
         letzte Nennung im Dokument. */}
-    <div className="mx-auto grid w-full max-w-[85rem] gap-10 px-5 pt-14 pb-10 md:px-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16 lg:pt-20 lg:pb-14">
+    <div className="mx-auto grid w-full max-w-[85rem] gap-10 px-5 pt-14 pb-10 md:px-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16 lg:pt-20 lg:pb-14">
       <div className="flex flex-col gap-10 lg:gap-12">
+        {/* `self-start` ist hier keine Feinheit, sondern die Reparatur eines
+            Fehlers: seit die Fusszeile ein Raster ist, steht das Logo in einer
+            Flex-Spalte, und deren Vorgabe `align-items: stretch` zieht ein Kind
+            mit `width: auto` auf die volle Spaltenbreite. `w-auto` verhindert
+            das nicht — es *ist* die Bedingung dafür. Das Logo war damit über
+            1200 px breit und um ein Vielfaches grösser als in der Kopfzeile.
+            `self-start` nimmt es aus dem Strecken heraus, dann trägt wieder das
+            Seitenverhältnis die Breite. */}
         <Image
           src={LOGO.src}
           width={LOGO.width}
           height={LOGO.height}
           alt={LOGO.alt}
-          className="h-8 w-auto lg:h-9"
+          className="h-8 w-auto self-start lg:h-9"
         />
 
         <div className="grid gap-10 lg:grid-cols-3 lg:gap-12">
@@ -172,40 +184,46 @@ export const KanzleiFooter = () => (
         </div>
       </div>
 
-      {/* Das Foto — rechte Spalte ab `lg`, darunter ein Streifen über die
-       *  volle Breite.
+      {/* Das Foto — rechte Spalte ab `lg`, darunter über die volle Breite.
        *
-       * ## Zwei Formate aus einer Datei
+       * ## Warum es sein Seitenverhältnis behält statt die Zeile zu füllen
        *
-       * Die Aufnahme ist hochformatig (1000 × 1284). Ab `lg` steht sie in einer
-       * 20rem breiten Spalte, deren Höhe das Raster vorgibt: die Zeile ist so
-       * hoch wie die linke Spalte aus Logo und Kontaktblöcken, und `h-auto`
-       * lässt das Bild diese Höhe mitnehmen. Das Verhältnis liegt damit nahe
-       * am Bild selbst, es wird kaum beschnitten — `object-center` genügt.
+       * Die erste Fassung war ein Hochformat und nahm sich die Höhe der Zeile.
+       * Das ging, solange das Motiv zwei Menschen vor einer Wand waren — bei
+       * denen kostet ein Zuschnitt nichts als Hintergrund.
        *
-       * Auf dem Telefon geht das nicht: 1284 px hoch wären dort ein halber
-       * Bildschirm Fusszeile, bevor die Rechtstexte kommen. Also ein 14rem
-       * hoher Streifen. Ein Hochformat in einem 1,6:1 breiten Kasten zeigt
-       * knapp die Hälfte seiner Höhe, und welche Hälfte, entscheidet
-       * `object-position`: bei 15 % beginnt der Ausschnitt dicht über den
-       * Köpfen und endet an den Hüften. Zentriert stünden dort Bäuche und
-       * Beine.
+       * Diese Aufnahme ist quer (1200 × 800) und zeigt das Haus **mit dem
+       * Firmenschild**. In einen hohen Kasten gezwungen bliebe davon ein
+       * Ausschnitt ohne Schild, also ohne den einzigen Grund, dieses Bild zu
+       * nehmen. Deshalb gibt hier das Bild das Mass vor: `aspect-[3/2]`, feste
+       * Spaltenbreite, nichts wird beschnitten. Dass es damit niedriger ist als
+       * die Kontaktspalten links, fängt `self-center` auf — es sitzt mittig
+       * neben ihnen statt oben zu kleben.
        *
-       * Eine Datei für beide Fälle, kein zweites `<Image>` — sonst lädt der
-       * Browser dasselbe Motiv zweimal.
+       * Die Spalte ist von 20 auf 22rem gewachsen — mehr nicht, und das ist
+       * ausgemessen: bei 26rem schrumpfen die drei Kontaktspalten links auf
+       * 235 px, „Steuerberatungsgesellschaft mbH" misst aber 243 px, und die
+       * Anschrift brach dann mit einem einsamen „mbH" in eine vierte Zeile. Bei
+       * 22rem stehen dort 256 px zur Verfügung, die Zeile bleibt zusammen, und
+       * das Bild ist mit 352 × 235 px immer noch gross genug, dass das
+       * Firmenschild am Haus zu lesen ist.
+       *
+       * Auf dem Telefon dasselbe Verhältnis über die volle Breite — 350 × 233
+       * statt der 14rem des Hochformats, die Fusszeile wird dort also sogar
+       * kürzer.
        *
        * `rounded-card` und `bg-surface-section-deep` sind dieselben Marken wie
        * bei den Bildern der Landingpage: gerundete Ecke, ruhige Fläche
        * darunter, solange das Bild noch nicht da ist.
        *
        * Kein `priority`: die Fusszeile steht auf keiner Seite im ersten Bild. */}
-      <div className="relative h-[14rem] overflow-hidden rounded-card bg-surface-section-deep lg:h-auto lg:min-h-[22rem]">
+      <div className="relative aspect-[3/2] w-full overflow-hidden rounded-card bg-surface-section-deep lg:self-center">
         <Image
           src={FOOTER_FOTO.src}
           alt={FOOTER_FOTO.alt}
           fill
-          sizes="(min-width: 64rem) 20rem, calc(100vw - 2.5rem)"
-          className="object-cover object-[50%_15%] lg:object-center"
+          sizes="(min-width: 64rem) 22rem, calc(100vw - 2.5rem)"
+          className="object-cover"
         />
       </div>
     </div>

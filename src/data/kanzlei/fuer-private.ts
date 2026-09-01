@@ -68,7 +68,7 @@ export const OVERVIEW_CONTENT: OverviewContent = {
     "Wir prüfen Ihre Steuerbescheide und fertigen die Jahresabschlüsse für unsere Mandanten ebenfalls zuverlässig an. Neben den rechnerischen Abschlüssen zum Ende des Geschäftsjahres werden in unserem Büro auch Zwischenbilanzen und Eröffnungsbilanzen erstellt. Weiterhin sind wir für die saubere Ausarbeitung von Überschussrechnungen gem. § 4(3) EStG sowie für Erläuterungsberichte zuständig.",
     "Vermögensaufstellungen werden wir Ihnen ebenso übersichtlich und klar vorlegen. Dadurch bekommen Sie einen Überblick über Ihre eigene finanzielle Lage. Sonderbilanzen, wie etwa die Liquidationsbilanz, zählen ebenfalls zu unseren Leistungen.",
     "Mithilfe der Abwicklungsbilanz wird unter anderem offengelegt, welche finanziellen Verpflichtungen Sie noch erfüllen müssen.",
-    "Die Steuererklärung im Bereich Erben und Schenken stellt uns vor keine Schwierigkeiten. Sowohl bei einem Erbe als auch bei einer Schenkung kann es dazu kommen, dass eine Steuer vom Finanzamt erhoben wird. Wir sorgen dafür, dass Sie das erhaltene Vermögen korrekt versteuern. Dem Finanzamt übermitteln wir zudem sämtliche Umsatzsteuervoranmeldungen – sorgfältig, komplett und strukturiert.",
+    "Die Steuererklärung im Bereich Erben und Schenken stellt uns vor keine Schwierigkeiten. Sowohl bei einem Erbe als auch bei einer Schenkung kann es dazu kommen, dass eine Steuer vom Finanzamt erhoben wird. Wir sorgen dafür, dass Sie das erhaltene Vermögen korrekt versteuern. Dem Finanzamt übermitteln wir zudem sämtliche Umsatzsteuervoranmeldungen, und das sorgfältig, komplett und strukturiert.",
   ],
 };
 

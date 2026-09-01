@@ -271,7 +271,7 @@ export const WHY_CONTENT: WhyContent = {
   eyebrow: "Deine Vorteile", // NEU
   title: "Entdecke die Vorteile, die dich bei uns erwarten",
   description:
-    "Deine Karriere mit Perspektive — bei einer Kanzlei, die ihre Mitarbeiter als Fundament versteht und nicht als Ressource.",
+    "Deine Karriere mit Perspektive, bei einer Kanzlei, die ihre Mitarbeiter als Fundament versteht und nicht als Ressource.",
   actions: [PRIMARY_CTA],
   trailImages: [
     "/assets/kutscher/buero.webp",
@@ -288,7 +288,7 @@ export const SERVICES_INTRO: SectionIntro = {
   eyebrow: "Was dich erwartet", // NEU
   title: "Drei Dinge, die woanders selten sind",
   description:
-    "Wir gestalten den Arbeitsplatz gemeinsam mit dir — und meinen das wörtlich.",
+    "Wir gestalten den Arbeitsplatz gemeinsam mit dir, und meinen das wörtlich.",
 };
 
 export const SERVICE_CARDS: readonly ServiceCard[] = [
@@ -325,7 +325,7 @@ export const SERVICE_CARDS: readonly ServiceCard[] = [
     variant: "photo",
     image: "/assets/kutscher/besprechungsraum.webp",
     body:
-      "Du bekommst jedes Jahr ein Gesundheitsbudget in Höhe von 600 €. Dieses kannst du flexibel für Leistungen nutzen, die deine Krankenkasse nicht übernimmt – z. B. für Brillen, Kontaktlinsen oder Zahnbehandlungen.",
+      "Du bekommst jedes Jahr ein Gesundheitsbudget in Höhe von 600 €. Dieses kannst du flexibel für Leistungen nutzen, die deine Krankenkasse nicht übernimmt, zum Beispiel für Brillen, Kontaktlinsen oder Zahnbehandlungen.",
   },
   {
     index: "05",
@@ -465,7 +465,7 @@ export const TESTIMONIAL_CONTENT: TestimonialContent = {
       // TODO(kunde): Wortlaut nachliefern. Das Original führt das Zitat nur als
       // Medium, nicht als Text. Bis dahin bleibt der Platzhalter sichtbar
       // markiert, damit er nicht versehentlich live geht.
-      quote: "[PLATZHALTER — Original-Wortlaut von Till Pfaffendorf ausstehend]",
+      quote: "[PLATZHALTER, Original-Wortlaut von Till Pfaffendorf ausstehend]",
       name: "Till Pfaffendorf",
       role: "Steuerfachangestellter",
       image: null,
@@ -564,7 +564,7 @@ export const CONTACT_CONTENT: ContactContent = {
   eyebrow: "Schnellbewerbung", // NEU
   title: "Jetzt bewerben",
   description:
-    "Keine Unterlagen notwendig. Drei kurze Schritte — danach melden wir uns persönlich bei dir.", // NEU, aus "Keine Unterlagen notwendig"
+    "Keine Unterlagen notwendig. Drei kurze Schritte, danach melden wir uns persönlich bei dir.", // NEU, aus "Keine Unterlagen notwendig"
   formTitle: "Deine Schnellbewerbung", // NEU
   steps: [
     {
@@ -587,7 +587,7 @@ export const CONTACT_CONTENT: ContactContent = {
           label: "Wann könntest du starten?",
           placeholder: "",
           type: "choice",
-          options: ["Sofort", "In 1–3 Monaten", "Später als 3 Monate"],
+          options: ["Sofort", "In 1 bis 3 Monaten", "Später als 3 Monate"],
         },
       ],
     },
@@ -637,7 +637,7 @@ export const CONTACT_CONTENT: ContactContent = {
   consentLinkLabel: "Datenschutzerklärung",
   consentTail: ".",
   submitLabel: "Bewerbung absenden",
-  successTitle: "Danke — deine Bewerbung ist bei uns.", // NEU
+  successTitle: "Danke, deine Bewerbung ist bei uns.", // NEU
   successBody:
     "Wir prüfen deine Angaben und melden uns persönlich bei dir. In der Regel innerhalb von zwei Werktagen.", // NEU
 };

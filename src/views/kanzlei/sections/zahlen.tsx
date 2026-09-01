@@ -97,7 +97,7 @@ export const Zahlen = () => (
         id="zahlen-heading"
         className="max-w-[26rem] text-[1.75rem] leading-display font-light hyphens-auto lg:text-[2.25rem]"
       >
-        Eine Kanzlei, die alles abdeckt — nicht nur die Steuererklärung.
+        Eine Kanzlei, die alles abdeckt, nicht nur die Steuererklärung.
       </h2>
 
       {/* `<dl>` statt `<div>`: Zahl und Beschriftung sind ein Begriffspaar, und

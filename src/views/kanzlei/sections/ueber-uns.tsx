@@ -70,14 +70,18 @@ export const UeberUns = () => (
     className={`rounded-section bg-surface-section px-5 py-16 md:px-10 lg:py-24 ${ANCHOR_OFFSET}`}
   >
     <div className="mx-auto flex w-full max-w-[85rem] flex-col gap-10 lg:gap-16">
-      {/* Kopf und Gruppenbild stehen NEBENEINANDER, nicht untereinander.
+      {/* Kopf und Bild stehen NEBENEINANDER, nicht untereinander.
 
-          Grund ist das Motiv: die Aufnahme ist hochformatig — das Team steht
-          auf der Treppe vor dem Haus, in die Höhe gestaffelt. In ein
-          21:9-Querband gezwungen bliebe davon ein Streifen mit abgeschnittenen
-          Köpfen. Neben der Textspalte behält es sein Format, und der Abschnitt
-          gewinnt die einzige zweispaltige Stelle der Seite — was ihm guttut,
-          weil er der kürzeste ist.
+          Grund ist das Motiv: die Aufnahme ist hochformatig. In ein
+          21:9-Querband gezwungen bliebe davon ein Streifen ohne Kopf. Neben der
+          Textspalte behält sie ihr Format, und der Abschnitt gewinnt die
+          einzige zweispaltige Stelle der Seite — was ihm guttut, weil er der
+          kürzeste ist.
+
+          Seit dem 01.09. steht hier ein Porträt statt des Gruppenbildes (der
+          Kunde hat es so geliefert). Am Aufbau ändert das nichts: beide sind
+          hoch, beide sind auf 4:5 zugeschnitten. Das Gruppenbild liegt weiter
+          als `FOTOS.team` bereit.
 
           `lg:items-center` statt `items-start`: der Text dieses Abschnitts ist
           kurz — Überschrift und drei Zeilen — und das Bild ist hoch. Oben
@@ -117,8 +121,8 @@ export const UeberUns = () => (
           className="relative aspect-[4/5] w-full overflow-hidden rounded-card bg-background lg:w-[22rem] lg:shrink-0"
         >
           <Image
-            src={FOTOS.team.src}
-            alt={FOTOS.team.alt}
+            src={FOTOS.ueberUns.src}
+            alt={FOTOS.ueberUns.alt}
             fill
             sizes="(min-width: 64rem) 352px, calc(100vw - 2.5rem)"
             className="object-cover"

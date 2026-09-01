@@ -57,10 +57,31 @@ export const FOTOS = {
     src: "/assets/kutscher/buero.webp",
     alt: "",
   },
-  /** Das Team vor dem Kanzleigebäude. Hochformat. */
+  /**
+   * Das Team vor dem Kanzleigebäude. Hochformat.
+   *
+   * Steht seit dem 01.09. an keiner Stelle mehr — im Abschnitt „Über uns" ist
+   * an seine Stelle `ueberUns` getreten. Bleibt trotzdem hier: die Datei liegt
+   * im Repo, das Motiv ist gut, und wenn der Abschnitt einmal wieder die ganze
+   * Mannschaft zeigen soll, steht sie samt Beschreibung bereit.
+   */
   team: {
     src: "/assets/kutscher/team-gruppe.webp",
     alt: "Das Team der Steuerkanzlei Kutscher vor dem Kanzleigebäude",
+  },
+  /**
+   * Porträt im Treppenhaus — das Bild des Abschnitts „Über uns". Hochformat,
+   * auf 4:5 zugeschnitten, weil der Kasten dort dieses Verhältnis hat.
+   *
+   * ⚠️ Wer darauf zu sehen ist, ist **nicht** belegt. Es ist nicht Frank
+   * Kutscher (der trägt keine Brille, siehe `portraetKutscher`). Deshalb steht
+   * im `alt` eine Beschreibung und kein Name — sobald der Name da ist, gehört
+   * er hierher. Auf dieser Seite wird kein Gesicht unter einen Namen geraten;
+   * genau das ist beim Porträt von Manuela Köber schon einmal schiefgegangen.
+   */
+  ueberUns: {
+    src: "/assets/kutscher/ueber-uns.webp",
+    alt: "Ein Berater der Kanzlei im Treppenhaus des Kanzleigebäudes",
   },
   /**
    * Beide Porträts sind bestätigt.
